@@ -535,8 +535,8 @@ namespace Veldrid.Vulkan
                     CheckResult(result);
                     _instance = instance;
 
-                    vkEnumerateInstanceVersion? instanceVersion =
-                        GetInstanceProcAddr<vkEnumerateInstanceVersion>("vkEnumerateInstanceVersion");
+                    vkEnumerateInstanceVersion_t? instanceVersion =
+                        GetInstanceProcAddr<vkEnumerateInstanceVersion_t>("vkEnumerateInstanceVersion");
 
                     if (instanceVersion != null)
                     {
@@ -557,15 +557,25 @@ namespace Veldrid.Vulkan
                     }
                 }
 
-                if (debug && debugReportExtensionAvailable)
+                if (debugReportExtensionAvailable)
                 {
-                    EnableDebugCallback();
+                    VkDebugReportFlagsEXT flags = VkDebugReportFlagsEXT.VK_DEBUG_REPORT_ERROR_BIT_EXT;
+                    if (debug)
+                    {
+                        flags |=
+                            VkDebugReportFlagsEXT.VK_DEBUG_REPORT_INFORMATION_BIT_EXT |
+                            VkDebugReportFlagsEXT.VK_DEBUG_REPORT_WARNING_BIT_EXT |
+                            VkDebugReportFlagsEXT.VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT |
+                            VkDebugReportFlagsEXT.VK_DEBUG_REPORT_DEBUG_BIT_EXT;
+                    }
+                    EnableDebugCallback(flags);
                 }
 
                 if (hasDeviceProperties2)
                 {
-                    _getPhysicalDeviceProperties2 = GetInstanceProcAddr<vkGetPhysicalDeviceProperties2_t>("vkGetPhysicalDeviceProperties2")
-                        ?? GetInstanceProcAddr<vkGetPhysicalDeviceProperties2_t>("vkGetPhysicalDeviceProperties2KHR");
+                    _getPhysicalDeviceProperties2 =
+                        GetInstanceProcAddr<vkGetPhysicalDeviceProperties2_t>("vkGetPhysicalDeviceProperties2") ??
+                        GetInstanceProcAddr<vkGetPhysicalDeviceProperties2_t>("vkGetPhysicalDeviceProperties2KHR");
                 }
             }
             finally
@@ -616,17 +626,11 @@ namespace Veldrid.Vulkan
             return _surfaceExtensions.Contains(extension);
         }
 
-        public void EnableDebugCallback(
-            VkDebugReportFlagsEXT flags =
-                VkDebugReportFlagsEXT.VK_DEBUG_REPORT_INFORMATION_BIT_EXT |
-                VkDebugReportFlagsEXT.VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT |
-                VkDebugReportFlagsEXT.VK_DEBUG_REPORT_WARNING_BIT_EXT |
-                VkDebugReportFlagsEXT.VK_DEBUG_REPORT_ERROR_BIT_EXT)
+        public void EnableDebugCallback(VkDebugReportFlagsEXT flags)
         {
-            using FixedUtf8String debugExtFnName = "vkCreateDebugReportCallbackEXT";
-
-            IntPtr createFnPtr = (IntPtr)vkGetInstanceProcAddr(_instance, debugExtFnName);
-            if (createFnPtr == IntPtr.Zero)
+            vkCreateDebugReportCallbackEXT_d? createFnPtr =
+                GetInstanceProcAddr<vkCreateDebugReportCallbackEXT_d>("vkCreateDebugReportCallbackEXT");
+            if (createFnPtr == null)
             {
                 return;
             }
@@ -636,9 +640,10 @@ namespace Veldrid.Vulkan
             debugCallbackCI.flags = flags;
             debugCallbackCI.pfnCallback = &DebugCallback;
 
-            vkCreateDebugReportCallbackEXT_d createDelegate = Marshal.GetDelegateForFunctionPointer<vkCreateDebugReportCallbackEXT_d>(createFnPtr);
-            VkResult result = createDelegate(_instance, &debugCallbackCI, IntPtr.Zero, out _debugCallbackHandle);
+            VkDebugReportCallbackEXT handle;
+            VkResult result = createFnPtr(_instance, &debugCallbackCI, IntPtr.Zero, &handle);
             CheckResult(result);
+            _debugCallbackHandle = handle;
         }
 
         [UnmanagedCallersOnly]
@@ -1082,9 +1087,11 @@ namespace Veldrid.Vulkan
 
             if (_debugCallbackHandle != VkDebugReportCallbackEXT.NULL)
             {
-                using FixedUtf8String debugExtFnName = "vkDestroyDebugReportCallbackEXT";
-                IntPtr addr = (IntPtr)vkGetInstanceProcAddr(_instance, debugExtFnName);
-                ((delegate* unmanaged<VkInstance, VkDebugReportCallbackEXT, VkAllocationCallbacks*, void>)addr)(_instance, _debugCallbackHandle, null);
+                IntPtr destroyCbFnPtr = GetInstanceProcAddr("vkDestroyDebugReportCallbackEXT");
+                ((delegate* unmanaged<VkInstance, VkDebugReportCallbackEXT, VkAllocationCallbacks*, void>)destroyCbFnPtr)(
+                    _instance, _debugCallbackHandle, null);
+
+                _debugCallbackHandle = VkDebugReportCallbackEXT.NULL;
             }
 
             _descriptorPoolManager.DestroyAll();
@@ -1483,9 +1490,9 @@ namespace Veldrid.Vulkan
         VkInstance instance,
         VkDebugReportCallbackCreateInfoEXT* createInfo,
         IntPtr allocatorPtr,
-        out VkDebugReportCallbackEXT ret);
+        VkDebugReportCallbackEXT* ret);
 
-    internal unsafe delegate VkResult vkEnumerateInstanceVersion(uint* pApiVersion);
+    internal unsafe delegate VkResult vkEnumerateInstanceVersion_t(uint* pApiVersion);
 
     internal unsafe delegate VkResult vkDebugMarkerSetObjectNameEXT_t(VkDevice device, VkDebugMarkerObjectNameInfoEXT* pNameInfo);
     internal unsafe delegate void vkCmdDebugMarkerBeginEXT_t(VkCommandBuffer commandBuffer, VkDebugMarkerMarkerInfoEXT* pMarkerInfo);
@@ -1496,22 +1503,4 @@ namespace Veldrid.Vulkan
     internal unsafe delegate void vkGetImageMemoryRequirements2_t(VkDevice device, VkImageMemoryRequirementsInfo2* pInfo, VkMemoryRequirements2* pMemoryRequirements);
 
     internal unsafe delegate void vkGetPhysicalDeviceProperties2_t(VkPhysicalDevice physicalDevice, void* properties);
-
-    // VK_EXT_metal_surface
-
-    internal unsafe delegate VkResult vkCreateMetalSurfaceEXT_t(
-        VkInstance instance,
-        VkMetalSurfaceCreateInfoEXT* pCreateInfo,
-        VkAllocationCallbacks* pAllocator,
-        VkSurfaceKHR* pSurface);
-
-    internal unsafe struct VkMetalSurfaceCreateInfoEXT
-    {
-        public const VkStructureType VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT = (VkStructureType)1000217000;
-
-        public VkStructureType sType;
-        public void* pNext;
-        public uint flags;
-        public void* pLayer;
-    }
 }
