@@ -46,15 +46,8 @@ namespace Veldrid.Tests
             return GraphicsDevice.CreateVulkan(new GraphicsDeviceOptions(true));
         }
 
-        public static void CreateVulkanDeviceWithSwapchain(out Sdl2Window window, out GraphicsDevice gd)
+        public static void CreateVulkanDeviceWithSwapchain(out IDisposable window, out GraphicsDevice gd)
         {
-            if (!InitializedSdl2)
-            {
-                window = null;
-                gd = null;
-                return;
-            }
-
             WindowCreateInfo wci = new()
             {
                 WindowWidth = 200,
@@ -64,7 +57,21 @@ namespace Veldrid.Tests
 
             GraphicsDeviceOptions options = new(true, PixelFormat.R16_UNorm, false);
 
-            VeldridStartup.CreateWindowAndGraphicsDevice(wci, options, GraphicsBackend.Vulkan, out window, out gd);
+#if ANDROID
+            // TODO: dependency inject this?
+            Android.Utilities.AndroidStartup.CreateWindowAndGraphicsDevice(
+                wci.WindowWidth, wci.WindowHeight, options, GraphicsBackend.Vulkan, out window, out gd);
+#else
+            if (!InitializedSdl2)
+            {
+                window = null;
+                gd = null;
+                return;
+            }
+
+            VeldridStartup.CreateWindowAndGraphicsDevice(wci, options, GraphicsBackend.Vulkan, out Sdl2Window sdlWindow, out gd);
+            window = new WindowClosable(sdlWindow);
+#endif
         }
 
         public static GraphicsDevice CreateD3D11Device()
@@ -320,11 +327,22 @@ namespace Veldrid.Tests
         }
     }
 
-    public class VulkanDeviceCreatorWithMainSwapchain : WindowedDeviceCreator
+    public class VulkanDeviceCreatorWithMainSwapchain : IGraphicsDeviceCreator, IDisposable
     {
-        public override void CreateGraphicsDevice(out GraphicsDevice gd)
+        private IDisposable? window;
+
+        public void CreateGraphicsDevice(out GraphicsDevice gd)
         {
             TestUtils.CreateVulkanDeviceWithSwapchain(out window, out gd);
+        }
+
+        public void Dispose()
+        {
+            if (window != null)
+            {
+                window.Dispose();
+                window = null;
+            }
         }
     }
 
