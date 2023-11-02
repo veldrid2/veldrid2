@@ -318,19 +318,23 @@ namespace Veldrid
         /// <param name="description">The desired properties of the created object.</param>
         protected virtual void ValidateShader(in ShaderDescription description)
         {
-            if (!Features.ComputeShader && description.Stage == ShaderStages.Compute)
+            if (!Features.ComputeShader && (description.Stage & ShaderStages.Compute) != 0)
             {
-                throw new VeldridException("GraphicsDevice does not support Compute Shaders.");
+                Throw(description.Stage);
             }
-            if (!Features.GeometryShader && description.Stage == ShaderStages.Geometry)
+            if (!Features.GeometryShader && (description.Stage & ShaderStages.Geometry) != 0)
             {
-                throw new VeldridException("GraphicsDevice does not support Compute Shaders.");
+                Throw(description.Stage);
             }
-            if (!Features.TessellationShaders
-                && (description.Stage == ShaderStages.TessellationControl
-                    || description.Stage == ShaderStages.TessellationEvaluation))
+            if (!Features.TessellationShaders &&
+                (description.Stage & (ShaderStages.TessellationControl | ShaderStages.TessellationEvaluation)) != 0)
             {
-                throw new VeldridException("GraphicsDevice does not support Tessellation Shaders.");
+                Throw(description.Stage);
+            }
+
+            static void Throw(ShaderStages stages)
+            {
+                throw new VeldridException($"GraphicsDevice does not support ShaderStages: {stages}.");
             }
         }
 
