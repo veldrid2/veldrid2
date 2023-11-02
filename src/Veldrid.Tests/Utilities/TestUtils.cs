@@ -277,6 +277,11 @@ namespace Veldrid.Tests
             }
         }
 
+        public void SkipIfNotComputeShader()
+        {
+            Skip.IfNot(GD.Features.ComputeShader, "Missing GPU feature: ComputeShader");
+        }
+
         public void Dispose()
         {
             GD.WaitForIdle();

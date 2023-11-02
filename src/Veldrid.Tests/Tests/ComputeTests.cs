@@ -185,7 +185,7 @@ void main()
         [SkippableFact]
         public void BasicCompute()
         {
-            Skip.IfNot(GD.Features.ComputeShader);
+            SkipIfNotComputeShader();
 
             ResourceLayout layout = RF.CreateResourceLayout(new ResourceLayoutDescription(
                 new ResourceLayoutElementDescription("Params", ResourceKind.UniformBuffer, ShaderStages.Compute),
@@ -245,7 +245,7 @@ void main()
         [SkippableFact]
         public void ComputeCubemapGeneration()
         {
-            Skip.IfNot(GD.Features.ComputeShader);
+            SkipIfNotComputeShader();
             Skip.If(GD.GetD3D11Info(out _), "D3D11 doesn't support Storage Cubemaps");
 
             const int TexSize = 32;
@@ -310,7 +310,7 @@ void main()
         [SkippableFact]
         public void ComputeCubemapBindSingleTextureMipLevelOutput()
         {
-            Skip.IfNot(GD.Features.ComputeShader);
+            SkipIfNotComputeShader();
             Skip.If(GD.GetD3D11Info(out _), "D3D11 doesn't support Storage Cubemaps");
 
             const int TexSize = 128;
@@ -400,7 +400,7 @@ void main()
         [MemberData(nameof(FillBuffer_WithOffsetsData))]
         public void FillBuffer_WithOffsets(uint srcSetMultiple, uint srcBindingMultiple, uint dstSetMultiple, uint dstBindingMultiple, bool combinedLayout)
         {
-            Skip.IfNot(GD.Features.ComputeShader);
+            SkipIfNotComputeShader();
             Skip.If(!GD.Features.BufferRangeBinding && (srcSetMultiple != 0 || srcBindingMultiple != 0 || dstSetMultiple != 0 || dstBindingMultiple != 0));
 
             Debug.Assert((GD.StructuredBufferMinOffsetAlignment % sizeof(uint)) == 0);

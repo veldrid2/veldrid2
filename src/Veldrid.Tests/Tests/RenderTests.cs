@@ -730,13 +730,10 @@ namespace Veldrid.Tests
             GD.Unmap(staging);
         }
 
-        [Fact]
+        [SkippableFact]
         public void ComputeGeneratedVertices()
         {
-            if (!GD.Features.ComputeShader)
-            {
-                return;
-            }
+            SkipIfNotComputeShader();
 
             uint width = 512;
             uint height = 512;
@@ -804,7 +801,7 @@ namespace Veldrid.Tests
         [SkippableFact]
         public void ComputeGeneratedTexture()
         {
-            Skip.IfNot(GD.Features.ComputeShader);
+            SkipIfNotComputeShader();
 
             uint width = 4;
             uint height = 1;
@@ -872,7 +869,7 @@ namespace Veldrid.Tests
         [InlineData(6)]
         public void ComputeBindTextureWithArrayLayersAsWriteable(uint ArrayLayers)
         {
-            Skip.IfNot(GD.Features.ComputeShader);
+            SkipIfNotComputeShader();
 
             uint TexSize = 32;
             uint MipLevels = 1;
