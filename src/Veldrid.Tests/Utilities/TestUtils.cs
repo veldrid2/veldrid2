@@ -3,6 +3,7 @@ using System.Text;
 using Veldrid.Sdl2;
 using Veldrid.StartupUtilities;
 using Veldrid.Utilities;
+using Xunit;
 
 namespace Veldrid.Tests
 {
@@ -33,6 +34,11 @@ namespace Veldrid.Tests
                 Console.WriteLine($"SDL2 intializer threw exception: {ex}");
                 InitializedSdl2 = false;
             }
+        }
+
+        public static void SkipIfNotSdl()
+        {
+            Skip.IfNot(InitializedSdl2, $"Failed to initialize SDL2: {InitializationFailedMessage}");
         }
 
         public static GraphicsDevice CreateVulkanDevice()

@@ -7,7 +7,7 @@ namespace Veldrid.Tests
     public abstract class SwapchainTests<T> : GraphicsDeviceTestBase<T>
         where T : IGraphicsDeviceCreator
     {
-        [Theory]
+        [SkippableTheory]
         [InlineData(PixelFormat.R16_UNorm, false)]
         [InlineData(PixelFormat.R16_UNorm, true)]
         [InlineData(PixelFormat.R32_Float, false)]
@@ -16,24 +16,31 @@ namespace Veldrid.Tests
         [InlineData(null, true)]
         public void Ctor_SetsProperties(PixelFormat? depthFormat, bool syncToVerticalBlank)
         {
+            TestUtils.SkipIfNotSdl();
+
             Sdl2Window window = new("SwapchainTestWindow", 0, 0, 100, 100, SDL_WindowFlags.Hidden, false);
-            SwapchainSource source = VeldridStartup.GetSwapchainSource(window);
-            SwapchainDescription swapchainDesc = new(source, 100, 100, depthFormat, syncToVerticalBlank);
-            Swapchain swapchain = RF.CreateSwapchain(swapchainDesc);
-
-            if (depthFormat == null)
+            try
             {
-                Assert.Null(swapchain.Framebuffer.DepthTarget);
+                SwapchainSource source = VeldridStartup.GetSwapchainSource(window);
+                SwapchainDescription swapchainDesc = new(source, 100, 100, depthFormat, syncToVerticalBlank);
+                Swapchain swapchain = RF.CreateSwapchain(swapchainDesc);
+
+                if (depthFormat == null)
+                {
+                    Assert.Null(swapchain.Framebuffer.DepthTarget);
+                }
+                else
+                {
+                    Assert.NotNull(swapchain.Framebuffer.DepthTarget);
+                    Assert.Equal(depthFormat, swapchain.Framebuffer.DepthTarget.Value.Target.Format);
+                }
+
+                Assert.Equal(syncToVerticalBlank, swapchain.SyncToVerticalBlank);
             }
-            else
+            finally
             {
-                Assert.NotNull(swapchain.Framebuffer.DepthTarget);
-                Assert.Equal(depthFormat, swapchain.Framebuffer.DepthTarget.Value.Target.Format);
+                window.Close();
             }
-
-            Assert.Equal(syncToVerticalBlank, swapchain.SyncToVerticalBlank);
-
-            window.Close();
         }
     }
 
