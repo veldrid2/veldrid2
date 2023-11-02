@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -25,6 +24,7 @@ namespace Veldrid.OpenGL
         private Action<IntPtr> _makeCurrent;
         private Func<IntPtr> _getCurrentContext;
         private Action<IntPtr> _deleteContext;
+        private Action _clearCurrentContext;
         private Action _swapBuffers;
         private Action<bool> _setSyncToVBlank;
         private OpenGLSwapchainFramebuffer _swapchainFramebuffer;
@@ -103,6 +103,7 @@ namespace Veldrid.OpenGL
             _makeCurrent = platformInfo.MakeCurrent;
             _getCurrentContext = platformInfo.GetCurrentContext;
             _deleteContext = platformInfo.DeleteContext;
+            _clearCurrentContext = platformInfo.ClearCurrentContext;
             _swapBuffers = platformInfo.SwapBuffers;
             _setSyncToVBlank = platformInfo.SetSyncToVerticalBlank;
             LoadGetString(_glContext, platformInfo.GetProcAddress);
@@ -216,7 +217,7 @@ namespace Veldrid.OpenGL
             }
 
             _textureSamplerManager = new OpenGLTextureSamplerManager(_extensions);
-            _commandExecutor = new OpenGLCommandExecutor(this, platformInfo);
+            _commandExecutor = new OpenGLCommandExecutor(this, platformInfo.SetSwapchainFramebuffer);
 
             int maxColorTextureSamples;
             if (BackendType == GraphicsBackend.OpenGL)
@@ -285,7 +286,7 @@ namespace Veldrid.OpenGL
 
             _workItems = new ConcurrentQueue<ExecutionThreadWorkItem>();
             _workResetEvent = new AutoResetEvent(false);
-            platformInfo.ClearCurrentContext();
+            _clearCurrentContext();
             _executionThread = new ExecutionThread(this, _workItems, _workResetEvent, _makeCurrent, _glContext);
             _openglInfo = new BackendInfoOpenGL(this);
 
@@ -1246,9 +1247,9 @@ namespace Veldrid.OpenGL
                             ExecuteWorkItem(ref workItem);
                         }
                     }
-                    while (hasItem);
+                    while (hasItem && !_terminated);
 
-                    if (_gd.IsDebug)
+                    if (_gd.IsDebug && !_terminated)
                     {
                         try
                         {
@@ -1407,8 +1408,8 @@ namespace Veldrid.OpenGL
                             if (error != (uint)ErrorCode.InvalidOperation)
                             {
                                 _makeCurrent(_gd._glContext);
-
                                 _gd.FlushDisposables();
+                                _gd._clearCurrentContext();
                                 _gd._deleteContext(_gd._glContext);
                             }
                             _gd.StagingMemoryPool.Dispose();
