@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:forms="clr-namespace:Veldrid.Tests.Android.Forms"
+    x:Class="Veldrid.Tests.Android.Forms.Pages.AssemblyTestListPage"
+    Title="{Binding DisplayName}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <forms:RunStatusToColorConverter x:Key="RunStatusToColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <Grid Padding="0,5,5,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
+            <Entry Placeholder="filter" Text="{Binding SearchQuery, Mode=TwoWay}" />
+            <Picker 
+                Grid.Column="1"
+                Title="Filter by results" 
+                WidthRequest="130"
+                SelectedIndex="0"
+                SelectedIndexChanged="Picker_SelectedIndexChanged">
+                <Picker.Items>
+                    <x:String>All</x:String>
+                    <x:String>Passed</x:String>
+                    <x:String>Failed</x:String>
+                    <x:String>Skipped</x:String>
+                    <x:String>Not run</x:String>
+                </Picker.Items>
+            </Picker>
+        </Grid>
+        
+        <StackLayout Grid.Row="1">
+            <ListView ItemsSource="{Binding TestCases}" HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell
+                            Text="{Binding DisplayName}"
+                            Detail="{Binding Message}"
+                            DetailColor="{Binding RunStatus, Converter={StaticResource RunStatusToColorConverter}}"
+                            Tapped="Cell_OnTapped" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            
+            <Button Text="Run Filtered" Command="{Binding RunFilteredTestsCommand}" />
+            <Button Text="Run All" Command="{Binding RunAllTestsCommand}" />
+        </StackLayout>
+        
+        <ActivityIndicator Grid.Row="0" VerticalOptions="Start" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"  />
+    </Grid>
+
+</ContentPage>

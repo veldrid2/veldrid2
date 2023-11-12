@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:utils="clr-namespace:Veldrid.Tests.Android.Forms.Utilities"
+    x:Class="Veldrid.Tests.Android.Forms.Pages.CreditsPage" Title="Credits">
+
+    <StackLayout>
+        <Label Text="xUnit Device Runner" FontSize="20" FontAttributes="Bold"/>
+        
+        <TableView>
+            <TableRoot>
+                <TableSection Title="Credits">
+                    <TextCell Text="Copyright ©️ 2015" />
+                    <TextCell Text="Outercurve Foundation" />
+                    <TextCell Text="All rights reserved." />
+                    <TextCell Text="Author: Oren Novotny" />
+                </TableSection>
+                
+                <TableSection Title="Links">
+                    <TextCell Text="About xUnit" Command="{x:Static utils:Commands.LaunchUrl}"
+                              CommandParameter="http://xunit.github.io/" />
+                    
+                    <TextCell Text="About xUnit for Devices" Command="{x:Static utils:Commands.LaunchUrl}"
+                              CommandParameter="https://github.com/xunit/devices.xunit" />
+                    
+                    <TextCell Text="About Xamarin" Command="{x:Static utils:Commands.LaunchUrl}"
+                              CommandParameter="http://xamarin.com" />
+                    
+                    <TextCell Text="About Xamarin Forms" Command="{x:Static utils:Commands.LaunchUrl}"
+                              CommandParameter="http://xamarin.com/forms" />
+                </TableSection>
+            </TableRoot>
+        </TableView>
+    </StackLayout>
+
+</ContentPage>
