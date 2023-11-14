@@ -14,8 +14,8 @@ namespace Veldrid.OpenGL
         private readonly OpenGLTextureSamplerManager _textureSamplerManager;
         private readonly StagingMemoryPool _stagingMemoryPool;
         private readonly OpenGLExtensions _extensions;
-        private readonly OpenGLPlatformInfo _platformInfo;
         private readonly GraphicsDeviceFeatures _features;
+        private readonly Action? _setSwapchainFramebuffer;
 
         private Framebuffer? _fb;
         private bool _isSwapchainFB;
@@ -41,14 +41,14 @@ namespace Veldrid.OpenGL
         private bool _vertexLayoutFlushed;
         private bool _indexBufferBound;
 
-        public OpenGLCommandExecutor(OpenGLGraphicsDevice gd, OpenGLPlatformInfo platformInfo)
+        public OpenGLCommandExecutor(OpenGLGraphicsDevice gd, Action? setSwapchainFramebuffer)
         {
             _gd = gd;
             _backend = gd.BackendType;
             _extensions = gd.Extensions;
             _textureSamplerManager = gd.TextureSamplerManager;
             _stagingMemoryPool = gd.StagingMemoryPool;
-            _platformInfo = platformInfo;
+            _setSwapchainFramebuffer = setSwapchainFramebuffer;
             _features = gd.Features;
         }
 
@@ -496,9 +496,9 @@ namespace Veldrid.OpenGL
                     CheckLastError();
                 }
 
-                if (_platformInfo.SetSwapchainFramebuffer != null)
+                if (_setSwapchainFramebuffer != null)
                 {
-                    _platformInfo.SetSwapchainFramebuffer();
+                    _setSwapchainFramebuffer();
                 }
                 else
                 {

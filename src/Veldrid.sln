@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Veldrid.RenderDoc", "Veldri
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Veldrid.SPIRV", "..\modules\veldrid-spirv\src\Veldrid.SPIRV\Veldrid.SPIRV.csproj", "{F37654B2-E5BF-469B-889D-0037CADEBB12}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Veldrid.Tests.Android", "Veldrid.Tests.Android\Veldrid.Tests.Android.csproj", "{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -251,8 +253,8 @@ Global
 		{AFAEF056-CAD3-4C32-AEC3-AAC35A251295}.Release|x64.Build.0 = Release|Any CPU
 		{AFAEF056-CAD3-4C32-AEC3-AAC35A251295}.Release|x86.ActiveCfg = Release|Any CPU
 		{AFAEF056-CAD3-4C32-AEC3-AAC35A251295}.Release|x86.Build.0 = Release|Any CPU
-		{F37654B2-E5BF-469B-889D-0037CADEBB12}.Debug|Any CPU.ActiveCfg = Release|Any CPU
-		{F37654B2-E5BF-469B-889D-0037CADEBB12}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{F37654B2-E5BF-469B-889D-0037CADEBB12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F37654B2-E5BF-469B-889D-0037CADEBB12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F37654B2-E5BF-469B-889D-0037CADEBB12}.Debug|ARM.ActiveCfg = Debug|Any CPU
 		{F37654B2-E5BF-469B-889D-0037CADEBB12}.Debug|ARM.Build.0 = Debug|Any CPU
 		{F37654B2-E5BF-469B-889D-0037CADEBB12}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -267,6 +269,30 @@ Global
 		{F37654B2-E5BF-469B-889D-0037CADEBB12}.Release|x64.Build.0 = Release|Any CPU
 		{F37654B2-E5BF-469B-889D-0037CADEBB12}.Release|x86.ActiveCfg = Release|Any CPU
 		{F37654B2-E5BF-469B-889D-0037CADEBB12}.Release|x86.Build.0 = Release|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Debug|ARM.Build.0 = Debug|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Debug|ARM.Deploy.0 = Debug|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Debug|x64.Build.0 = Debug|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Debug|x64.Deploy.0 = Debug|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Debug|x86.Build.0 = Debug|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Debug|x86.Deploy.0 = Debug|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Release|ARM.ActiveCfg = Release|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Release|ARM.Build.0 = Release|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Release|ARM.Deploy.0 = Release|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Release|x64.ActiveCfg = Release|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Release|x64.Build.0 = Release|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Release|x64.Deploy.0 = Release|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Release|x86.ActiveCfg = Release|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Release|x86.Build.0 = Release|Any CPU
+		{03A34E8B-FBCC-41FE-A22B-FC32844B2D91}.Release|x86.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
