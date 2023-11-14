@@ -71,7 +71,7 @@ void main()
                 computeLayout,
                 16, 16, 1));
 
-            using DeviceBuffer fillValueBuffer = RF.CreateBuffer(new BufferDescription((uint)Marshal.SizeOf<FillValueStruct>(), BufferUsage.UniformBuffer));
+            using DeviceBuffer fillValueBuffer = RF.CreateBuffer(new BufferDescription((uint) Marshal.SizeOf<FillValueStruct>(), BufferUsage.UniformBuffer));
 
             // Create our output texture.
             using Texture computeTargetTexture = RF.CreateTexture(TextureDescription.Texture3D(
@@ -194,7 +194,7 @@ void main()
 
             uint width = 1024;
             uint height = 1024;
-            DeviceBuffer paramsBuffer = RF.CreateBuffer(new BufferDescription((uint)Unsafe.SizeOf<BasicComputeTestParams>(), BufferUsage.UniformBuffer));
+            DeviceBuffer paramsBuffer = RF.CreateBuffer(new BufferDescription((uint) Unsafe.SizeOf<BasicComputeTestParams>(), BufferUsage.UniformBuffer));
             DeviceBuffer sourceBuffer = RF.CreateBuffer(new BufferDescription(width * height * sizeof(float), BufferUsage.StructuredBufferReadWrite));
             DeviceBuffer destinationBuffer = RF.CreateBuffer(new BufferDescription(width * height * sizeof(float), BufferUsage.StructuredBufferReadWrite));
 
@@ -204,7 +204,7 @@ void main()
             for (int y = 0; y < height; y++)
                 for (int x = 0; x < width; x++)
                 {
-                    int index = y * (int)width + x;
+                    int index = y * (int) width + x;
                     sourceData[index] = index;
                 }
             GD.UpdateBuffer(sourceBuffer, 0, sourceData);
@@ -233,7 +233,7 @@ void main()
             for (int y = 0; y < height; y++)
                 for (int x = 0; x < width; x++)
                 {
-                    int index = y * (int)width + x;
+                    int index = y * (int) width + x;
                     Assert.Equal(2 * sourceData[index], sourceReadView[index]);
                     Assert.Equal(sourceData[index], destinationReadView[index]);
                 }
@@ -293,8 +293,8 @@ void main()
                     for (uint face = 0; face < 6; face++)
                     {
                         uint subresource = readback.CalculateSubresource(mip, face);
-                        int mipSize = (TexSize >> (int)mip);
-                        RgbaByte expectedColor = new((byte)faceColors[face].X, (byte)faceColors[face].Y, (byte)faceColors[face].Z, (byte)faceColors[face].Z);
+                        int mipSize = (TexSize >> (int) mip);
+                        RgbaByte expectedColor = new((byte) faceColors[face].X, (byte) faceColors[face].Y, (byte) faceColors[face].Z, (byte) faceColors[face].Z);
                         MappedResourceView<RgbaByte> readView = GD.Map<RgbaByte>(readback, MapMode.Read, subresource);
                         for (int y = 0; y < mipSize; y++)
                             for (int x = 0; x < mipSize; x++)
@@ -353,7 +353,7 @@ void main()
                     for (uint face = 0; face < 6; face++)
                     {
                         uint subresource = readback.CalculateSubresource(mip, face);
-                        uint mipSize = (uint)(TexSize / (1 << (int)mip));
+                        uint mipSize = (uint) (TexSize / (1 << (int) mip));
                         RgbaByte expectedColor = RgbaByte.Clear;
                         MappedResourceView<RgbaByte> readView = GD.Map<RgbaByte>(readback, MapMode.Read, subresource);
                         for (int y = 0; y < mipSize; y++)
@@ -370,7 +370,7 @@ void main()
             cl.Begin();
             cl.SetPipeline(computePipeline);
             cl.SetComputeResourceSet(0, computeSet);
-            cl.Dispatch((TexSize >> (int)BoundMipLevel) / 32, (TexSize >> (int)BoundMipLevel) / 32, 6);
+            cl.Dispatch((TexSize >> (int) BoundMipLevel) / 32, (TexSize >> (int) BoundMipLevel) / 32, 6);
             cl.End();
             GD.SubmitCommands(cl);
             GD.WaitForIdle();
@@ -382,8 +382,8 @@ void main()
                     for (uint face = 0; face < 6; face++)
                     {
                         uint subresource = readback.CalculateSubresource(mip, face);
-                        uint mipSize = (uint)(TexSize / (1 << (int)mip));
-                        RgbaByte expectedColor = mip == BoundMipLevel ? new RgbaByte((byte)faceColors[face].X, (byte)faceColors[face].Y, (byte)faceColors[face].Z, (byte)faceColors[face].Z) : RgbaByte.Clear;
+                        uint mipSize = (uint) (TexSize / (1 << (int) mip));
+                        RgbaByte expectedColor = mip == BoundMipLevel ? new RgbaByte((byte) faceColors[face].X, (byte) faceColors[face].Y, (byte) faceColors[face].Z, (byte) faceColors[face].Z) : RgbaByte.Clear;
                         MappedResourceView<RgbaByte> readView = GD.Map<RgbaByte>(readback, MapMode.Read, subresource);
                         for (int y = 0; y < mipSize; y++)
                             for (int x = 0; x < mipSize; x++)
@@ -471,7 +471,7 @@ void main()
                 layouts,
                 1, 1, 1));
 
-            uint[] srcData = Enumerable.Range(0, (int)copySrc.SizeInBytes / sizeof(uint)).Select(i => (uint)i).ToArray();
+            uint[] srcData = Enumerable.Range(0, (int) copySrc.SizeInBytes / sizeof(uint)).Select(i => (uint) i).ToArray();
             GD.UpdateBuffer(copySrc, 0, srcData);
 
             CommandList cl = RF.CreateCommandList();
@@ -505,7 +505,7 @@ void main()
             for (uint i = 0; i < valueCount; i++)
             {
                 uint srcIndex = totalSrcAlignment / sizeof(uint) + i;
-                uint expected = srcData[(int)srcIndex];
+                uint expected = srcData[(int) srcIndex];
 
                 uint dstIndex = totalDstAlignment / sizeof(uint) + i;
                 uint actual = readView[dstIndex];
@@ -525,6 +525,62 @@ void main()
                             {
                                 yield return new object[] { srcSetMultiple, srcBindingMultiple, dstSetMultiple, dstBindingMultiple, combinedLayout };
                             }
+        }
+
+        [SkippableFact]
+        public unsafe void FillIndirectBuffer()
+        {
+            SkipIfNotComputeShader();
+
+            ResourceLayout layout = RF.CreateResourceLayout(new ResourceLayoutDescription(
+                new ResourceLayoutElementDescription("Params", ResourceKind.StructuredBufferReadOnly, ShaderStages.Compute),
+                new ResourceLayoutElementDescription("Destination", ResourceKind.StructuredBufferReadWrite, ShaderStages.Compute)));
+
+            DeviceBuffer paramsBuffer = RF.CreateBuffer(new BufferDescription(
+                (uint) sizeof(IndirectDrawIndexedArguments),
+                BufferUsage.StructuredBufferReadOnly));
+
+            DeviceBuffer dstBuffer = RF.CreateBuffer(new BufferDescription(
+                (uint) sizeof(IndirectDrawIndexedArguments),
+                BufferUsage.IndirectBuffer | BufferUsage.StructuredBufferReadWrite));
+
+            IndirectDrawIndexedArguments paramsValue = new()
+            {
+                FirstIndex = 1,
+                FirstInstance = 2,
+                IndexCount = 3,
+                InstanceCount = 4,
+                VertexOffset = 5,
+            };
+            GD.UpdateBuffer(paramsBuffer, 0, paramsValue);
+
+            ResourceSet rs = RF.CreateResourceSet(new ResourceSetDescription(layout, paramsBuffer, dstBuffer));
+
+            Pipeline pipeline = RF.CreateComputePipeline(new ComputePipelineDescription(
+                TestShaders.LoadCompute(RF, "FillIndirectBufferComputeTest"),
+                layout,
+                1, 1, 1));
+
+            CommandList cl = RF.CreateCommandList();
+            cl.Begin();
+            cl.SetPipeline(pipeline);
+            cl.SetComputeResourceSet(0, rs);
+            cl.Dispatch(1, 1, 1);
+            cl.End();
+            GD.SubmitCommands(cl);
+            GD.WaitForIdle();
+
+            DeviceBuffer paramsReadback = GetReadback(paramsBuffer);
+            DeviceBuffer dstReadback = GetReadback(dstBuffer);
+
+            var paramsView = GD.Map<IndirectDrawIndexedArguments>(paramsReadback, MapMode.Read);
+            var dstView = GD.Map<IndirectDrawIndexedArguments>(dstReadback, MapMode.Read);
+
+            var paramsSpan = paramsView.AsSpan();
+            var dstSpan = dstView.AsSpan();
+            Assert.True(paramsSpan.SequenceEqual(dstSpan));
+
+            GD.Unmap(dstReadback);
         }
     }
 
