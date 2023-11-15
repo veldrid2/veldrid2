@@ -11,7 +11,7 @@ struct IndirectDrawIndexedArguments
     uint FirstInstance;
 };
 
-layout(std430, set = 0, binding = 0) buffer Params
+layout(std430, set = 0, binding = 0) readonly buffer Params
 {
     IndirectDrawIndexedArguments field_Params[1];
 };
