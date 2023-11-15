@@ -37,17 +37,17 @@ namespace Veldrid.D3D11
             {
                 if (desc.RawBuffer)
                 {
-                    bd.MiscFlags = ResourceOptionFlags.BufferAllowRawViews;
+                    bd.MiscFlags |= ResourceOptionFlags.BufferAllowRawViews;
                 }
                 else
                 {
-                    bd.MiscFlags = ResourceOptionFlags.BufferStructured;
+                    bd.MiscFlags |= ResourceOptionFlags.BufferStructured;
                     bd.StructureByteStride = (int)desc.StructureByteStride;
                 }
             }
             if ((desc.Usage & BufferUsage.IndirectBuffer) == BufferUsage.IndirectBuffer)
             {
-                bd.MiscFlags = ResourceOptionFlags.DrawIndirectArguments;
+                bd.MiscFlags |= ResourceOptionFlags.DrawIndirectArguments;
             }
 
             if ((desc.Usage & BufferUsage.DynamicReadWrite) != 0)
