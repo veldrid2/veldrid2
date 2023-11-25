@@ -240,8 +240,7 @@ namespace Veldrid
         protected void ValidateBuffer(in BufferDescription description)
         {
             BufferUsage usage = description.Usage;
-            if ((usage & BufferUsage.StructuredBufferReadOnly) == BufferUsage.StructuredBufferReadOnly
-                || (usage & BufferUsage.StructuredBufferReadWrite) == BufferUsage.StructuredBufferReadWrite)
+            if ((usage & (BufferUsage.StructuredBufferReadOnly | BufferUsage.StructuredBufferReadWrite)) != 0)
             {
                 if (!Features.StructuredBuffer)
                 {
@@ -253,17 +252,10 @@ namespace Veldrid
                     throw new VeldridException("Structured Buffer objects must have a non-zero StructureByteStride.");
                 }
 
-                if ((usage & BufferUsage.StructuredBufferReadWrite) != 0 && usage != BufferUsage.StructuredBufferReadWrite)
+                if ((usage & BufferUsage.UniformBuffer) != 0)
                 {
                     throw new VeldridException(
-                        $"{nameof(BufferUsage)}.{nameof(BufferUsage.StructuredBufferReadWrite)} cannot be combined with any other flag.");
-                }
-                else if ((usage & BufferUsage.VertexBuffer) != 0
-                    || (usage & BufferUsage.IndexBuffer) != 0
-                    || (usage & BufferUsage.IndirectBuffer) != 0)
-                {
-                    throw new VeldridException(
-                        $"Read-Only Structured Buffer objects cannot specify {nameof(BufferUsage)}.{nameof(BufferUsage.VertexBuffer)}, {nameof(BufferUsage)}.{nameof(BufferUsage.IndexBuffer)}, or {nameof(BufferUsage)}.{nameof(BufferUsage.IndirectBuffer)}.");
+                        $"Structured Buffer objects cannot specify {nameof(BufferUsage)}.{nameof(BufferUsage.UniformBuffer)}.");
                 }
             }
             else if (description.StructureByteStride != 0)

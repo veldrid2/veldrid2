@@ -517,21 +517,27 @@ void main()
 
         public static IEnumerable<object[]> FillBuffer_WithOffsetsData()
         {
-            foreach (uint srcSetMultiple in new[] { 0, 2, 10 })
-                foreach (uint srcBindingMultiple in new[] { 0, 2, 10 })
-                    foreach (uint dstSetMultiple in new[] { 0, 2, 10 })
-                        foreach (uint dstBindingMultiple in new[] { 0, 2, 10 })
+            foreach (uint srcSetMultiple in new uint[] { 0, 2, 10 })
+                foreach (uint srcBindingMultiple in new uint[] { 0, 2, 10 })
+                    foreach (uint dstSetMultiple in new uint[] { 0, 2, 10 })
+                        foreach (uint dstBindingMultiple in new uint[] { 0, 2, 10 })
                             foreach (bool combinedLayout in new[] { false, true })
                             {
-                                yield return new object[] { srcSetMultiple, srcBindingMultiple, dstSetMultiple, dstBindingMultiple, combinedLayout };
+                                yield return new object[]
+                                {
+                                    srcSetMultiple, srcBindingMultiple, dstSetMultiple, dstBindingMultiple, combinedLayout
+                                };
                             }
         }
 
-        [SkippableFact]
-        public unsafe void FillIndirectBuffer()
+        [SkippableTheory]
+        [InlineData(BufferUsage.IndirectBuffer)]
+        [InlineData(BufferUsage.IndexBuffer)]
+        [InlineData(BufferUsage.VertexBuffer)]
+        public unsafe void FillIndirectBuffer(BufferUsage dstUsage)
         {
             SkipIfNotComputeShader();
-
+            
             ResourceLayout layout = RF.CreateResourceLayout(new ResourceLayoutDescription(
                 new ResourceLayoutElementDescription("Params", ResourceKind.StructuredBufferReadOnly, ShaderStages.Compute),
                 new ResourceLayoutElementDescription("Destination", ResourceKind.StructuredBufferReadWrite, ShaderStages.Compute)));
@@ -542,7 +548,7 @@ void main()
 
             DeviceBuffer dstBuffer = RF.CreateBuffer(new BufferDescription(
                 (uint) sizeof(IndirectDrawIndexedArguments),
-                BufferUsage.IndirectBuffer | BufferUsage.StructuredBufferReadWrite));
+                dstUsage | BufferUsage.StructuredBufferReadWrite));
 
             IndirectDrawIndexedArguments paramsValue = new()
             {
