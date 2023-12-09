@@ -148,7 +148,7 @@ namespace Veldrid.Vulkan
                     && UniformBufferDynamicCount >= counts.UniformBufferDynamicCount
                     && SampledImageCount >= counts.SampledImageCount
                     && SamplerCount >= counts.SamplerCount
-                    && StorageBufferCount >= counts.SamplerCount
+                    && StorageBufferCount >= counts.StorageBufferCount
                     && StorageBufferDynamicCount >= counts.StorageBufferDynamicCount
                     && StorageImageCount >= counts.StorageImageCount)
                 {
