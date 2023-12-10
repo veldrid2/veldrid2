@@ -102,6 +102,7 @@ layout(set = 3, binding = 2) uniform ReflectionViewProj
 layout(location = 0) in vec3 Position;
 layout(location = 1) in vec3 Normal;
 layout(location = 2) in vec2 TexCoord;
+
 layout(location = 0) out vec3 fsin_Position_WorldSpace;
 layout(location = 1) out vec4 fsin_LightPosition1;
 layout(location = 2) out vec4 fsin_LightPosition2;
