@@ -23,7 +23,7 @@ jobs:
 
     - name: Exclude projects
       working-directory: ./src
-      run: |
+      run: >
         dotnet sln remove
         Veldrid.Tests.Android/Veldrid.Tests.Android.csproj
 
