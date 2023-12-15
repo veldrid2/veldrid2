@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 namespace Veldrid
 {
@@ -29,8 +31,13 @@ namespace Veldrid
         /// <param name="logicalDpi">The logical DPI of the swapchain panel.</param>
         /// <returns>A new SwapchainSource which can be used to create a <see cref="Swapchain"/> for the given UWP panel.
         /// </returns>
-        public static SwapchainSource CreateUwp(object swapChainPanel, float logicalDpi)
+        public static SwapchainSource CreateUwp(IntPtr swapChainPanel, float logicalDpi)
             => new UwpSwapchainSource(swapChainPanel, logicalDpi);
+
+        /// <inheritdoc cref="CreateUwp(IntPtr, float)"/>
+        [SupportedOSPlatform("windows")]
+        public static SwapchainSource CreateUwp(object swapChainPanel, float logicalDpi)
+            => new UwpSwapchainSource(Marshal.GetIUnknownForObject(swapChainPanel), logicalDpi);
 
         /// <summary>
         /// Creates a new SwapchainSource from the given Xlib information.
@@ -111,10 +118,10 @@ namespace Veldrid
 
     internal sealed class UwpSwapchainSource : SwapchainSource
     {
-        public object SwapChainPanelNative { get; }
+        public IntPtr SwapChainPanelNative { get; }
         public float LogicalDpi { get; }
 
-        public UwpSwapchainSource(object swapChainPanelNative, float logicalDpi)
+        public UwpSwapchainSource(IntPtr swapChainPanelNative, float logicalDpi)
         {
             SwapChainPanelNative = swapChainPanelNative;
             LogicalDpi = logicalDpi;

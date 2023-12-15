@@ -85,7 +85,7 @@ namespace Veldrid.D3D11
                     BufferCount = 2,
                     Windowed = true,
                     BufferDescription = new ModeDescription(
-                        (int)description.Width, (int)description.Height, _colorFormat),
+                        (int) description.Width, (int) description.Height, _colorFormat),
                     OutputWindow = win32Source.Hwnd,
                     SampleDescription = new SampleDescription(1, 0),
                     SwapEffect = SwapEffect.Discard,
@@ -106,8 +106,8 @@ namespace Veldrid.D3D11
                     AlphaMode = AlphaMode.Ignore,
                     BufferCount = 2,
                     Format = _colorFormat,
-                    Height = (int)(description.Height * _pixelScale),
-                    Width = (int)(description.Width * _pixelScale),
+                    Height = (int) (description.Height * _pixelScale),
+                    Width = (int) (description.Width * _pixelScale),
                     SampleDescription = new SampleDescription(1, 0),
                     SwapEffect = SwapEffect.FlipSequential,
                     BufferUsage = Usage.RenderTargetOutput,
@@ -123,14 +123,14 @@ namespace Veldrid.D3D11
 
                 ComObject co = new(uwpSource.SwapChainPanelNative);
 
-                ISwapChainPanelNative swapchainPanelNative = co.QueryInterfaceOrNull<ISwapChainPanelNative>();
+                ISwapChainPanelNative? swapchainPanelNative = co.QueryInterfaceOrNull<ISwapChainPanelNative>();
                 if (swapchainPanelNative != null)
                 {
                     swapchainPanelNative.SetSwapChain(_dxgiSwapChain);
                 }
                 else
                 {
-                    ISwapChainBackgroundPanelNative bgPanelNative = co.QueryInterfaceOrNull<ISwapChainBackgroundPanelNative>();
+                    ISwapChainBackgroundPanelNative? bgPanelNative = co.QueryInterfaceOrNull<ISwapChainBackgroundPanelNative>();
                     if (bgPanelNative != null)
                     {
                         bgPanelNative.SetSwapChain(_dxgiSwapChain);
@@ -138,7 +138,7 @@ namespace Veldrid.D3D11
                 }
             }
 
-            if(_dxgiSwapChain == null)
+            if (_dxgiSwapChain == null)
             {
                 throw new VeldridException("Failed to create DXGI swapchain.");
             }
@@ -171,11 +171,11 @@ namespace Veldrid.D3D11
                 _framebuffer.Dispose();
             }
 
-            uint actualWidth = (uint)(width * _pixelScale);
-            uint actualHeight = (uint)(height * _pixelScale);
+            uint actualWidth = (uint) (width * _pixelScale);
+            uint actualHeight = (uint) (height * _pixelScale);
             if (resizeBuffers)
             {
-                _dxgiSwapChain.ResizeBuffers(2, (int)actualWidth, (int)actualHeight, _colorFormat, SwapChainFlags.None).CheckError();
+                _dxgiSwapChain.ResizeBuffers(2, (int) actualWidth, (int) actualHeight, _colorFormat, SwapChainFlags.None).CheckError();
             }
 
             // Get the backbuffer from the swapchain
