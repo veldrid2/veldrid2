@@ -1096,19 +1096,28 @@ namespace Veldrid.Vulkan
             _descriptorPoolManager.DestroyAll();
             vkDestroyCommandPool(_device, _graphicsCommandPool, null);
 
-            foreach (VkTexture tex in _availableStagingTextures)
+            lock (_availableStagingTextures)
             {
-                tex.Dispose();
+                foreach (VkTexture tex in _availableStagingTextures)
+                {
+                    tex.Dispose();
+                }
             }
 
-            foreach (VkBuffer buffer in _availableStagingBuffers)
+            lock (_availableStagingBuffers)
             {
-                buffer.Dispose();
+                foreach (VkBuffer buffer in _availableStagingBuffers)
+                {
+                    buffer.Dispose();
+                }
             }
 
-            while (_sharedCommandLists.TryPop(out VkCommandList? cl))
+            lock (_sharedCommandLists)
             {
-                cl.Dispose();
+                while (_sharedCommandLists.TryPop(out VkCommandList? cl))
+                {
+                    cl.Dispose();
+                }
             }
 
             _memoryManager.Dispose();
@@ -1259,14 +1268,21 @@ namespace Veldrid.Vulkan
 
         internal VkCommandList GetAndBeginCommandList()
         {
-            if (!_sharedCommandLists.TryPop(out VkCommandList? sharedList))
+            VkCommandList? sharedList;
+            lock (_sharedCommandLists)
+            {
+                _sharedCommandLists.TryPop(out sharedList);
+            }
+
+            if (sharedList == null)
             {
                 CommandListDescription desc = new()
                 {
                     Transient = true
                 };
-                sharedList = (VkCommandList)ResourceFactory.CreateCommandList(desc);
+                sharedList = (VkCommandList) ResourceFactory.CreateCommandList(desc);
             }
+
             sharedList.Begin();
             sharedList.Name = "Shared CommandList (GraphicsDevice)";
             return sharedList;
