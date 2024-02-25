@@ -49,6 +49,7 @@ namespace Veldrid.Vulkan
         public VkQueue PresentQueue => _presentQueue;
         public uint PresentQueueIndex => _presentQueueIndex;
         public ResourceRefCount RefCount { get; }
+        public object PresentLock { get; }
 
         public VkSwapchain(VkGraphicsDevice gd, in SwapchainDescription description) : this(gd, description, default)
         {
@@ -97,6 +98,7 @@ namespace Veldrid.Vulkan
             _imageAvailableFence = imageAvailableFence;
 
             RefCount = new ResourceRefCount(this);
+            PresentLock = new object();
         }
 
         public override void Resize(uint width, uint height)
