@@ -268,5 +268,18 @@
         /// This is an sRGB format.
         /// </summary>
         BC7_UNorm_SRgb,
+        /// <summary>
+        /// A depth-stencil format where the depth is stored in a 16-bit unsigned normalized integer, and the stencil is stored
+        /// in an 8-bit unsigned integer.
+        /// </summary>
+        D16_UNorm_S8_UInt,
+        /// <summary>
+        /// A depth format where the depth is stored in a 16-bit unsigned normalized integer.
+        /// </summary>
+        D16_UNorm,
+        /// <summary>
+        /// A depth format where the depth is stored in a 32-bit signed floating-point value.
+        /// </summary>
+        D32_Float,
     }
 }

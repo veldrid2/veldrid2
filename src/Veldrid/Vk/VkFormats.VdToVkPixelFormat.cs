@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using TerraFX.Interop.Vulkan;
 using static TerraFX.Interop.Vulkan.VkFormat;
 
@@ -134,9 +135,20 @@ namespace Veldrid.Vulkan
                 case PixelFormat.ETC2_R8_G8_B8_A8_UNorm:
                     return VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK;
 
+                case PixelFormat.D16_UNorm:
+                    Debug.Assert(toDepthFormat);
+                    return VK_FORMAT_D16_UNORM;
+                case PixelFormat.D16_UNorm_S8_UInt:
+                    Debug.Assert(toDepthFormat);
+                    return VK_FORMAT_D16_UNORM_S8_UINT;
+                case PixelFormat.D32_Float:
+                    Debug.Assert(toDepthFormat);
+                    return VK_FORMAT_D32_SFLOAT;
                 case PixelFormat.D32_Float_S8_UInt:
+                    Debug.Assert(toDepthFormat);
                     return VK_FORMAT_D32_SFLOAT_S8_UINT;
                 case PixelFormat.D24_UNorm_S8_UInt:
+                    Debug.Assert(toDepthFormat);
                     return VK_FORMAT_D24_UNORM_S8_UINT;
 
                 case PixelFormat.R10_G10_B10_A2_UNorm:

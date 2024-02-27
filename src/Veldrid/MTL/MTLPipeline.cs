@@ -132,7 +132,7 @@ namespace Veldrid.MTL
                 PixelFormat depthFormat = outputs.DepthAttachment.Value.Format;
                 MTLPixelFormat mtlDepthFormat = MTLFormats.VdToMTLPixelFormat(depthFormat, true);
                 mtlDesc.depthAttachmentPixelFormat = mtlDepthFormat;
-                if ((FormatHelpers.IsStencilFormat(depthFormat)))
+                if (FormatHelpers.IsStencilFormat(depthFormat))
                 {
                     HasStencil = true;
                     mtlDesc.stencilAttachmentPixelFormat = mtlDepthFormat;

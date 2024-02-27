@@ -1248,7 +1248,7 @@ namespace Veldrid.Tests
         public void WriteFragmentDepth()
         {
             Texture depthTarget = RF.CreateTexture(
-                TextureDescription.Texture2D(64, 64, 1, 1, PixelFormat.R32_Float, TextureUsage.DepthStencil | TextureUsage.Sampled));
+                TextureDescription.Texture2D(64, 64, 1, 1, PixelFormat.D32_Float, TextureUsage.DepthStencil | TextureUsage.Sampled));
             Framebuffer framebuffer = RF.CreateFramebuffer(new FramebufferDescription(depthTarget));
 
             string setName = "FullScreenWriteDepth";

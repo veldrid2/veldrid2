@@ -30,7 +30,7 @@ namespace Veldrid.OpenGL
             };
         }
 
-        internal static PixelInternalFormat VdToGLPixelInternalFormat(PixelFormat format)
+        internal static PixelInternalFormat VdToGLPixelInternalFormat(PixelFormat format, bool depthFormat)
         {
             return format switch
             {
@@ -38,14 +38,14 @@ namespace Veldrid.OpenGL
                 PixelFormat.R8_SNorm => PixelInternalFormat.R8Snorm,
                 PixelFormat.R8_UInt => PixelInternalFormat.R8ui,
                 PixelFormat.R8_SInt => PixelInternalFormat.R8i,
-                PixelFormat.R16_UNorm => PixelInternalFormat.R16,
+                PixelFormat.R16_UNorm => depthFormat ? PixelInternalFormat.DepthComponent16 : PixelInternalFormat.R16,
                 PixelFormat.R16_SNorm => PixelInternalFormat.R16Snorm,
                 PixelFormat.R16_UInt => PixelInternalFormat.R16ui,
                 PixelFormat.R16_SInt => PixelInternalFormat.R16i,
                 PixelFormat.R16_Float => PixelInternalFormat.R16f,
                 PixelFormat.R32_UInt => PixelInternalFormat.R32ui,
                 PixelFormat.R32_SInt => PixelInternalFormat.R32i,
-                PixelFormat.R32_Float => PixelInternalFormat.R32f,
+                PixelFormat.R32_Float => depthFormat ? PixelInternalFormat.DepthComponent32f : PixelInternalFormat.R32f,
                 PixelFormat.R8_G8_UNorm => PixelInternalFormat.Rg8,
                 PixelFormat.R8_G8_SNorm => PixelInternalFormat.Rg8Snorm,
                 PixelFormat.R8_G8_UInt => PixelInternalFormat.Rg8ui,
@@ -90,6 +90,8 @@ namespace Veldrid.OpenGL
                 PixelFormat.ETC2_R8_G8_B8_UNorm => PixelInternalFormat.CompressedRgb8Etc2,
                 PixelFormat.ETC2_R8_G8_B8_A1_UNorm => PixelInternalFormat.CompressedRgb8PunchthroughAlpha1Etc2,
                 PixelFormat.ETC2_R8_G8_B8_A8_UNorm => PixelInternalFormat.CompressedRgba8Etc2Eac,
+                PixelFormat.D16_UNorm => PixelInternalFormat.DepthComponent16,
+                PixelFormat.D32_Float => PixelInternalFormat.DepthComponent32f,
                 PixelFormat.D32_Float_S8_UInt => PixelInternalFormat.Depth32fStencil8,
                 PixelFormat.D24_UNorm_S8_UInt => PixelInternalFormat.Depth24Stencil8,
                 PixelFormat.R10_G10_B10_A2_UNorm => PixelInternalFormat.Rgb10A2,
@@ -111,8 +113,7 @@ namespace Veldrid.OpenGL
             };
         }
 
-        [SuppressMessage("Style", "IDE0066:Convert switch statement to expression", Justification = "<Pending>")]
-        internal static GLPixelFormat VdToGLPixelFormat(PixelFormat format)
+        internal static GLPixelFormat VdToGLPixelFormat(PixelFormat format, bool depthFormat)
         {
             switch (format)
             {
@@ -121,7 +122,7 @@ namespace Veldrid.OpenGL
                 case PixelFormat.R16_Float:
                 case PixelFormat.R32_Float:
                 case PixelFormat.BC4_UNorm:
-                    return GLPixelFormat.Red;
+                    return depthFormat ? GLPixelFormat.DepthComponent : GLPixelFormat.Red;
 
                 case PixelFormat.R8_SNorm:
                 case PixelFormat.R8_UInt:
@@ -189,9 +190,20 @@ namespace Veldrid.OpenGL
                 case PixelFormat.ETC2_R8_G8_B8_A8_UNorm:
                     return GLPixelFormat.Rgba;
 
+                case PixelFormat.D16_UNorm:
+                    Debug.Assert(depthFormat);
+                    return GLPixelFormat.DepthComponent;
+                case PixelFormat.D16_UNorm_S8_UInt:
+                    Debug.Assert(depthFormat);
+                    throw new VeldridException($"{nameof(PixelFormat.D16_UNorm_S8_UInt)} is not supported on OpenGL.");
+                case PixelFormat.D32_Float:
+                    Debug.Assert(depthFormat);
+                    return GLPixelFormat.DepthComponent;
                 case PixelFormat.D24_UNorm_S8_UInt:
+                    Debug.Assert(depthFormat);
                     return GLPixelFormat.DepthStencil;
                 case PixelFormat.D32_Float_S8_UInt:
+                    Debug.Assert(depthFormat);
                     return GLPixelFormat.DepthStencil;
 
                 case PixelFormat.R10_G10_B10_A2_UNorm:
@@ -230,6 +242,7 @@ namespace Veldrid.OpenGL
                 case PixelFormat.BC5_SNorm:
                     return GLPixelType.Byte;
                 case PixelFormat.R16_UNorm:
+                case PixelFormat.D16_UNorm:
                 case PixelFormat.R16_UInt:
                 case PixelFormat.R16_G16_UNorm:
                 case PixelFormat.R16_G16_UInt:
@@ -256,6 +269,7 @@ namespace Veldrid.OpenGL
                 case PixelFormat.R16_G16_B16_A16_Float:
                     return GLPixelType.HalfFloat;
                 case PixelFormat.R32_Float:
+                case PixelFormat.D32_Float:
                 case PixelFormat.R32_G32_Float:
                 case PixelFormat.R32_G32_B32_A32_Float:
                     return GLPixelType.Float;
@@ -277,6 +291,8 @@ namespace Veldrid.OpenGL
                 case PixelFormat.ETC2_R8_G8_B8_A8_UNorm:
                     return GLPixelType.UnsignedByte; // ?
 
+                case PixelFormat.D16_UNorm_S8_UInt:
+                    throw new VeldridException($"{nameof(PixelFormat.D16_UNorm_S8_UInt)} is not supported on OpenGL.");
                 case PixelFormat.D32_Float_S8_UInt:
                     return GLPixelType.Float32UnsignedInt248Rev;
                 case PixelFormat.D24_UNorm_S8_UInt:
@@ -420,6 +436,15 @@ namespace Veldrid.OpenGL
                 case PixelFormat.ETC2_R8_G8_B8_A8_UNorm:
                     return (SizedInternalFormat)PixelInternalFormat.CompressedRgba8Etc2Eac;
 
+                case PixelFormat.D16_UNorm:
+                    Debug.Assert(depthFormat);
+                    return (SizedInternalFormat)PixelInternalFormat.DepthComponent16;
+                case PixelFormat.D16_UNorm_S8_UInt:
+                    Debug.Assert(depthFormat);
+                    throw new VeldridException($"{nameof(PixelFormat.D16_UNorm_S8_UInt)} is not supported on OpenGL.");
+                case PixelFormat.D32_Float:
+                    Debug.Assert(depthFormat);
+                    return (SizedInternalFormat)PixelInternalFormat.DepthComponent32f;
                 case PixelFormat.D32_Float_S8_UInt:
                     Debug.Assert(depthFormat);
                     return (SizedInternalFormat)PixelInternalFormat.Depth32fStencil8;
