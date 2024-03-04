@@ -265,13 +265,13 @@ namespace Veldrid.Vulkan
                 imageUsage = VkImageUsageFlags.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VkImageUsageFlags.VK_IMAGE_USAGE_TRANSFER_DST_BIT
             };
 
-            FixedArray2<uint> queueFamilyIndices = new(_gd.GraphicsQueueIndex, _gd.PresentQueueIndex);
+            uint* queueFamilyIndices = stackalloc uint[] { _gd.GraphicsQueueIndex, _gd.PresentQueueIndex };
 
             if (_gd.GraphicsQueueIndex != _gd.PresentQueueIndex)
             {
                 swapchainCI.imageSharingMode = VkSharingMode.VK_SHARING_MODE_CONCURRENT;
                 swapchainCI.queueFamilyIndexCount = 2;
-                swapchainCI.pQueueFamilyIndices = &queueFamilyIndices.First;
+                swapchainCI.pQueueFamilyIndices = queueFamilyIndices;
             }
             else
             {
