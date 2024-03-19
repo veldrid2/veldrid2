@@ -180,9 +180,7 @@ namespace Veldrid.VirtualReality.OpenVR
                 vkTexData.m_nQueueFamilyIndex = vkInfo.GraphicsQueueFamilyIndex;
                 vkTexData.m_nWidth = colorTex.Width;
                 vkTexData.m_nHeight = colorTex.Height;
-                vkTexData.m_nFormat = (uint)VkFormats.VdToVkPixelFormat(
-                    colorTex.Format,
-                    (colorTex.Usage & TextureUsage.DepthStencil) != 0);
+                vkTexData.m_nFormat = (uint)vkInfo.GetVkFormat(colorTex);
                 vkTexData.m_nSampleCount = GetSampleCount(colorTex.SampleCount);
 
                 texT.eColorSpace = EColorSpace.Gamma;

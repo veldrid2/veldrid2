@@ -1,9 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <Compile Include="..\Veldrid\Vk\VkFormats.VdToVkPixelFormat.cs" Link="VkFormats.VdToVkPixelFormat.cs" />
-  </ItemGroup>
-
   <ItemGroup Condition="'$(UseStableVersions)' == 'true'">
     <PackageReference Include="Veldrid.SPIRV" Version="1.0.14" />
     <PackageReference Include="Veldrid" Version="4.5.0" />

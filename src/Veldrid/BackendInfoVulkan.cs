@@ -117,12 +117,18 @@ namespace Veldrid
         }
 
         /// <inheritdoc cref="TransitionImageLayout(CommandList, Texture, uint)"/>
-        [Obsolete("Prefer using the overload taking a CommandList.")]
+        [Obsolete("Prefer using the overload taking a CommandList for proper synchronization.")]
         public void TransitionImageLayout(Texture texture, uint layout)
         {
             VkCommandList cl = _gd.GetAndBeginCommandList();
             cl.TransitionImageLayout(Util.AssertSubtype<Texture, VkTexture>(texture), (VkImageLayout)layout);
             _gd.EndAndSubmitCommands(cl);
+        }
+
+        public VkFormat GetVkFormat(Texture texture)
+        {
+            VkTexture vkTexture = Util.AssertSubtype<Texture, VkTexture>(texture);
+            return vkTexture.VkFormat;
         }
 
         private unsafe ReadOnlyCollection<ExtensionProperties> EnumerateDeviceExtensions()
