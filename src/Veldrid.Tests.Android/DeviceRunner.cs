@@ -17,7 +17,7 @@ namespace Veldrid.Tests.Android
 {
     public class DeviceRunner : ITestListener
     {
-        readonly SynchronizationContext context = SynchronizationContext.Current;
+        readonly SynchronizationContext? context = SynchronizationContext.Current;
 
         readonly AsyncLock _executionLock = new();
         readonly Navigator _navigation;

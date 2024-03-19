@@ -42,7 +42,7 @@ namespace Veldrid.OpenGLBinding
             return Value.Equals(other.Value);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is GLboolean b && Equals(b);
         }

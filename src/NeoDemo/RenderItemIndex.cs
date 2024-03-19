@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace Veldrid.NeoDemo
 {
-    public struct RenderItemIndex : IComparable<RenderItemIndex>, IComparable
+    public struct RenderItemIndex : IComparable<RenderItemIndex>
     {
         public RenderOrderKey Key { get; }
         public int ItemIndex { get; }
@@ -12,11 +11,6 @@ namespace Veldrid.NeoDemo
         {
             Key = key;
             ItemIndex = itemIndex;
-        }
-
-        public int CompareTo(object obj)
-        {
-            return ((IComparable)Key).CompareTo(obj);
         }
 
         public int CompareTo(RenderItemIndex other)

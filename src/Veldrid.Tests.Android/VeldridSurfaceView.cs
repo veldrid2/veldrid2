@@ -12,8 +12,8 @@ namespace Veldrid.Tests.Android
 
         protected GraphicsDeviceOptions DeviceOptions { get; }
 
-        public GraphicsDevice GraphicsDevice { get; protected set; }
-        public Swapchain MainSwapchain { get; protected set; }
+        public GraphicsDevice? GraphicsDevice { get; protected set; }
+        public Swapchain? MainSwapchain { get; protected set; }
 
         public event Action? OnDeviceCreated;
         public event Action? OnDeviceDestroyed;
@@ -29,7 +29,7 @@ namespace Veldrid.Tests.Android
 
             _backend = backend;
             DeviceOptions = deviceOptions;
-            Holder.AddCallback(this);
+            Holder!.AddCallback(this);
         }
 
         public void SurfaceCreated(ISurfaceHolder holder)
@@ -71,12 +71,12 @@ namespace Veldrid.Tests.Android
                     GraphicsDevice = GraphicsDevice.CreateOpenGLES(DeviceOptions, sd);
                 }
 
-                MainSwapchain = GraphicsDevice.MainSwapchain!;
+                MainSwapchain = GraphicsDevice.MainSwapchain;
                 OnDeviceCreated?.Invoke();
             }
             else
             {
-                MainSwapchain.Resize(sd.Width, sd.Height);
+                MainSwapchain?.Resize(sd.Width, sd.Height);
             }
 
             OnSwapchainChanged?.Invoke();

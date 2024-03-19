@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Veldrid.NeoDemo
 {
-    public struct RenderOrderKey : IComparable<RenderOrderKey>, IComparable
+    public struct RenderOrderKey : IComparable<RenderOrderKey>
     {
         public readonly ulong Value;
 
@@ -29,11 +29,6 @@ namespace Veldrid.NeoDemo
         public int CompareTo(RenderOrderKey other)
         {
             return Value.CompareTo(other.Value);
-        }
-
-        int IComparable.CompareTo(object obj)
-        {
-            return Value.CompareTo(obj);
         }
     }
 }

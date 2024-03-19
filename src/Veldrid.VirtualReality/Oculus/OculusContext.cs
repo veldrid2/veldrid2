@@ -100,7 +100,7 @@ namespace Veldrid.VirtualReality.Oculus
         public override void Initialize(GraphicsDevice gd)
         {
             _gd = gd;
-            if (gd.GetVulkanInfo(out BackendInfoVulkan vkInfo))
+            if (gd.GetVulkanInfo(out BackendInfoVulkan? vkInfo))
             {
                 IntPtr physicalDevice;
                 ovrResult result = ovr_GetSessionPhysicalDeviceVk(_session, _luid, vkInfo.Instance, &physicalDevice);
@@ -147,7 +147,7 @@ namespace Veldrid.VirtualReality.Oculus
 
         public override void SubmitFrame()
         {
-            if (_gd.GetOpenGLInfo(out BackendInfoOpenGL glInfo))
+            if (_gd.GetOpenGLInfo(out BackendInfoOpenGL? glInfo))
             {
                 glInfo.FlushAndFinish();
             }
@@ -324,7 +324,7 @@ namespace Veldrid.VirtualReality.Oculus
             _session = session;
 
             Texture[] colorTextures;
-            Texture[] depthTextures = null;
+            Texture[]? depthTextures = null;
 
             ovrTextureSwapChainDesc colorDesc = new();
             colorDesc.Type = ovrTextureType.Texture2D;
@@ -445,7 +445,7 @@ namespace Veldrid.VirtualReality.Oculus
             ovrTextureSwapChainDesc desc)
         {
             ovrTextureSwapChain otsc = default;
-            Texture[] textures = default;
+            Texture[]? textures = default;
 
             ovrResult result = ovrResult.Success;
             gd.GetOpenGLInfo().ExecuteOnGLThread(() =>

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
 
 namespace Veldrid
@@ -36,13 +36,16 @@ namespace Veldrid
         API_Version_1_3_0 = 10300,    // RENDERDOC_API_1_3_0 = 1 03 00
         API_Version_1_4_0 = 10400,    // RENDERDOC_API_1_4_0 = 1 04 00
         API_Version_1_4_1 = 10401,    // RENDERDOC_API_1_4_1 = 1 04 01
+        API_Version_1_4_2 = 10402,    // RENDERDOC_API_1_4_2 = 1 04 02
+        API_Version_1_5_0 = 10500,    // RENDERDOC_API_1_5_0 = 1 05 00
+        API_Version_1_6_0 = 10600,    // RENDERDOC_API_1_6_0 = 1 06 00
     }
 
     /// <summary>
     /// RenderDoc can return a higher version than requested if it's backwards compatible,
     /// this function returns the actual version returned. If a parameter is NULL, it will be
     /// ignored and the others will be filled out.
-    /// /// </summary>
+    /// </summary>
     internal unsafe delegate void pRENDERDOC_GetAPIVersion(int* major, int* minor, int* patch);
 
     internal enum RENDERDOC_CaptureOption
@@ -71,7 +74,9 @@ namespace Veldrid
         //     the capture, which is matched up with events on replay
         // 0 - no API debugging is forcibly enabled
         APIValidation = 2,
+
 #pragma warning disable CA1069 // Enums values should not be duplicated
+        [EditorBrowsable(EditorBrowsableState.Never)]
         DebugDeviceMode = 2,    // deprecated name of this enum
 #pragma warning restore CA1069 // Enums values should not be duplicated
 
@@ -83,15 +88,16 @@ namespace Veldrid
         // 0 - no callstacks are captured
         CaptureCallstacks = 3,
 
-        // When capturing CPU callstacks, only capture them from drawcalls.
+        // When capturing CPU callstacks, only capture them from actions.
         // This option does nothing without the above option being enabled
         //
         // Default - disabled
         //
-        // 1 - Only captures callstacks for drawcall type API events.
+        // 1 - Only captures callstacks for actions.
         //     Ignored if CaptureCallstacks is disabled
         // 0 - Callstacks, if enabled, are captured for every event.
         CaptureCallstacksOnlyDraws = 4,
+        CaptureCallstacksOnlyActions = 4,
 
         // Specify a delay in seconds to wait for a debugger to attach, after
         // creating or injecting into a process, before continuing to allow it to run.
@@ -189,6 +195,19 @@ namespace Veldrid
         // necessary as directed by a RenderDoc developer.
         AllowUnsupportedVendorExtensions = 12,
 
+        // Define a soft memory limit which some APIs may aim to keep overhead under where
+        // possible. Anything above this limit will where possible be saved directly to disk during
+        // capture.
+        // This will cause increased disk space use (which may cause a capture to fail if disk space is
+        // exhausted) as well as slower capture times.
+        //
+        // Not all memory allocations may be deferred like this so it is not a guarantee of a memory
+        // limit.
+        //
+        // Units are in MBs, suggested values would range from 200MB to 1000MB.
+        //
+        // Default - 0 Megabytes
+        SoftMemoryLimit = 13,
     }
 
     // Sets an option that controls how RenderDoc behaves on capture.

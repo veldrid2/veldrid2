@@ -503,7 +503,7 @@ namespace Veldrid.NeoDemo
             RenderQueue renderQueue,
             List<CullRenderable> cullRenderableList,
             List<Renderable> renderableList,
-            Comparer<RenderItemIndex> comparer,
+            Comparer<RenderItemIndex>? comparer,
             bool threaded)
         {
             renderQueue.Clear();

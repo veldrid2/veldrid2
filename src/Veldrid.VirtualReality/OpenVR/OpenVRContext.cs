@@ -36,18 +36,15 @@ namespace Veldrid.VirtualReality.OpenVR
         {
             _options = options;
             EVRInitError initError = EVRInitError.None;
-            _vrSystem = OVR.Init(ref initError, EVRApplicationType.VRApplication_Scene);
-            if (initError != EVRInitError.None)
+            CVRSystem? vrSystem = OVR.Init(ref initError, EVRApplicationType.VRApplication_Scene);
+            if (initError != EVRInitError.None || vrSystem == null)
             {
                 throw new VeldridException($"Failed to initialize OpenVR: {OVR.GetStringForHmdError(initError)}");
             }
+            _vrSystem = vrSystem;
 
-            _compositor = OVR.Compositor;
-            if (_compositor == null)
-            {
-                throw new VeldridException("Failed to access the OpenVR Compositor.");
-            }
-
+            _compositor = OVR.Compositor ?? throw new VeldridException("Failed to access the OpenVR Compositor.");
+            
             _mirrorTexture = new OpenVRMirrorTexture(this);
         }
 
@@ -137,7 +134,7 @@ namespace Veldrid.VirtualReality.OpenVR
 
         public override void SubmitFrame()
         {
-            if (_gd.GetOpenGLInfo(out BackendInfoOpenGL glInfo))
+            if (_gd.GetOpenGLInfo(out BackendInfoOpenGL? glInfo))
             {
                 glInfo.FlushAndFinish();
             }
@@ -155,19 +152,19 @@ namespace Veldrid.VirtualReality.OpenVR
         {
             Texture_t texT;
 
-            if (_gd.GetD3D11Info(out BackendInfoD3D11 d3dInfo))
+            if (_gd.GetD3D11Info(out BackendInfoD3D11? d3dInfo))
             {
                 texT.eColorSpace = EColorSpace.Gamma;
                 texT.eType = ETextureType.DirectX;
                 texT.handle = d3dInfo.GetTexturePointer(colorTex);
             }
-            else if (_gd.GetOpenGLInfo(out BackendInfoOpenGL openglInfo))
+            else if (_gd.GetOpenGLInfo(out BackendInfoOpenGL? openglInfo))
             {
                 texT.eColorSpace = EColorSpace.Gamma;
                 texT.eType = ETextureType.OpenGL;
                 texT.handle = (IntPtr)openglInfo.GetTextureName(colorTex);
             }
-            else if (_gd.GetVulkanInfo(out BackendInfoVulkan vkInfo))
+            else if (_gd.GetVulkanInfo(out BackendInfoVulkan? vkInfo))
             {
                 vkInfo.TransitionImageLayout(colorTex, (uint)VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
 
@@ -202,7 +199,7 @@ namespace Veldrid.VirtualReality.OpenVR
             boundsT.vMax = 1;
 
             EVRCompositorError compositorError = EVRCompositorError.None;
-            if (_gd.GetOpenGLInfo(out BackendInfoOpenGL glInfo))
+            if (_gd.GetOpenGLInfo(out BackendInfoOpenGL? glInfo))
             {
                 glInfo.ExecuteOnGLThread(() =>
                 {

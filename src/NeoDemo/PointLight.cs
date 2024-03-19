@@ -1,9 +1,9 @@
 ﻿using System.Numerics;
-
-#pragma warning disable IDE0051 // Remove unused private members
+using System.Runtime.InteropServices;
 
 namespace Veldrid.NeoDemo
 {
+    [StructLayout(LayoutKind.Sequential)]
     public struct PointLightInfo
     {
         public Vector3 Position;
@@ -16,6 +16,7 @@ namespace Veldrid.NeoDemo
         private float _padding4;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
     public struct PointLightsInfo
     {
         public PointLightInfo[] PointLights;
@@ -36,6 +37,7 @@ namespace Veldrid.NeoDemo
             };
         }
 
+        [StructLayout(LayoutKind.Sequential)]
         public struct Blittable
         {
             public PointLightInfo PointLights0;

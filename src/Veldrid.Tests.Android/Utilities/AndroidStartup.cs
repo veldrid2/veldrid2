@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using Android.Views;
-using Android.Widget;
 
 namespace Veldrid.Tests.Android.Utilities
 {
@@ -12,8 +11,8 @@ namespace Veldrid.Tests.Android.Utilities
             int height,
             GraphicsDeviceOptions options,
             GraphicsBackend backend,
-            out IDisposable window,
-            out GraphicsDevice gd)
+            out IDisposable? window,
+            out GraphicsDevice? gd)
         {
             MainActivity activity = MainActivity.Current;
 

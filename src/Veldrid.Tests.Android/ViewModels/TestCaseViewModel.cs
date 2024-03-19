@@ -28,14 +28,16 @@ namespace Veldrid.Tests.Android.ViewModels
             _runner = runner;
 
             Assembly = assembly ?? throw new ArgumentNullException(nameof(assembly));
-            TestCase = testCase ?? throw new ArgumentNullException(nameof(testCase));
+            this.testCase = testCase ?? throw new ArgumentNullException(nameof(testCase));
 
-            Result = TestState.NotRun;
-            RunStatus = RunStatus.NotRun;
-            Message = "🔷 not run";
+            result = TestState.NotRun;
+            runStatus = RunStatus.NotRun;
+            stackTrace = "";
+            message = "🔷 not run";
+            output = "";
 
             // Create an initial result representing not run
-            TestResult = new TestResultViewModel(this, null);
+            testResult = new TestResultViewModel(this, null);
         }
 
         public Assembly Assembly { get; }
@@ -81,7 +83,7 @@ namespace Veldrid.Tests.Android.ViewModels
             {
                 if (Set(ref testCase, value))
                 {
-                    RaisePropertyChanged("DisplayName");
+                    RaisePropertyChanged(nameof(DisplayName));
                 }
             }
         }

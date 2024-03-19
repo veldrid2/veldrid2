@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using Veldrid.Vulkan;
 
 namespace Veldrid
@@ -1298,7 +1299,7 @@ namespace Veldrid
         /// <param name="renderWidth">The renderable width of the swapchain panel.</param>
         /// <param name="renderHeight">The renderable height of the swapchain panel.</param>
         /// <param name="logicalDpi">The logical DPI of the swapchain panel.</param>
-        /// <returns></returns>
+        [SupportedOSPlatform("windows")]
         public static GraphicsDevice CreateD3D11(
             GraphicsDeviceOptions options,
             object swapChainPanel,
