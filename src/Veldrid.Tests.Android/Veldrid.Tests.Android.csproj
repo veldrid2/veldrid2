@@ -1,10 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  
   <PropertyGroup>
-    <TargetFramework>net7.0-android</TargetFramework>
+    <TargetFramework>$(TargetFramework)-android</TargetFramework>
     <SupportedOSPlatformVersion>23.0</SupportedOSPlatformVersion>
     <OutputType>Exe</OutputType>
-    <Nullable>enable</Nullable>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ApplicationId>dev.techpizza.VeldridTests</ApplicationId>
     <ApplicationVersion>1</ApplicationVersion>
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -14,13 +13,13 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2612" />
-    <PackageReference Include="xunit" Version="2.5.3" />
-    <PackageReference Include="xunit.extensibility.core" Version="2.5.3" />
-    <PackageReference Include="xunit.extensibility.execution" Version="2.5.3" />
-    <PackageReference Include="xunit.runner.utility" Version="2.5.3" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2622" />
+    <PackageReference Include="xunit" Version="2.7.0" />
+    <PackageReference Include="xunit.extensibility.core" Version="2.7.0" />
+    <PackageReference Include="xunit.extensibility.execution" Version="2.7.0" />
+    <PackageReference Include="xunit.runner.utility" Version="2.7.0" />
     <PackageReference Include="Xunit.SkippableFact" Version="1.4.13" />
-    <PackageReference Include="Xamarin.Google.Guava.ListenableFuture" Version="1.0.0.16" />
+    <PackageReference Include="Xamarin.Google.Guava.ListenableFuture" Version="1.0.0.18" />
   </ItemGroup>
   
   <ItemGroup>
@@ -45,10 +44,4 @@
     <Compile Remove="..\Veldrid.Tests\Program.cs" />
   </ItemGroup>
   
-  <ItemGroup>
-    <PackageReference Update="Nerdbank.GitVersioning" Version="3.6.133">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
 </Project>

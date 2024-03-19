@@ -235,7 +235,7 @@ namespace Veldrid.Utilities
             }
 
             private void ProcessFaceLine(
-                ref ReadOnlySpanSplitter<char> splitter,
+                scoped ref ReadOnlySpanSplitter<char> splitter,
                 ReadOnlySpan<char> piece1, ReadOnlySpan<char> piece2)
             {
                 ObjFile.FaceVertex faceVertex0 = ParseFaceVertex(piece1);
@@ -418,7 +418,7 @@ namespace Veldrid.Utilities
             }
 
             private void ExpectPieces(
-                ref ReadOnlySpanSplitter<char> pieces, string name, bool exact,
+                scoped ref ReadOnlySpanSplitter<char> pieces, string name, bool exact,
                 out ReadOnlySpan<char> piece0, out ReadOnlySpan<char> piece1)
             {
                 if (!pieces.MoveNext())

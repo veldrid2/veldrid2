@@ -70,7 +70,7 @@ namespace Veldrid.Utilities
 
         public readonly ContainmentType Contains(Vector3 point)
         {
-            ref Plane planes = ref Unsafe.AsRef(Left);
+            ref Plane planes = ref Unsafe.AsRef(in Left);
 
             for (nuint i = 0; i < 6; i++)
             {
@@ -85,7 +85,7 @@ namespace Veldrid.Utilities
 
         public readonly ContainmentType Contains(BoundingSphere sphere)
         {
-            ref Plane planes = ref Unsafe.AsRef(Left);
+            ref Plane planes = ref Unsafe.AsRef(in Left);
 
             ContainmentType result = ContainmentType.Contains;
             for (nuint i = 0; i < 6; i++)
@@ -106,7 +106,7 @@ namespace Veldrid.Utilities
 
         public readonly ContainmentType Contains(BoundingBox box)
         {
-            ref Plane planes = ref Unsafe.AsRef(Left);
+            ref Plane planes = ref Unsafe.AsRef(in Left);
 
             ContainmentType result = ContainmentType.Contains;
             for (nuint i = 0; i < 6; i++)

@@ -1,10 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="..\Veldrid\Vk\VkFormats.VdToVkPixelFormat.cs" Link="VkFormats.VdToVkPixelFormat.cs" />
   </ItemGroup>
@@ -27,7 +22,7 @@
       <Pack>true</Pack>
     </Content>
   </ItemGroup>
-
+  
   <PropertyGroup>
     <Description>Virtual Reality integration for Veldrid, supporting both OpenVR and Oculus SDK.</Description>
     <PackageTags>VR Virual Reality OpenVR Oculus 3D Graphics Direct3D DirectX Vulkan OpenGL Core Standard Game</PackageTags>

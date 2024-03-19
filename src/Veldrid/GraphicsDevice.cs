@@ -84,7 +84,7 @@ namespace Veldrid
         /// <summary>
         /// Retrieves the main <see cref="Swapchain"/> for this device.
         /// This property is only valid if the device was created with a main
-        /// <see cref="Swapchain"/>, and will return null otherwise.
+        /// <see cref="Swapchain"/>, and will return <see langword="null"/> otherwise.
         /// </summary>
         public Swapchain? MainSwapchain { get; protected set; }
 
