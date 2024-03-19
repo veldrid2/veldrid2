@@ -12,8 +12,7 @@ namespace Veldrid.MTL
     internal sealed unsafe class MTLGraphicsDevice : GraphicsDevice
     {
         private static readonly Lazy<bool> s_isSupported = new(GetIsSupported);
-        private static readonly Dictionary<IntPtr, MTLGraphicsDevice> s_aotRegisteredBlocks
-            = new();
+        private static readonly Dictionary<IntPtr, MTLGraphicsDevice> s_aotRegisteredBlocks = new();
 
         private readonly MTLDevice _device;
         private readonly MTLCommandQueue _commandQueue;
@@ -34,8 +33,7 @@ namespace Veldrid.MTL
         private readonly IntPtr _concreteGlobalBlock;
         private MTLShader? _unalignedBufferCopyShader;
         private MTLComputePipelineState _unalignedBufferCopyPipeline;
-        private MTLCommandBufferHandler _completionHandler;
-        private readonly IntPtr _completionHandlerFuncPtr;
+        private readonly delegate* unmanaged[Cdecl]<IntPtr, MTLCommandBuffer, void> _completionHandler;
         private readonly IntPtr _completionBlockDescriptor;
         private readonly IntPtr _completionBlockLiteral;
 
@@ -91,15 +89,7 @@ namespace Veldrid.MTL
 
             _libSystem = NativeLibrary.Load("libSystem.dylib");
             _concreteGlobalBlock = NativeLibrary.GetExport(_libSystem, "_NSConcreteGlobalBlock");
-            if (MetalFeatures.IsMacOS)
-            {
-                _completionHandler = OnCommandBufferCompleted;
-            }
-            else
-            {
-                _completionHandler = OnCommandBufferCompleted_Static;
-            }
-            _completionHandlerFuncPtr = Marshal.GetFunctionPointerForDelegate(_completionHandler);
+            _completionHandler = &OnCommandBufferCompleted_Static;
             _completionBlockDescriptor = Marshal.AllocHGlobal(Unsafe.SizeOf<BlockDescriptor>());
             BlockDescriptor* descriptorPtr = (BlockDescriptor*)_completionBlockDescriptor;
             descriptorPtr->reserved = 0;
@@ -109,15 +99,12 @@ namespace Veldrid.MTL
             BlockLiteral* blockPtr = (BlockLiteral*)_completionBlockLiteral;
             blockPtr->isa = _concreteGlobalBlock;
             blockPtr->flags = 1 << 28 | 1 << 29;
-            blockPtr->invoke = _completionHandlerFuncPtr;
+            blockPtr->invoke = (nint)_completionHandler;
             blockPtr->descriptor = descriptorPtr;
 
-            if (!MetalFeatures.IsMacOS)
+            lock (s_aotRegisteredBlocks)
             {
-                lock (s_aotRegisteredBlocks)
-                {
-                    s_aotRegisteredBlocks.Add(_completionBlockLiteral, this);
-                }
+                s_aotRegisteredBlocks.Add(_completionBlockLiteral, this);
             }
 
             ResourceFactory = new MTLResourceFactory(this);
@@ -164,8 +151,7 @@ namespace Veldrid.MTL
             ObjectiveCRuntime.release(cb.NativePtr);
         }
 
-        // Xamarin AOT requires native callbacks be static.
-        [MonoPInvokeCallback(typeof(MTLCommandBufferHandler))]
+        [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
         private static void OnCommandBufferCompleted_Static(IntPtr block, MTLCommandBuffer cb)
         {
             lock (s_aotRegisteredBlocks)
@@ -552,7 +538,7 @@ namespace Veldrid.MTL
                 if (_unalignedBufferCopyPipeline.IsNull)
                 {
                     MTLComputePipelineDescriptor descriptor = MTLUtil.AllocInit<MTLComputePipelineDescriptor>(
-                       nameof(MTLComputePipelineDescriptor));
+                       "MTLComputePipelineDescriptor"u8);
                     MTLPipelineBufferDescriptor buffer0 = descriptor.buffers[0];
                     buffer0.mutability = MTLMutability.Mutable;
                     MTLPipelineBufferDescriptor buffer1 = descriptor.buffers[1];
@@ -582,11 +568,5 @@ namespace Veldrid.MTL
                 return _unalignedBufferCopyPipeline;
             }
         }
-    }
-
-    [AttributeUsage(AttributeTargets.Method)]
-    internal sealed class MonoPInvokeCallbackAttribute : Attribute
-    {
-        public MonoPInvokeCallbackAttribute(Type t) { }
     }
 }

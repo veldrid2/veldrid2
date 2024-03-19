@@ -5,7 +5,7 @@ using static Veldrid.MetalBindings.ObjectiveCRuntime;
 namespace Veldrid.MetalBindings
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct MTLRenderPipelineColorAttachmentDescriptor
+    public readonly struct MTLRenderPipelineColorAttachmentDescriptor
     {
         public readonly IntPtr NativePtr;
 
@@ -65,21 +65,21 @@ namespace Veldrid.MetalBindings
             set => objc_msgSend(NativePtr, sel_setSourceRGBBlendFactor, (uint)value);
         }
 
-        private static readonly Selector sel_isBlendingEnabled = "isBlendingEnabled";
-        private static readonly Selector sel_setBlendingEnabled = "setBlendingEnabled:";
-        private static readonly Selector sel_writeMask = "writeMask";
-        private static readonly Selector sel_setWriteMask = "setWriteMask:";
-        private static readonly Selector sel_alphaBlendOperation = "alphaBlendOperation";
-        private static readonly Selector sel_setAlphaBlendOperation = "setAlphaBlendOperation:";
-        private static readonly Selector sel_rgbBlendOperation = "rgbBlendOperation";
-        private static readonly Selector sel_setRGBBlendOperation = "setRgbBlendOperation:";
-        private static readonly Selector sel_destinationAlphaBlendFactor = "destinationAlphaBlendFactor";
-        private static readonly Selector sel_setDestinationAlphaBlendFactor = "setDestinationAlphaBlendFactor:";
-        private static readonly Selector sel_destinationRGBBlendFactor = "destinationRGBBlendFactor";
-        private static readonly Selector sel_setDestinationRGBBlendFactor = "setDestinationRGBBlendFactor:";
-        private static readonly Selector sel_sourceAlphaBlendFactor = "sourceAlphaBlendFactor";
-        private static readonly Selector sel_setSourceAlphaBlendFactor = "setSourceAlphaBlendFactor:";
-        private static readonly Selector sel_sourceRGBBlendFactor = "sourceRGBBlendFactor";
-        private static readonly Selector sel_setSourceRGBBlendFactor = "setSourceRGBBlendFactor:";
+        private static readonly Selector sel_isBlendingEnabled = "isBlendingEnabled"u8;
+        private static readonly Selector sel_setBlendingEnabled = "setBlendingEnabled:"u8;
+        private static readonly Selector sel_writeMask = "writeMask"u8;
+        private static readonly Selector sel_setWriteMask = "setWriteMask:"u8;
+        private static readonly Selector sel_alphaBlendOperation = "alphaBlendOperation"u8;
+        private static readonly Selector sel_setAlphaBlendOperation = "setAlphaBlendOperation:"u8;
+        private static readonly Selector sel_rgbBlendOperation = "rgbBlendOperation"u8;
+        private static readonly Selector sel_setRGBBlendOperation = "setRgbBlendOperation:"u8;
+        private static readonly Selector sel_destinationAlphaBlendFactor = "destinationAlphaBlendFactor"u8;
+        private static readonly Selector sel_setDestinationAlphaBlendFactor = "setDestinationAlphaBlendFactor:"u8;
+        private static readonly Selector sel_destinationRGBBlendFactor = "destinationRGBBlendFactor"u8;
+        private static readonly Selector sel_setDestinationRGBBlendFactor = "setDestinationRGBBlendFactor:"u8;
+        private static readonly Selector sel_sourceAlphaBlendFactor = "sourceAlphaBlendFactor"u8;
+        private static readonly Selector sel_setSourceAlphaBlendFactor = "setSourceAlphaBlendFactor:"u8;
+        private static readonly Selector sel_sourceRGBBlendFactor = "sourceRGBBlendFactor"u8;
+        private static readonly Selector sel_setSourceRGBBlendFactor = "setSourceRGBBlendFactor:"u8;
     }
 }

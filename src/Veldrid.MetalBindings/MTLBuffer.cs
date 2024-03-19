@@ -4,13 +4,15 @@ using System.Runtime.InteropServices;
 namespace Veldrid.MetalBindings
 {
     [StructLayout(LayoutKind.Sequential)]
-    public unsafe struct MTLBuffer
+    public readonly struct MTLBuffer
     {
         public readonly IntPtr NativePtr;
+
         public MTLBuffer(IntPtr ptr) => NativePtr = ptr;
+
         public bool IsNull => NativePtr == IntPtr.Zero;
 
-        public void* contents() => ObjectiveCRuntime.IntPtr_objc_msgSend(NativePtr, sel_contents).ToPointer();
+        public unsafe void* contents() => ObjectiveCRuntime.IntPtr_objc_msgSend(NativePtr, sel_contents).ToPointer();
 
         public UIntPtr length => ObjectiveCRuntime.UIntPtr_objc_msgSend(NativePtr, sel_length);
 
@@ -23,10 +25,10 @@ namespace Veldrid.MetalBindings
         public void removeAllDebugMarkers()
             => ObjectiveCRuntime.objc_msgSend(NativePtr, sel_removeAllDebugMarkers);
 
-        private static readonly Selector sel_contents = "contents";
-        private static readonly Selector sel_length = "length";
-        private static readonly Selector sel_didModifyRange = "didModifyRange:";
-        private static readonly Selector sel_addDebugMarker = "addDebugMarker:range:";
-        private static readonly Selector sel_removeAllDebugMarkers = "removeAllDebugMarkers";
+        private static readonly Selector sel_contents = "contents"u8;
+        private static readonly Selector sel_length = "length"u8;
+        private static readonly Selector sel_didModifyRange = "didModifyRange:"u8;
+        private static readonly Selector sel_addDebugMarker = "addDebugMarker:range:"u8;
+        private static readonly Selector sel_removeAllDebugMarkers = "removeAllDebugMarkers"u8;
     }
 }

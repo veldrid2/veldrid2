@@ -3,9 +3,9 @@ using static Veldrid.MetalBindings.ObjectiveCRuntime;
 
 namespace Veldrid.MetalBindings
 {
-    public struct MTLSamplerDescriptor
+    public readonly struct MTLSamplerDescriptor
     {
-        private static readonly ObjCClass s_class = new(nameof(MTLSamplerDescriptor));
+        private static readonly ObjCClass s_class = new("MTLSamplerDescriptor"u8);
 
         public readonly IntPtr NativePtr;
 
@@ -83,29 +83,29 @@ namespace Veldrid.MetalBindings
             set => objc_msgSend(NativePtr, sel_setBorderColor, (uint)value);
         }
 
-        private static readonly Selector sel_rAddressMode = "rAddressMode";
-        private static readonly Selector sel_setRAddressMode = "setRAddressMode:";
-        private static readonly Selector sel_sAddressMode = "sAddressMode";
-        private static readonly Selector sel_setSAddressMode = "setSAddressMode:";
-        private static readonly Selector sel_tAddressMode = "tAddressMode";
-        private static readonly Selector sel_setTAddressMode = "setTAddressMode:";
-        private static readonly Selector sel_minFilter = "minFilter";
-        private static readonly Selector sel_setMinFilter = "setMinFilter:";
-        private static readonly Selector sel_magFilter = "magFilter";
-        private static readonly Selector sel_setMagFilter = "setMagFilter:";
-        private static readonly Selector sel_mipFilter = "mipFilter";
-        private static readonly Selector sel_setMipFilter = "setMipFilter:";
-        private static readonly Selector sel_lodMinClamp = "lodMinClamp";
-        private static readonly Selector sel_setLodMinClamp = "setLodMinClamp:";
-        private static readonly Selector sel_lodMaxClamp = "lodMaxClamp";
-        private static readonly Selector sel_setLodMaxClamp = "setLodMaxClamp:";
-        private static readonly Selector sel_lodAverage = "lodAverage";
-        private static readonly Selector sel_setLodAverage = "setLodAverage:";
-        private static readonly Selector sel_maxAnisotropy = "maxAnisotropy";
-        private static readonly Selector sel_setMaAnisotropy = "setMaxAnisotropy:";
-        private static readonly Selector sel_compareFunction = "compareFunction";
-        private static readonly Selector sel_setCompareFunction = "setCompareFunction:";
-        private static readonly Selector sel_borderColor = "borderColor";
-        private static readonly Selector sel_setBorderColor = "setBorderColor:";
+        private static readonly Selector sel_rAddressMode = "rAddressMode"u8;
+        private static readonly Selector sel_setRAddressMode = "setRAddressMode:"u8;
+        private static readonly Selector sel_sAddressMode = "sAddressMode"u8;
+        private static readonly Selector sel_setSAddressMode = "setSAddressMode:"u8;
+        private static readonly Selector sel_tAddressMode = "tAddressMode"u8;
+        private static readonly Selector sel_setTAddressMode = "setTAddressMode:"u8;
+        private static readonly Selector sel_minFilter = "minFilter"u8;
+        private static readonly Selector sel_setMinFilter = "setMinFilter:"u8;
+        private static readonly Selector sel_magFilter = "magFilter"u8;
+        private static readonly Selector sel_setMagFilter = "setMagFilter:"u8;
+        private static readonly Selector sel_mipFilter = "mipFilter"u8;
+        private static readonly Selector sel_setMipFilter = "setMipFilter:"u8;
+        private static readonly Selector sel_lodMinClamp = "lodMinClamp"u8;
+        private static readonly Selector sel_setLodMinClamp = "setLodMinClamp:"u8;
+        private static readonly Selector sel_lodMaxClamp = "lodMaxClamp"u8;
+        private static readonly Selector sel_setLodMaxClamp = "setLodMaxClamp:"u8;
+        private static readonly Selector sel_lodAverage = "lodAverage"u8;
+        private static readonly Selector sel_setLodAverage = "setLodAverage:"u8;
+        private static readonly Selector sel_maxAnisotropy = "maxAnisotropy"u8;
+        private static readonly Selector sel_setMaAnisotropy = "setMaxAnisotropy:"u8;
+        private static readonly Selector sel_compareFunction = "compareFunction"u8;
+        private static readonly Selector sel_setCompareFunction = "setCompareFunction:"u8;
+        private static readonly Selector sel_borderColor = "borderColor"u8;
+        private static readonly Selector sel_setBorderColor = "setBorderColor:"u8;
     }
 }

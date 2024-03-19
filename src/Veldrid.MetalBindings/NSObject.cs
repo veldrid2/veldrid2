@@ -3,7 +3,7 @@ using System;
 
 namespace Veldrid.MetalBindings
 {
-    public struct NSObject
+    public readonly struct NSObject
     {
         public readonly IntPtr NativePtr;
 
@@ -11,6 +11,6 @@ namespace Veldrid.MetalBindings
 
         public Bool8 IsKindOfClass(IntPtr @class) => bool8_objc_msgSend(NativePtr, sel_isKindOfClass, @class);
 
-        private static readonly Selector sel_isKindOfClass = "isKindOfClass:";
+        private static readonly Selector sel_isKindOfClass = "isKindOfClass:"u8;
     }
 }

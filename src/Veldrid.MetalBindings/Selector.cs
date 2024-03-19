@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Veldrid.MetalBindings
 {
-    public unsafe struct Selector
+    public readonly unsafe struct Selector
     {
         public readonly IntPtr NativePtr;
 
@@ -13,17 +13,17 @@ namespace Veldrid.MetalBindings
         }
 
         [SkipLocalsInit]
-        public Selector(string name)
+        [Obsolete(MTLUtil.ObsoleteUtf16Message)]
+        public Selector(string name) : this(MTLUtil.GetNullTerminatedUtf8Bytes(name, stackalloc byte[1024]))
         {
-            int byteCount = MTLUtil.UTF8.GetMaxByteCount(name.Length);
-            byte* utf8BytesPtr = stackalloc byte[byteCount + 1];
-            fixed (char* namePtr = name)
-            {
-                int actualByteCount = MTLUtil.UTF8.GetBytes(namePtr, name.Length, utf8BytesPtr, byteCount);
-                utf8BytesPtr[actualByteCount] = 0;
-            }
+        }
 
-            NativePtr = ObjectiveCRuntime.sel_registerName(utf8BytesPtr);
+        public Selector(ReadOnlySpan<byte> nameUtf8)
+        {
+            fixed (byte* utf8BytesPtr = nameUtf8)
+            {
+                NativePtr = ObjectiveCRuntime.sel_registerName(utf8BytesPtr);
+            }
         }
 
         public string Name
@@ -35,6 +35,9 @@ namespace Veldrid.MetalBindings
             }
         }
 
+        [Obsolete(MTLUtil.ObsoleteUtf16Message)]
         public static implicit operator Selector(string s) => new(s);
+
+        public static implicit operator Selector(ReadOnlySpan<byte> utf8) => new(utf8);
     }
 }

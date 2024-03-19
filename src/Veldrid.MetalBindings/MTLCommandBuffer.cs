@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace Veldrid.MetalBindings
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct MTLCommandBuffer
+    public readonly struct MTLCommandBuffer
     {
         public readonly IntPtr NativePtr;
 
@@ -27,20 +27,21 @@ namespace Veldrid.MetalBindings
 
         public void waitUntilCompleted() => objc_msgSend(NativePtr, sel_waitUntilCompleted);
 
-        public void addCompletedHandler(MTLCommandBufferHandler block)
-            => objc_msgSend(NativePtr, sel_addCompletedHandler, block);
+        public unsafe void addCompletedHandler(delegate* unmanaged[Cdecl]<IntPtr, MTLCommandBuffer, void> block)
+            => objc_msgSend(NativePtr, sel_addCompletedHandler, (IntPtr) block);
+
         public void addCompletedHandler(IntPtr block)
             => objc_msgSend(NativePtr, sel_addCompletedHandler, block);
 
-        public MTLCommandBufferStatus status => (MTLCommandBufferStatus)uint_objc_msgSend(NativePtr, sel_status);
+        public MTLCommandBufferStatus status => (MTLCommandBufferStatus) uint_objc_msgSend(NativePtr, sel_status);
 
-        private static readonly Selector sel_renderCommandEncoderWithDescriptor = "renderCommandEncoderWithDescriptor:";
-        private static readonly Selector sel_presentDrawable = "presentDrawable:";
-        private static readonly Selector sel_commit = "commit";
-        private static readonly Selector sel_blitCommandEncoder = "blitCommandEncoder";
-        private static readonly Selector sel_computeCommandEncoder = "computeCommandEncoder";
-        private static readonly Selector sel_waitUntilCompleted = "waitUntilCompleted";
-        private static readonly Selector sel_addCompletedHandler = "addCompletedHandler:";
-        private static readonly Selector sel_status = "status";
+        private static readonly Selector sel_renderCommandEncoderWithDescriptor = "renderCommandEncoderWithDescriptor:"u8;
+        private static readonly Selector sel_presentDrawable = "presentDrawable:"u8;
+        private static readonly Selector sel_commit = "commit"u8;
+        private static readonly Selector sel_blitCommandEncoder = "blitCommandEncoder"u8;
+        private static readonly Selector sel_computeCommandEncoder = "computeCommandEncoder"u8;
+        private static readonly Selector sel_waitUntilCompleted = "waitUntilCompleted"u8;
+        private static readonly Selector sel_addCompletedHandler = "addCompletedHandler:"u8;
+        private static readonly Selector sel_status = "status"u8;
     }
 }

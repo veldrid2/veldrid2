@@ -3,7 +3,7 @@ using static Veldrid.MetalBindings.ObjectiveCRuntime;
 
 namespace Veldrid.MetalBindings
 {
-    public struct MTLVertexAttributeDescriptor
+    public readonly struct MTLVertexAttributeDescriptor
     {
         public readonly IntPtr NativePtr;
 
@@ -27,11 +27,11 @@ namespace Veldrid.MetalBindings
             set => objc_msgSend(NativePtr, sel_setBufferIndex, value);
         }
 
-        private static readonly Selector sel_format = "format";
-        private static readonly Selector sel_setFormat = "setFormat:";
-        private static readonly Selector sel_offset = "offset";
-        private static readonly Selector sel_setOffset = "setOffset:";
-        private static readonly Selector sel_bufferIndex = "bufferIndex";
-        private static readonly Selector sel_setBufferIndex = "setBufferIndex:";
+        private static readonly Selector sel_format = "format"u8;
+        private static readonly Selector sel_setFormat = "setFormat:"u8;
+        private static readonly Selector sel_offset = "offset"u8;
+        private static readonly Selector sel_setOffset = "setOffset:"u8;
+        private static readonly Selector sel_bufferIndex = "bufferIndex"u8;
+        private static readonly Selector sel_setBufferIndex = "setBufferIndex:"u8;
     }
 }

@@ -3,7 +3,7 @@ using static Veldrid.MetalBindings.ObjectiveCRuntime;
 
 namespace Veldrid.MetalBindings
 {
-    public struct MTLPipelineBufferDescriptor
+    public readonly struct MTLPipelineBufferDescriptor
     {
         public readonly IntPtr NativePtr;
 
@@ -15,7 +15,7 @@ namespace Veldrid.MetalBindings
             set => objc_msgSend(NativePtr, sel_setMutability, (uint)value);
         }
 
-        private static readonly Selector sel_mutability = "mutability";
-        private static readonly Selector sel_setMutability = "setMutability:";
+        private static readonly Selector sel_mutability = "mutability"u8;
+        private static readonly Selector sel_setMutability = "setMutability:"u8;
     }
 }

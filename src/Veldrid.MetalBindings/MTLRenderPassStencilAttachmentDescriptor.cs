@@ -3,7 +3,7 @@ using static Veldrid.MetalBindings.ObjectiveCRuntime;
 
 namespace Veldrid.MetalBindings
 {
-    public struct MTLRenderPassStencilAttachmentDescriptor
+    public readonly struct MTLRenderPassStencilAttachmentDescriptor
     {
         public readonly IntPtr NativePtr;
 
@@ -37,7 +37,7 @@ namespace Veldrid.MetalBindings
             set => objc_msgSend(NativePtr, Selectors.setSlice, value);
         }
 
-        private static readonly Selector sel_clearStencil = "clearStencil";
-        private static readonly Selector sel_setClearStencil = "setClearStencil:";
+        private static readonly Selector sel_clearStencil = "clearStencil"u8;
+        private static readonly Selector sel_setClearStencil = "setClearStencil:"u8;
     }
 }

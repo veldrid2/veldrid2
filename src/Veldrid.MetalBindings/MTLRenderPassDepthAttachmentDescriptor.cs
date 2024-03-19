@@ -3,7 +3,7 @@ using static Veldrid.MetalBindings.ObjectiveCRuntime;
 
 namespace Veldrid.MetalBindings
 {
-    public struct MTLRenderPassDepthAttachmentDescriptor
+    public readonly struct MTLRenderPassDepthAttachmentDescriptor
     {
         public readonly IntPtr NativePtr;
 
@@ -45,7 +45,7 @@ namespace Veldrid.MetalBindings
             set => objc_msgSend(NativePtr, Selectors.setLevel, value);
         }
 
-        private static readonly Selector sel_clearDepth = "clearDepth";
-        private static readonly Selector sel_setClearDepth = "setClearDepth:";
+        private static readonly Selector sel_clearDepth = "clearDepth"u8;
+        private static readonly Selector sel_setClearDepth = "setClearDepth:"u8;
     }
 }

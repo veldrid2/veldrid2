@@ -3,7 +3,7 @@ using static Veldrid.MetalBindings.ObjectiveCRuntime;
 
 namespace Veldrid.MetalBindings
 {
-    public struct MTLVertexBufferLayoutDescriptor
+    public readonly struct MTLVertexBufferLayoutDescriptor
     {
         public readonly IntPtr NativePtr;
 
@@ -27,11 +27,11 @@ namespace Veldrid.MetalBindings
             set => objc_msgSend(NativePtr, sel_setStepRate, value);
         }
 
-        private static readonly Selector sel_stepFunction = "stepFunction";
-        private static readonly Selector sel_setStepFunction = "setStepFunction:";
-        private static readonly Selector sel_stride = "stride";
-        private static readonly Selector sel_setStride = "setStride:";
-        private static readonly Selector sel_stepRate = "stepRate";
-        private static readonly Selector sel_setStepRate = "setStepRate:";
+        private static readonly Selector sel_stepFunction = "stepFunction"u8;
+        private static readonly Selector sel_setStepFunction = "setStepFunction:"u8;
+        private static readonly Selector sel_stride = "stride"u8;
+        private static readonly Selector sel_setStride = "setStride:"u8;
+        private static readonly Selector sel_stepRate = "stepRate"u8;
+        private static readonly Selector sel_setStepRate = "setStepRate:"u8;
     }
 }

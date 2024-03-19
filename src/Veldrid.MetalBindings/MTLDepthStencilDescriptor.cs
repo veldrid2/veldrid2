@@ -3,7 +3,7 @@ using static Veldrid.MetalBindings.ObjectiveCRuntime;
 
 namespace Veldrid.MetalBindings
 {
-    public struct MTLDepthStencilDescriptor
+    public readonly struct MTLDepthStencilDescriptor
     {
         public readonly IntPtr NativePtr;
         public MTLDepthStencilDescriptor(IntPtr ptr) => NativePtr = ptr;
@@ -32,13 +32,13 @@ namespace Veldrid.MetalBindings
             set => objc_msgSend(NativePtr, sel_setFrontFaceStencil, value.NativePtr);
         }
 
-        private static readonly Selector sel_depthCompareFunction = "depthCompareFunction";
-        private static readonly Selector sel_setDepthCompareFunction = "setDepthCompareFunction:";
-        private static readonly Selector sel_isDepthWriteEnabled = "isDepthWriteEnabled";
-        private static readonly Selector sel_setDepthWriteEnabled = "setDepthWriteEnabled:";
-        private static readonly Selector sel_backFaceStencil = "backFaceStencil";
-        private static readonly Selector sel_setBackFaceStencil = "setBackFaceStencil:";
-        private static readonly Selector sel_frontFaceStencil = "frontFaceStencil";
-        private static readonly Selector sel_setFrontFaceStencil = "setFrontFaceStencil:";
+        private static readonly Selector sel_depthCompareFunction = "depthCompareFunction"u8;
+        private static readonly Selector sel_setDepthCompareFunction = "setDepthCompareFunction:"u8;
+        private static readonly Selector sel_isDepthWriteEnabled = "isDepthWriteEnabled"u8;
+        private static readonly Selector sel_setDepthWriteEnabled = "setDepthWriteEnabled:"u8;
+        private static readonly Selector sel_backFaceStencil = "backFaceStencil"u8;
+        private static readonly Selector sel_setBackFaceStencil = "setBackFaceStencil:"u8;
+        private static readonly Selector sel_frontFaceStencil = "frontFaceStencil"u8;
+        private static readonly Selector sel_setFrontFaceStencil = "setFrontFaceStencil:"u8;
     }
 }

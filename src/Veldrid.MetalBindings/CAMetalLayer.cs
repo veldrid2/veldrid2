@@ -3,7 +3,7 @@ using System;
 
 namespace Veldrid.MetalBindings
 {
-    public struct CAMetalLayer
+    public readonly struct CAMetalLayer
     {
         public readonly IntPtr NativePtr;
 
@@ -51,33 +51,33 @@ namespace Veldrid.MetalBindings
 
         public CGRect frame
         {
-            get => CGRect_objc_msgSend(NativePtr, "frame");
-            set => objc_msgSend(NativePtr, "setFrame:", value);
+            get => CGRect_objc_msgSend(NativePtr, "frame"u8);
+            set => objc_msgSend(NativePtr, "setFrame:"u8, value);
         }
 
         public Bool8 opaque
         {
-            get => bool8_objc_msgSend(NativePtr, "isOpaque");
-            set => objc_msgSend(NativePtr, "setOpaque:", value);
+            get => bool8_objc_msgSend(NativePtr, "isOpaque"u8);
+            set => objc_msgSend(NativePtr, "setOpaque:"u8, value);
         }
 
         public CAMetalDrawable nextDrawable() => objc_msgSend<CAMetalDrawable>(NativePtr, sel_nextDrawable);
 
         public Bool8 displaySyncEnabled
         {
-            get => bool8_objc_msgSend(NativePtr, "displaySyncEnabled");
-            set => objc_msgSend(NativePtr, "setDisplaySyncEnabled:", value);
+            get => bool8_objc_msgSend(NativePtr, "displaySyncEnabled"u8);
+            set => objc_msgSend(NativePtr, "setDisplaySyncEnabled:"u8, value);
         }
 
-        private static readonly ObjCClass s_class = new ObjCClass(nameof(CAMetalLayer));
-        private static readonly Selector sel_device = "device";
-        private static readonly Selector sel_setDevice = "setDevice:";
-        private static readonly Selector sel_pixelFormat = "pixelFormat";
-        private static readonly Selector sel_setPixelFormat = "setPixelFormat:";
-        private static readonly Selector sel_framebufferOnly = "framebufferOnly";
-        private static readonly Selector sel_setFramebufferOnly = "setFramebufferOnly:";
-        private static readonly Selector sel_drawableSize = "drawableSize";
-        private static readonly Selector sel_setDrawableSize = "setDrawableSize:";
-        private static readonly Selector sel_nextDrawable = "nextDrawable";
+        private static readonly ObjCClass s_class = new ObjCClass("CAMetalLayer"u8);
+        private static readonly Selector sel_device = "device"u8;
+        private static readonly Selector sel_setDevice = "setDevice:"u8;
+        private static readonly Selector sel_pixelFormat = "pixelFormat"u8;
+        private static readonly Selector sel_setPixelFormat = "setPixelFormat:"u8;
+        private static readonly Selector sel_framebufferOnly = "framebufferOnly"u8;
+        private static readonly Selector sel_setFramebufferOnly = "setFramebufferOnly:"u8;
+        private static readonly Selector sel_drawableSize = "drawableSize"u8;
+        private static readonly Selector sel_setDrawableSize = "setDrawableSize:"u8;
+        private static readonly Selector sel_nextDrawable = "nextDrawable"u8;
     }
 }

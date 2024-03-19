@@ -6,9 +6,9 @@ using static Veldrid.MetalBindings.ObjectiveCRuntime;
 namespace Veldrid.OpenGL.EAGL
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct EAGLContext
+    internal readonly struct EAGLContext
     {
-        private static ObjCClass s_class = new("EAGLContext");
+        private static ObjCClass s_class = new("EAGLContext"u8);
 
         public readonly IntPtr NativePtr;
 
@@ -33,11 +33,11 @@ namespace Veldrid.OpenGL.EAGL
 
         public void Release() => release(NativePtr);
 
-        private static readonly Selector sel_initWithAPI = "initWithAPI:";
-        private static readonly Selector sel_setCurrentContext = "setCurrentContext:";
-        private static readonly Selector sel_renderBufferStorage = "renderbufferStorage:fromDrawable:";
-        private static readonly Selector sel_presentRenderBuffer = "presentRenderbuffer:";
-        private static readonly Selector sel_currentContext = "currentContext";
+        private static readonly Selector sel_initWithAPI = "initWithAPI:"u8;
+        private static readonly Selector sel_setCurrentContext = "setCurrentContext:"u8;
+        private static readonly Selector sel_renderBufferStorage = "renderbufferStorage:fromDrawable:"u8;
+        private static readonly Selector sel_presentRenderBuffer = "presentRenderbuffer:"u8;
+        private static readonly Selector sel_currentContext = "currentContext"u8;
     }
 
     internal enum EAGLRenderingAPI

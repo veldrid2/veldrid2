@@ -41,8 +41,6 @@ namespace Veldrid.MetalBindings
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern void objc_msgSend(IntPtr receiver, Selector selector, UIntPtr a);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
-        public static extern void objc_msgSend(IntPtr receiver, Selector selector, MTLCommandBufferHandler a);
-        [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern void objc_msgSend(IntPtr receiver, Selector selector, IntPtr a, UIntPtr b);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern void objc_msgSend(IntPtr receiver, Selector selector, MTLViewport a);
@@ -167,7 +165,6 @@ namespace Veldrid.MetalBindings
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern float float_objc_msgSend(IntPtr receiver, Selector selector);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
-
         public static extern CGFloat CGFloat_objc_msgSend(IntPtr receiver, Selector selector);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern double double_objc_msgSend(IntPtr receiver, Selector selector);
@@ -176,18 +173,18 @@ namespace Veldrid.MetalBindings
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, IntPtr a);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
-        public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, IntPtr a, out NSError error);
+        public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, IntPtr a, NSError* error);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, uint a, uint b, NSRange c, NSRange d);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
-        public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, MTLComputePipelineDescriptor a, uint b, IntPtr c, out NSError error);
+        public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, MTLComputePipelineDescriptor a, uint b, IntPtr c, NSError* error);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, uint a);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, UIntPtr a);
 
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
-        public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, IntPtr a, IntPtr b, out NSError error);
+        public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, IntPtr a, IntPtr b, NSError* error);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, IntPtr a, UIntPtr b);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
@@ -197,15 +194,15 @@ namespace Veldrid.MetalBindings
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern UIntPtr UIntPtr_objc_msgSend(IntPtr receiver, Selector selector);
 
-        public static T objc_msgSend<T>(IntPtr receiver, Selector selector) where T : struct
+        public static T objc_msgSend<T>(IntPtr receiver, Selector selector) where T : unmanaged
         {
             IntPtr value = IntPtr_objc_msgSend(receiver, selector);
-            return Unsafe.AsRef<T>(&value);
+            return Unsafe.BitCast<IntPtr, T>(value);
         }
-        public static T objc_msgSend<T>(IntPtr receiver, Selector selector, IntPtr a) where T : struct
+        public static T objc_msgSend<T>(IntPtr receiver, Selector selector, IntPtr a) where T : unmanaged
         {
             IntPtr value = IntPtr_objc_msgSend(receiver, selector, a);
-            return Unsafe.AsRef<T>(&value);
+            return Unsafe.BitCast<IntPtr, T>(value);
         }
         public static string string_objc_msgSend(IntPtr receiver, Selector selector)
         {
@@ -225,10 +222,10 @@ namespace Veldrid.MetalBindings
 
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend_stret")]
         public static extern void objc_msgSend_stret(void* retPtr, IntPtr receiver, Selector selector);
-        public static T objc_msgSend_stret<T>(IntPtr receiver, Selector selector) where T : struct
+        public static T objc_msgSend_stret<T>(IntPtr receiver, Selector selector) where T : unmanaged
         {
             T ret = default;
-            objc_msgSend_stret(Unsafe.AsPointer(ref ret), receiver, selector);
+            objc_msgSend_stret(&ret, receiver, selector);
             return ret;
         }
 
@@ -271,12 +268,13 @@ namespace Veldrid.MetalBindings
         public static extern Selector method_getName(ObjectiveCMethod method);
 
         [DllImport(ObjCLibrary)]
-        public static extern ObjectiveCMethod* class_copyMethodList(ObjCClass cls, out uint outCount);
+        public static extern ObjectiveCMethod* class_copyMethodList(ObjCClass cls, uint* outCount);
 
         [DllImport(ObjCLibrary)]
         public static extern void free(IntPtr receiver);
-        public static void retain(IntPtr receiver) => objc_msgSend(receiver, "retain");
-        public static void release(IntPtr receiver) => objc_msgSend(receiver, "release");
-        public static ulong GetRetainCount(IntPtr receiver) => (ulong)UIntPtr_objc_msgSend(receiver, "retainCount");
+
+        public static void retain(IntPtr receiver) => objc_msgSend(receiver, "retain"u8);
+        public static void release(IntPtr receiver) => objc_msgSend(receiver, "release"u8);
+        public static nuint GetRetainCount(IntPtr receiver) => UIntPtr_objc_msgSend(receiver, "retainCount"u8);
     }
 }

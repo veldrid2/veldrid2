@@ -2,9 +2,9 @@ using System;
 
 namespace Veldrid.MetalBindings
 {
-    public struct NSAutoreleasePool : IDisposable
+    public readonly struct NSAutoreleasePool : IDisposable
     {
-        private static readonly ObjCClass s_class = new(nameof(NSAutoreleasePool));
+        private static readonly ObjCClass s_class = new("NSAutoreleasePool"u8);
 
         public readonly IntPtr NativePtr;
 

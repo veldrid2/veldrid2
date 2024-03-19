@@ -3,10 +3,11 @@ using static Veldrid.MetalBindings.ObjectiveCRuntime;
 
 namespace Veldrid.MetalBindings
 {
-    public struct NSError
+    public readonly struct NSError
     {
         public readonly IntPtr NativePtr;
-        public string domain => string_objc_msgSend(NativePtr, "domain");
-        public string localizedDescription => string_objc_msgSend(NativePtr, "localizedDescription");
+
+        public string domain => string_objc_msgSend(NativePtr, "domain"u8);
+        public string localizedDescription => string_objc_msgSend(NativePtr, "localizedDescription"u8);
     }
 }

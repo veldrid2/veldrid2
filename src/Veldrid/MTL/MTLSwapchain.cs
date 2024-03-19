@@ -167,7 +167,7 @@ namespace Veldrid.MTL
         {
             if (_drawable.NativePtr != IntPtr.Zero)
             {
-                ObjectiveCRuntime.objc_msgSend(_drawable.NativePtr, "release");
+                ObjectiveCRuntime.objc_msgSend(_drawable.NativePtr, "release"u8);
             }
             _framebuffer.Dispose();
             ObjectiveCRuntime.release(_metalLayer.NativePtr);

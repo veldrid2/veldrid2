@@ -5,7 +5,7 @@ using static Veldrid.MetalBindings.ObjectiveCRuntime;
 namespace Veldrid.MetalBindings
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct MTLCompileOptions
+    public readonly struct MTLCompileOptions
     {
         public readonly IntPtr NativePtr;
 
@@ -28,10 +28,10 @@ namespace Veldrid.MetalBindings
             set => objc_msgSend(NativePtr, sel_setLanguageVersion, (uint)value);
         }
 
-        private static readonly ObjCClass s_class = new(nameof(MTLCompileOptions));
-        private static readonly Selector sel_fastMathEnabled = "fastMathEnabled";
-        private static readonly Selector sel_setFastMathEnabled = "setFastMathEnabled:";
-        private static readonly Selector sel_languageVersion = "languageVersion";
-        private static readonly Selector sel_setLanguageVersion = "setLanguageVersion:";
+        private static readonly ObjCClass s_class = new("MTLCompileOptions"u8);
+        private static readonly Selector sel_fastMathEnabled = "fastMathEnabled"u8;
+        private static readonly Selector sel_setFastMathEnabled = "setFastMathEnabled:"u8;
+        private static readonly Selector sel_languageVersion = "languageVersion"u8;
+        private static readonly Selector sel_setLanguageVersion = "setLanguageVersion:"u8;
     }
 }

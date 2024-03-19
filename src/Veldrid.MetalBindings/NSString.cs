@@ -1,9 +1,10 @@
 using System;
+using System.Runtime.InteropServices;
 using static Veldrid.MetalBindings.ObjectiveCRuntime;
 
 namespace Veldrid.MetalBindings
 {
-    public unsafe struct NSString
+    public readonly unsafe struct NSString
     {
         public readonly IntPtr NativePtr;
 
@@ -35,8 +36,14 @@ namespace Veldrid.MetalBindings
             return MTLUtil.GetUtf8String(utf8Ptr);
         }
 
-        private static readonly ObjCClass s_class = new(nameof(NSString));
-        private static readonly Selector sel_initWithCharacters = "initWithCharacters:length:";
-        private static readonly Selector sel_utf8String = "UTF8String";
+        public ReadOnlySpan<byte> GetValueUtf8()
+        {
+            byte* utf8Ptr = bytePtr_objc_msgSend(NativePtr, sel_utf8String);
+            return MemoryMarshal.CreateReadOnlySpanFromNullTerminated(utf8Ptr);
+        }
+
+        private static readonly ObjCClass s_class = new("NSString"u8);
+        private static readonly Selector sel_initWithCharacters = "initWithCharacters:length:"u8;
+        private static readonly Selector sel_utf8String = "UTF8String"u8;
     }
 }

@@ -3,7 +3,7 @@ using static Veldrid.MetalBindings.ObjectiveCRuntime;
 
 namespace Veldrid.MetalBindings
 {
-    public struct MTLStencilDescriptor
+    public readonly struct MTLStencilDescriptor
     {
         public readonly IntPtr NativePtr;
 
@@ -43,17 +43,17 @@ namespace Veldrid.MetalBindings
             set => objc_msgSend(NativePtr, sel_setWriteMask, value);
         }
 
-        private static readonly Selector sel_depthFailureOperation = "depthFailureOperation";
-        private static readonly Selector sel_stencilFailureOperation = "stencilFailureOperation";
-        private static readonly Selector sel_setStencilFailureOperation = "setStencilFailureOperation:";
-        private static readonly Selector sel_setDepthFailureOperation = "setDepthFailureOperation:";
-        private static readonly Selector sel_depthStencilPassOperation = "depthStencilPassOperation";
-        private static readonly Selector sel_setDepthStencilPassOperation = "setDepthStencilPassOperation:";
-        private static readonly Selector sel_stencilCompareFunction = "stencilCompareFunction";
-        private static readonly Selector sel_setStencilCompareFunction = "setStencilCompareFunction:";
-        private static readonly Selector sel_readMask = "readMask";
-        private static readonly Selector sel_setReadMask = "setReadMask:";
-        private static readonly Selector sel_writeMask = "writeMask";
-        private static readonly Selector sel_setWriteMask = "setWriteMask:";
+        private static readonly Selector sel_depthFailureOperation = "depthFailureOperation"u8;
+        private static readonly Selector sel_stencilFailureOperation = "stencilFailureOperation"u8;
+        private static readonly Selector sel_setStencilFailureOperation = "setStencilFailureOperation:"u8;
+        private static readonly Selector sel_setDepthFailureOperation = "setDepthFailureOperation:"u8;
+        private static readonly Selector sel_depthStencilPassOperation = "depthStencilPassOperation"u8;
+        private static readonly Selector sel_setDepthStencilPassOperation = "setDepthStencilPassOperation:"u8;
+        private static readonly Selector sel_stencilCompareFunction = "stencilCompareFunction"u8;
+        private static readonly Selector sel_setStencilCompareFunction = "setStencilCompareFunction:"u8;
+        private static readonly Selector sel_readMask = "readMask"u8;
+        private static readonly Selector sel_setReadMask = "setReadMask:"u8;
+        private static readonly Selector sel_writeMask = "writeMask"u8;
+        private static readonly Selector sel_setWriteMask = "setWriteMask:"u8;
     }
 }

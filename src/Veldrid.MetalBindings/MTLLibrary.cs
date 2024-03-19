@@ -5,7 +5,7 @@ using static Veldrid.MetalBindings.ObjectiveCRuntime;
 namespace Veldrid.MetalBindings
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct MTLLibrary
+    public readonly struct MTLLibrary
     {
         public readonly IntPtr NativePtr;
         public MTLLibrary(IntPtr ptr) => NativePtr = ptr;
@@ -18,15 +18,16 @@ namespace Veldrid.MetalBindings
             return new MTLFunction(function);
         }
 
-        public MTLFunction newFunctionWithNameConstantValues(string name, MTLFunctionConstantValues constantValues)
+        public unsafe MTLFunction newFunctionWithNameConstantValues(string name, MTLFunctionConstantValues constantValues)
         {
             NSString nameNSS = NSString.New(name);
+            NSError error;
             IntPtr function = IntPtr_objc_msgSend(
                 NativePtr,
                 sel_newFunctionWithNameConstantValues,
                 nameNSS.NativePtr,
                 constantValues.NativePtr,
-                out NSError error);
+                &error);
             release(nameNSS.NativePtr);
 
             if (function == IntPtr.Zero)
@@ -37,7 +38,7 @@ namespace Veldrid.MetalBindings
             return new MTLFunction(function);
         }
 
-        private static readonly Selector sel_newFunctionWithName = "newFunctionWithName:";
-        private static readonly Selector sel_newFunctionWithNameConstantValues = "newFunctionWithName:constantValues:error:";
+        private static readonly Selector sel_newFunctionWithName = "newFunctionWithName:"u8;
+        private static readonly Selector sel_newFunctionWithNameConstantValues = "newFunctionWithName:constantValues:error:"u8;
     }
 }

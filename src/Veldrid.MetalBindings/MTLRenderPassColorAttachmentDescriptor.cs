@@ -3,9 +3,10 @@ using static Veldrid.MetalBindings.ObjectiveCRuntime;
 
 namespace Veldrid.MetalBindings
 {
-    public struct MTLRenderPassColorAttachmentDescriptor
+    public readonly struct MTLRenderPassColorAttachmentDescriptor
     {
         public readonly IntPtr NativePtr;
+
         public MTLRenderPassColorAttachmentDescriptor(IntPtr ptr) => NativePtr = ptr;
 
         public MTLTexture texture
@@ -60,7 +61,7 @@ namespace Veldrid.MetalBindings
             set => objc_msgSend(NativePtr, Selectors.setLevel, value);
         }
 
-        private static readonly Selector sel_clearColor = "clearColor";
-        private static readonly Selector sel_setClearColor = "setClearColor:";
+        private static readonly Selector sel_clearColor = "clearColor"u8;
+        private static readonly Selector sel_setClearColor = "setClearColor:"u8;
     }
 }

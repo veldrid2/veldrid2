@@ -104,18 +104,18 @@ namespace Veldrid.MTL
                 {
                     _rce.drawPrimitives(
                         _graphicsPipeline.PrimitiveType,
-                        (UIntPtr)vertexStart,
-                        (UIntPtr)vertexCount,
-                        (UIntPtr)instanceCount);
+                        vertexStart,
+                        vertexCount,
+                        instanceCount);
                 }
                 else
                 {
                     _rce.drawPrimitives(
                         _graphicsPipeline.PrimitiveType,
-                        (UIntPtr)vertexStart,
-                        (UIntPtr)vertexCount,
-                        (UIntPtr)instanceCount,
-                        (UIntPtr)instanceStart);
+                        vertexStart,
+                        vertexCount,
+                        instanceCount,
+                        instanceStart);
 
                 }
             }
@@ -132,23 +132,23 @@ namespace Veldrid.MTL
                 {
                     _rce.drawIndexedPrimitives(
                         _graphicsPipeline.PrimitiveType,
-                        (UIntPtr)indexCount,
+                        indexCount,
                         _indexType,
                         _indexBuffer.DeviceBuffer,
-                        (UIntPtr)indexBufferOffset,
-                        (UIntPtr)instanceCount);
+                        indexBufferOffset,
+                        instanceCount);
                 }
                 else
                 {
                     _rce.drawIndexedPrimitives(
                         _graphicsPipeline.PrimitiveType,
-                        (UIntPtr)indexCount,
+                        indexCount,
                         _indexType,
                         _indexBuffer.DeviceBuffer,
-                        (UIntPtr)indexBufferOffset,
-                        (UIntPtr)instanceCount,
-                        (IntPtr)vertexOffset,
-                        (UIntPtr)instanceStart);
+                        indexBufferOffset,
+                        instanceCount,
+                        vertexOffset,
+                        instanceStart);
                 }
             }
         }
@@ -199,12 +199,12 @@ namespace Veldrid.MTL
                 {
                     if (!_vertexBuffersActive[i])
                     {
-                        UIntPtr index = (UIntPtr)(_graphicsPipeline.ResourceBindingModel == ResourceBindingModel.Improved
+                        UIntPtr index = _graphicsPipeline.ResourceBindingModel == ResourceBindingModel.Improved
                             ? _nonVertexBufferCount + i
-                            : i);
+                            : i;
                         _rce.setVertexBuffer(
                             _vertexBuffers[i].DeviceBuffer,
-                            (UIntPtr)_vbOffsets[i],
+                            _vbOffsets[i],
                             index);
                     }
                 }
@@ -220,7 +220,7 @@ namespace Veldrid.MTL
             {
                 fixed (MTLViewport* viewportsPtr = &_viewports[0])
                 {
-                    _rce.setViewports(viewportsPtr, (UIntPtr)_viewportCount);
+                    _rce.setViewports(viewportsPtr, _viewportCount);
                 }
             }
             else
@@ -235,7 +235,7 @@ namespace Veldrid.MTL
             {
                 fixed (MTLScissorRect* scissorRectsPtr = &_scissorRects[0])
                 {
-                    _rce.setScissorRects(scissorRectsPtr, (UIntPtr)_viewportCount);
+                    _rce.setScissorRects(scissorRectsPtr, _viewportCount);
                 }
             }
             else
@@ -351,8 +351,8 @@ namespace Veldrid.MTL
                 EnsureBlitEncoder();
                 _bce.copy(
                     copySrc.DeviceBuffer, UIntPtr.Zero,
-                    dstMTLBuffer.DeviceBuffer, (UIntPtr)bufferOffsetInBytes,
-                    (UIntPtr)(sizeInBytes + sizeRoundFactor));
+                    dstMTLBuffer.DeviceBuffer, bufferOffsetInBytes,
+                    sizeInBytes + sizeRoundFactor);
             }
         }
 
@@ -403,8 +403,8 @@ namespace Veldrid.MTL
             // Unaligned copy -- use special compute shader.
             EnsureComputeEncoder();
             _cce.setComputePipelineState(_gd.GetUnalignedBufferCopyPipeline());
-            _cce.setBuffer(mtlSrc.DeviceBuffer, UIntPtr.Zero, (UIntPtr)0);
-            _cce.setBuffer(mtlDst.DeviceBuffer, UIntPtr.Zero, (UIntPtr)1);
+            _cce.setBuffer(mtlSrc.DeviceBuffer, UIntPtr.Zero, 0);
+            _cce.setBuffer(mtlDst.DeviceBuffer, UIntPtr.Zero, 1);
 
             foreach (ref readonly BufferCopyCommand command in commands)
             {
@@ -418,7 +418,7 @@ namespace Veldrid.MTL
                 copyInfo.DestinationOffset = (uint)command.WriteOffset;
                 copyInfo.CopySize = (uint)command.Length;
 
-                _cce.setBytes(&copyInfo, (UIntPtr)sizeof(MTLUnalignedBufferCopyInfo), (UIntPtr)2);
+                _cce.setBytes(&copyInfo, (UIntPtr)sizeof(MTLUnalignedBufferCopyInfo), 2);
                 _cce.dispatchThreadGroups(new MTLSize(1, 1, 1), new MTLSize(1, 1, 1));
             }
         }
@@ -480,12 +480,12 @@ namespace Veldrid.MTL
                     _bce.copyFromBuffer(
                         srcBuffer,
                         (UIntPtr)sourceOffset,
-                        (UIntPtr)srcRowPitch,
-                        (UIntPtr)srcDepthPitch,
+                        srcRowPitch,
+                        srcDepthPitch,
                         sourceSize,
                         dstTexture,
-                        (UIntPtr)(dstBaseArrayLayer + layer),
-                        (UIntPtr)dstMipLevel,
+                        dstBaseArrayLayer + layer,
+                        dstMipLevel,
                         new MTLOrigin(dstX, dstY, dstZ));
                 }
             }
@@ -535,7 +535,7 @@ namespace Veldrid.MTL
                                     (UIntPtr)srcRowOffset,
                                     dstMTLTexture.StagingBuffer,
                                     (UIntPtr)dstRowOffset,
-                                    (UIntPtr)copySize);
+                                    copySize);
                             }
                     }
                     else // blockSize != 1
@@ -567,7 +567,7 @@ namespace Veldrid.MTL
                                     (UIntPtr)srcRowOffset,
                                     dstMTLTexture.StagingBuffer,
                                     (UIntPtr)dstRowOffset,
-                                    (UIntPtr)rowPitch);
+                                    rowPitch);
                             }
                     }
                 }
@@ -604,14 +604,14 @@ namespace Veldrid.MTL
 
                     _bce.copyTextureToBuffer(
                         srcMTLTexture.DeviceTexture,
-                        (UIntPtr)(srcBaseArrayLayer + layer),
-                        (UIntPtr)srcMipLevel,
+                        srcBaseArrayLayer + layer,
+                        srcMipLevel,
                         srcOrigin,
                         srcSize,
                         dstMTLTexture.StagingBuffer,
                         (UIntPtr)dstOffset,
-                        (UIntPtr)dstBytesPerRow,
-                        (UIntPtr)dstBytesPerImage);
+                        dstBytesPerRow,
+                        dstBytesPerImage);
                 }
             }
             else
@@ -621,13 +621,13 @@ namespace Veldrid.MTL
                 {
                     _bce.copyFromTexture(
                         srcMTLTexture.DeviceTexture,
-                        (UIntPtr)(srcBaseArrayLayer + layer),
-                        (UIntPtr)srcMipLevel,
+                        srcBaseArrayLayer + layer,
+                        srcMipLevel,
                         new MTLOrigin(srcX, srcY, srcZ),
                         new MTLSize(width, height, depth),
                         dstMTLTexture.DeviceTexture,
-                        (UIntPtr)(dstBaseArrayLayer + layer),
-                        (UIntPtr)dstMipLevel,
+                        dstBaseArrayLayer + layer,
+                        dstMipLevel,
                         new MTLOrigin(dstX, dstY, dstZ));
                 }
             }
@@ -647,7 +647,7 @@ namespace Veldrid.MTL
             PreComputeCommand();
             _cce.dispatchThreadgroupsWithIndirectBuffer(
                 mtlBuffer.DeviceBuffer,
-                (UIntPtr)offset,
+                offset,
                 _computePipeline.ThreadsPerThreadgroup);
         }
 
@@ -663,9 +663,9 @@ namespace Veldrid.MTL
                         _graphicsPipeline.PrimitiveType,
                         _indexType,
                         _indexBuffer.DeviceBuffer,
-                        (UIntPtr)_ibOffset,
+                        _ibOffset,
                         mtlBuffer.DeviceBuffer,
-                        (UIntPtr)currentOffset);
+                        currentOffset);
                 }
             }
         }
@@ -678,7 +678,7 @@ namespace Veldrid.MTL
                 for (uint i = 0; i < drawCount; i++)
                 {
                     uint currentOffset = i * stride + offset;
-                    _rce.drawPrimitives(_graphicsPipeline.PrimitiveType, mtlBuffer.DeviceBuffer, (UIntPtr)currentOffset);
+                    _rce.drawPrimitives(_graphicsPipeline.PrimitiveType, mtlBuffer.DeviceBuffer, currentOffset);
                 }
             }
         }
@@ -874,20 +874,20 @@ namespace Veldrid.MTL
             uint baseBuffer = GetBufferBase(set, stages != ShaderStages.Compute);
             if (stages == ShaderStages.Compute)
             {
-                _cce.setBuffer(mtlBuffer.DeviceBuffer, (UIntPtr)range.Offset, (UIntPtr)(slot + baseBuffer));
+                _cce.setBuffer(mtlBuffer.DeviceBuffer, range.Offset, slot + baseBuffer);
             }
             else
             {
                 if ((stages & ShaderStages.Vertex) == ShaderStages.Vertex)
                 {
-                    UIntPtr index = (UIntPtr)(_graphicsPipeline.ResourceBindingModel == ResourceBindingModel.Improved
+                    UIntPtr index = _graphicsPipeline.ResourceBindingModel == ResourceBindingModel.Improved
                         ? slot + baseBuffer
-                        : slot + _vertexBufferCount + baseBuffer);
-                    _rce.setVertexBuffer(mtlBuffer.DeviceBuffer, (UIntPtr)range.Offset, index);
+                        : slot + _vertexBufferCount + baseBuffer;
+                    _rce.setVertexBuffer(mtlBuffer.DeviceBuffer, range.Offset, index);
                 }
                 if ((stages & ShaderStages.Fragment) == ShaderStages.Fragment)
                 {
-                    _rce.setFragmentBuffer(mtlBuffer.DeviceBuffer, (UIntPtr)range.Offset, (UIntPtr)(slot + baseBuffer));
+                    _rce.setFragmentBuffer(mtlBuffer.DeviceBuffer, range.Offset, slot + baseBuffer);
                 }
             }
         }
@@ -897,15 +897,15 @@ namespace Veldrid.MTL
             uint baseTexture = GetTextureBase(set, stages != ShaderStages.Compute);
             if (stages == ShaderStages.Compute)
             {
-                _cce.setTexture(mtlTexView.TargetDeviceTexture, (UIntPtr)(slot + baseTexture));
+                _cce.setTexture(mtlTexView.TargetDeviceTexture, slot + baseTexture);
             }
             if ((stages & ShaderStages.Vertex) == ShaderStages.Vertex)
             {
-                _rce.setVertexTexture(mtlTexView.TargetDeviceTexture, (UIntPtr)(slot + baseTexture));
+                _rce.setVertexTexture(mtlTexView.TargetDeviceTexture, slot + baseTexture);
             }
             if ((stages & ShaderStages.Fragment) == ShaderStages.Fragment)
             {
-                _rce.setFragmentTexture(mtlTexView.TargetDeviceTexture, (UIntPtr)(slot + baseTexture));
+                _rce.setFragmentTexture(mtlTexView.TargetDeviceTexture, slot + baseTexture);
             }
         }
 
@@ -914,15 +914,15 @@ namespace Veldrid.MTL
             uint baseSampler = GetSamplerBase(set, stages != ShaderStages.Compute);
             if (stages == ShaderStages.Compute)
             {
-                _cce.setSamplerState(mtlSampler.DeviceSampler, (UIntPtr)(slot + baseSampler));
+                _cce.setSamplerState(mtlSampler.DeviceSampler, slot + baseSampler);
             }
             if ((stages & ShaderStages.Vertex) == ShaderStages.Vertex)
             {
-                _rce.setVertexSamplerState(mtlSampler.DeviceSampler, (UIntPtr)(slot + baseSampler));
+                _rce.setVertexSamplerState(mtlSampler.DeviceSampler, slot + baseSampler);
             }
             if ((stages & ShaderStages.Fragment) == ShaderStages.Fragment)
             {
-                _rce.setFragmentSamplerState(mtlSampler.DeviceSampler, (UIntPtr)(slot + baseSampler));
+                _rce.setFragmentSamplerState(mtlSampler.DeviceSampler, slot + baseSampler);
             }
         }
 
