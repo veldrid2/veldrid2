@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
+#nullable disable
+
 namespace Veldrid.OpenGLBinding
 {
+    using unsafe DebugProc = delegate* unmanaged[Cdecl]<DebugSource, DebugType, uint, DebugSeverity, uint, byte*, void*, void>;
+
     // uint = uint
     // GLuint = uint
     // GLuint64 = uint64
@@ -646,16 +650,6 @@ namespace Veldrid.OpenGLBinding
             IntPtr offset,
             UIntPtr size) => p_glBindBufferRange(target, index, buffer, offset, size);
 
-        [UnmanagedFunctionPointer(CallingConvention.Winapi)]
-        public delegate void DebugProc(
-            DebugSource source,
-            DebugType type,
-            uint id,
-            DebugSeverity severity,
-            uint length,
-            byte* message,
-            void* userParam);
-
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glDebugMessageCallback_t(DebugProc callback, void* userParam);
         private static glDebugMessageCallback_t p_glDebugMessageCallback;
@@ -840,7 +834,7 @@ namespace Veldrid.OpenGLBinding
             int size,
             VertexAttribPointerType type,
             uint relativeoffset) => p_glVertexAttribIFormat(attribindex, size, type, relativeoffset);
-        
+
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glFrontFace_t(FrontFaceDirection mode);
         private static glFrontFace_t p_glFrontFace;

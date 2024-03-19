@@ -11,10 +11,11 @@ using Veldrid.OpenGLBinding;
 using static Veldrid.OpenGL.EGL.EGLNative;
 using static Veldrid.OpenGL.OpenGLUtil;
 using static Veldrid.OpenGLBinding.OpenGLNative;
-using NativeLibrary = NativeLibraryLoader.NativeLibrary;
 
 namespace Veldrid.OpenGL
 {
+    using unsafe DebugProc = delegate* unmanaged[Cdecl]<DebugSource, DebugType, uint, DebugSeverity, uint, byte*, void*, void>;
+
     internal sealed unsafe class OpenGLGraphicsDevice : GraphicsDevice
     {
         private string _version;
@@ -31,6 +32,7 @@ namespace Veldrid.OpenGL
         private OpenGLTextureSamplerManager _textureSamplerManager;
         private OpenGLCommandExecutor _commandExecutor;
         private DebugProc _debugMessageCallback;
+        private GCHandle _selfHandle;
         private OpenGLExtensions _extensions;
         private BackendInfoOpenGL _openglInfo;
 
@@ -145,6 +147,7 @@ namespace Veldrid.OpenGL
                 }
             }
 
+            _selfHandle = GCHandle.Alloc(this, GCHandleType.Weak);
             _extensions = new OpenGLExtensions(extensions, BackendType, majorVersion, minorVersion);
 
             bool drawIndirect = _extensions.DrawIndirect || _extensions.MultiDrawIndirect;
@@ -1111,7 +1114,7 @@ namespace Veldrid.OpenGL
             }
         }
 
-        public void EnableDebugCallback() => EnableDebugCallback(DefaultDebugCallback);
+        public void EnableDebugCallback() => EnableDebugCallback(&DefaultDebugCallback);
 
         public void EnableDebugCallback(DebugProc callback)
         {
@@ -1124,11 +1127,12 @@ namespace Veldrid.OpenGL
             // The debug callback delegate must be persisted, otherwise errors will occur
             // when the OpenGL drivers attempt to call it after it has been collected.
             _debugMessageCallback = callback;
-            glDebugMessageCallback(_debugMessageCallback, null);
+            glDebugMessageCallback(_debugMessageCallback, (void*)GCHandle.ToIntPtr(_selfHandle));
             CheckLastError();
         }
 
-        private void DefaultDebugCallback(
+        [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+        private static void DefaultDebugCallback(
             DebugSource source,
             DebugType type,
             uint id,
@@ -1137,6 +1141,9 @@ namespace Veldrid.OpenGL
             byte* message,
             void* userParam)
         {
+            GCHandle gdHandle = GCHandle.FromIntPtr((nint)userParam);
+            OpenGLGraphicsDevice? gd = gdHandle.Target as OpenGLGraphicsDevice;
+
 #if DEBUG
             if (type == DebugType.DebugTypeError)
             {
@@ -1146,7 +1153,13 @@ namespace Veldrid.OpenGL
                 }
             }
 #endif
-            if (!_openglInfo.InvokeDebugProc(source, type, id, severity, length, message, userParam))
+
+            if (gd == null)
+            {
+                return;
+            }
+
+            if (!gd._openglInfo.InvokeDebugProc(source, type, id, severity, length, message))
             {
                 if (severity != DebugSeverity.DebugSeverityNotification)
                 {
@@ -1171,6 +1184,8 @@ namespace Veldrid.OpenGL
                 thread.FlushAndFinish();
                 thread.Terminate();
             }
+
+            _selfHandle.Free();
         }
 
         public override bool GetOpenGLInfo(out BackendInfoOpenGL info)

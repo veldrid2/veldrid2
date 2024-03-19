@@ -13,8 +13,7 @@ namespace Veldrid
         uint id,
         uint severity,
         uint length,
-        byte* message,
-        void* userParam);
+        byte* message);
 
     /// <summary>
     /// Exposes OpenGL-specific functionality,
@@ -127,8 +126,7 @@ namespace Veldrid
             uint id,
             DebugSeverity severity,
             uint length,
-            byte* message,
-            void* userParam)
+            byte* message)
         {
             OpenGLDebugMessageCallback? debugProc = DebugProc;
             if (debugProc != null)
@@ -139,8 +137,7 @@ namespace Veldrid
                     id,
                     (uint)severity,
                     length,
-                    message,
-                    userParam);
+                    message);
                 return true;
             }
             return false;
