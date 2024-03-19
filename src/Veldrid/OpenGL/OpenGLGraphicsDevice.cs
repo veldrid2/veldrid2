@@ -414,9 +414,9 @@ namespace Veldrid.OpenGL
             eaglLayer.frame = uiView.frame;
             uiView.layer.addSublayer(eaglLayer.NativePtr);
 
-            NativeLibrary glesLibrary = new("/System/Library/Frameworks/OpenGLES.framework/OpenGLES");
+            IntPtr glesLibrary = NativeLibrary.Load("/System/Library/Frameworks/OpenGLES.framework/OpenGLES");
 
-            IntPtr getProcAddress(string name) => glesLibrary.LoadFunction(name);
+            IntPtr getProcAddress(string name) => NativeLibrary.GetExport(glesLibrary, name);
 
             LoadAllFunctions(eaglContext.NativePtr, getProcAddress, true);
 
@@ -576,7 +576,7 @@ namespace Veldrid.OpenGL
                 eaglLayer.removeFromSuperlayer();
                 eaglLayer.Release();
                 eaglContext.Release();
-                glesLibrary.Dispose();
+                NativeLibrary.Free(glesLibrary);
             }
 
             OpenGLPlatformInfo platformInfo = new(

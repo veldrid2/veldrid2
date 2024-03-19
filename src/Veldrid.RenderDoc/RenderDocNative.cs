@@ -21,6 +21,7 @@ namespace Veldrid
     ///   1 - if the outAPIPointers has been filled with a pointer to the API struct requested
     ///   0 - if the requested version is not supported or the arguments are invalid.
     /// </returns>
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal unsafe delegate int pRENDERDOC_GetAPI(RENDERDOC_Version version, void** outAPIPointers);
 
     internal enum RENDERDOC_Version

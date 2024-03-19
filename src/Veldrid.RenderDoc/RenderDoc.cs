@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using NativeLibrary = NativeLibraryLoader.NativeLibrary;
 
 namespace Veldrid
 {
@@ -14,12 +14,13 @@ namespace Veldrid
     public unsafe class RenderDoc
     {
         private readonly RENDERDOC_API_1_4_0 _api;
-        private readonly NativeLibrary _nativeLib;
+        private readonly IntPtr _nativeLib;
 
-        private unsafe RenderDoc(NativeLibrary lib)
+        private unsafe RenderDoc(IntPtr lib)
         {
             _nativeLib = lib;
-            pRENDERDOC_GetAPI getApiFunc = _nativeLib.LoadFunction<pRENDERDOC_GetAPI>("RENDERDOC_GetAPI");
+            IntPtr getApiExport = NativeLibrary.GetExport(_nativeLib, "RENDERDOC_GetAPI");
+            pRENDERDOC_GetAPI getApiFunc = Marshal.GetDelegateForFunctionPointer<pRENDERDOC_GetAPI>(getApiExport);
             void* apiPointers;
             int result = getApiFunc(RENDERDOC_Version.API_Version_1_2_0, &apiPointers);
             if (result != 1)
@@ -27,7 +28,7 @@ namespace Veldrid
                 throw new InvalidOperationException("Failed to load RenderDoc API.");
             }
 
-            _api = Marshal.PtrToStructure<RENDERDOC_API_1_4_0>((IntPtr)apiPointers);
+            _api = Marshal.PtrToStructure<RENDERDOC_API_1_4_0>((IntPtr) apiPointers);
         }
 
         /// <summary>
@@ -290,10 +291,10 @@ namespace Veldrid
         /// </summary>
         public bool OverlayEnabled
         {
-            get => (_api.GetOverlayBits() & (uint)RENDERDOC_OverlayBits.Enabled) != 0;
+            get => (_api.GetOverlayBits() & (uint) RENDERDOC_OverlayBits.Enabled) != 0;
             set
             {
-                uint bit = (uint)RENDERDOC_OverlayBits.Enabled;
+                uint bit = (uint) RENDERDOC_OverlayBits.Enabled;
                 if (value) { _api.MaskOverlayBits(~0u, bit); }
                 else { _api.MaskOverlayBits(~bit, 0); }
             }
@@ -304,10 +305,10 @@ namespace Veldrid
         /// </summary>
         public bool OverlayFrameRate
         {
-            get => (_api.GetOverlayBits() & (uint)RENDERDOC_OverlayBits.FrameRate) != 0;
+            get => (_api.GetOverlayBits() & (uint) RENDERDOC_OverlayBits.FrameRate) != 0;
             set
             {
-                uint bit = (uint)RENDERDOC_OverlayBits.FrameRate;
+                uint bit = (uint) RENDERDOC_OverlayBits.FrameRate;
                 if (value) { _api.MaskOverlayBits(~0u, bit); }
                 else { _api.MaskOverlayBits(~bit, 0); }
             }
@@ -318,10 +319,10 @@ namespace Veldrid
         /// </summary>
         public bool OverlayFrameNumber
         {
-            get => (_api.GetOverlayBits() & (uint)RENDERDOC_OverlayBits.FrameNumber) != 0;
+            get => (_api.GetOverlayBits() & (uint) RENDERDOC_OverlayBits.FrameNumber) != 0;
             set
             {
-                uint bit = (uint)RENDERDOC_OverlayBits.FrameNumber;
+                uint bit = (uint) RENDERDOC_OverlayBits.FrameNumber;
                 if (value) { _api.MaskOverlayBits(~0u, bit); }
                 else { _api.MaskOverlayBits(~bit, 0); }
             }
@@ -332,10 +333,10 @@ namespace Veldrid
         /// </summary>
         public bool OverlayCaptureList
         {
-            get => (_api.GetOverlayBits() & (uint)RENDERDOC_OverlayBits.CaptureList) != 0;
+            get => (_api.GetOverlayBits() & (uint) RENDERDOC_OverlayBits.CaptureList) != 0;
             set
             {
-                uint bit = (uint)RENDERDOC_OverlayBits.CaptureList;
+                uint bit = (uint) RENDERDOC_OverlayBits.CaptureList;
                 if (value) { _api.MaskOverlayBits(~0u, bit); }
                 else { _api.MaskOverlayBits(~bit, 0); }
             }
@@ -346,28 +347,35 @@ namespace Veldrid
         /// </summary>
         /// <param name="renderDoc">If successful, this parameter contains a loaded <see cref="RenderDoc"/> instance.</param>
         /// <returns>Whether or not RenderDoc was successfully loaded.</returns>
-        public static bool Load(out RenderDoc renderDoc) => Load(GetLibNames(), out renderDoc);
+        public static bool Load([MaybeNullWhen(false)] out RenderDoc renderDoc) => Load(GetLibNames(), out renderDoc);
 
         /// Attempts to load RenderDoc from the given path.
         /// </summary>
         /// <param name="renderDocLibPath">The path to the RenderDoc shared library.</param>
         /// <param name="renderDoc">If successful, this parameter contains a loaded <see cref="RenderDoc"/> instance.</param>
         /// <returns>Whether or not RenderDoc was successfully loaded.</returns>
-        public static bool Load(string renderDocLibPath, out RenderDoc renderDoc) => Load(new[] { renderDocLibPath }, out renderDoc);
-
-        private static bool Load(string[] renderDocLibPaths, out RenderDoc renderDoc)
+        public static bool Load(string renderDocLibPath, [MaybeNullWhen(false)] out RenderDoc renderDoc)
         {
-            try
+            if (NativeLibrary.TryLoad(renderDocLibPath, out IntPtr lib))
             {
-                NativeLibrary lib = new(renderDocLibPaths);
                 renderDoc = new RenderDoc(lib);
                 return true;
             }
-            catch
+            renderDoc = null;
+            return false;
+        }
+
+        private static bool Load(string[] renderDocLibPaths, [MaybeNullWhen(false)] out RenderDoc renderDoc)
+        {
+            foreach (string path in renderDocLibPaths)
             {
-                renderDoc = null;
-                return false;
+                if (Load(path, out renderDoc))
+                {
+                    return true;
+                }
             }
+            renderDoc = null;
+            return false;
         }
 
         private static string[] GetLibNames()
@@ -375,7 +383,7 @@ namespace Veldrid
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 List<string> paths = new();
-                string programFiles = Environment.GetEnvironmentVariable("ProgramFiles");
+                string? programFiles = Environment.GetEnvironmentVariable("ProgramFiles");
                 if (programFiles != null)
                 {
                     string systemInstallPath = Path.Combine(programFiles, "RenderDoc", "renderdoc.dll");
