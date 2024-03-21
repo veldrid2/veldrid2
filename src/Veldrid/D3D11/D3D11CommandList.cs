@@ -364,10 +364,23 @@ namespace Veldrid.D3D11
         {
             D3D11ResourceSet d3d11RS = Util.AssertSubtype<ResourceSet, D3D11ResourceSet>(brsi.Set);
 
-            int cbBase = GetConstantBufferBase(slot, graphics);
-            int uaBase = GetUnorderedAccessBase(slot, graphics);
-            int textureBase = GetTextureBase(slot, graphics);
-            int samplerBase = GetSamplerBase(slot, graphics);
+            D3D11Pipeline? pipeline = graphics ? _graphicsPipeline : _computePipeline;
+            Debug.Assert(pipeline != null);
+
+            ReadOnlySpan<D3D11ResourceLayout> pipelinelayouts = pipeline.ResourceLayouts.AsSpan(0, (int)slot);
+            int cbBase = 0;
+            int uaBase = 0;
+            int textureBase = 0;
+            int samplerBase = 0;
+
+            foreach (D3D11ResourceLayout pLayout in pipelinelayouts)
+            {
+                Debug.Assert(pLayout != null);
+                cbBase += pLayout.UniformBufferCount;
+                uaBase += pLayout.StorageBufferCount;
+                textureBase += pLayout.TextureCount;
+                samplerBase += pLayout.SamplerCount;
+            }
 
             D3D11ResourceLayout layout = d3d11RS.Layout;
             BindableResource[] resources = d3d11RS.Resources;
@@ -375,13 +388,15 @@ namespace Veldrid.D3D11
             for (int i = 0; i < resources.Length; i++)
             {
                 BindableResource resource = resources[i];
+                D3D11ResourceLayout.ResourceBindingInfo rbi = layout.GetDeviceSlotIndex(i);
+
                 uint bufferOffset = 0;
-                if (layout.IsDynamicBuffer(i))
+                if (rbi.DynamicBuffer)
                 {
                     bufferOffset = brsi.Offsets.Get(dynamicOffsetIndex);
                     dynamicOffsetIndex += 1;
                 }
-                D3D11ResourceLayout.ResourceBindingInfo rbi = layout.GetDeviceSlotIndex(i);
+
                 switch (rbi.Kind)
                 {
                     case ResourceKind.UniformBuffer:
@@ -492,58 +507,6 @@ namespace Veldrid.D3D11
                 btis.Clear();
                 PoolBoundTextureList(btis);
             }
-        }
-
-        private int GetConstantBufferBase(uint slot, bool graphics)
-        {
-            D3D11ResourceLayout[] layouts = graphics ? _graphicsPipeline!.ResourceLayouts : _computePipeline!.ResourceLayouts;
-            int ret = 0;
-            for (int i = 0; i < slot; i++)
-            {
-                Debug.Assert(layouts[i] != null);
-                ret += layouts[i].UniformBufferCount;
-            }
-
-            return ret;
-        }
-
-        private int GetUnorderedAccessBase(uint slot, bool graphics)
-        {
-            D3D11ResourceLayout[] layouts = graphics ? _graphicsPipeline!.ResourceLayouts : _computePipeline!.ResourceLayouts;
-            int ret = 0;
-            for (int i = 0; i < slot; i++)
-            {
-                Debug.Assert(layouts[i] != null);
-                ret += layouts[i].StorageBufferCount;
-            }
-
-            return ret;
-        }
-
-        private int GetTextureBase(uint slot, bool graphics)
-        {
-            D3D11ResourceLayout[] layouts = graphics ? _graphicsPipeline!.ResourceLayouts : _computePipeline!.ResourceLayouts;
-            int ret = 0;
-            for (int i = 0; i < slot; i++)
-            {
-                Debug.Assert(layouts[i] != null);
-                ret += layouts[i].TextureCount;
-            }
-
-            return ret;
-        }
-
-        private int GetSamplerBase(uint slot, bool graphics)
-        {
-            D3D11ResourceLayout[] layouts = graphics ? _graphicsPipeline!.ResourceLayouts : _computePipeline!.ResourceLayouts;
-            int ret = 0;
-            for (int i = 0; i < slot; i++)
-            {
-                Debug.Assert(layouts[i] != null);
-                ret += layouts[i].SamplerCount;
-            }
-
-            return ret;
         }
 
         private protected override void SetVertexBufferCore(uint index, DeviceBuffer buffer, uint offset)
