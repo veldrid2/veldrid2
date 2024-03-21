@@ -37,7 +37,7 @@ namespace Veldrid.D3D11
                 ShaderStages.TessellationEvaluation => device.CreateDomainShader(Bytecode),
                 ShaderStages.Fragment => device.CreatePixelShader(Bytecode),
                 ShaderStages.Compute => device.CreateComputeShader(Bytecode),
-                _ => throw Illegal.Value<ShaderStages>(),
+                _ => Illegal.Value<ShaderStages, ID3D11DeviceChild>(),
             };
         }
 
@@ -51,7 +51,7 @@ namespace Veldrid.D3D11
                 ShaderStages.TessellationEvaluation => "ds_5_0",
                 ShaderStages.Fragment => "ps_5_0",
                 ShaderStages.Compute => "cs_5_0",
-                _ => throw Illegal.Value<ShaderStages>(),
+                _ => Illegal.Value<ShaderStages, string>(),
             };
 
             ShaderFlags flags = description.Debug ? ShaderFlags.Debug : ShaderFlags.OptimizationLevel3;

@@ -32,8 +32,9 @@
                     ResourceKind.TextureReadOnly => texIndex++,
                     ResourceKind.TextureReadWrite => unorderedAccessIndex++,
                     ResourceKind.Sampler => samplerIndex++,
-                    _ => throw Illegal.Value<ResourceKind>(),
+                    _ => Illegal.Value<ResourceKind, int>(),
                 };
+
                 _bindingInfosByVdIndex[i] = new ResourceBindingInfo(
                     slot,
                     elements[i].Stages,

@@ -1118,7 +1118,8 @@ namespace Veldrid.OpenGL
                         break;
 
                     default:
-                        throw Illegal.Value<ResourceKind>();
+                        Illegal.Value<ResourceKind>();
+                        break;
                 }
             }
         }

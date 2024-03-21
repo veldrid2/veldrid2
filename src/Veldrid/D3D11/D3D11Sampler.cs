@@ -40,7 +40,7 @@ namespace Veldrid.D3D11
                 SamplerBorderColor.TransparentBlack => new Color4(0, 0, 0, 0),
                 SamplerBorderColor.OpaqueBlack => new Color4(0, 0, 0, 1),
                 SamplerBorderColor.OpaqueWhite => new Color4(1, 1, 1, 1),
-                _ => throw Illegal.Value<SamplerBorderColor>(),
+                _ => Illegal.Value<SamplerBorderColor, Color4>(),
             };
         }
 

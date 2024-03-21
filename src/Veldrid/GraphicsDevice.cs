@@ -1219,7 +1219,7 @@ namespace Veldrid
 #endif
 
                 default:
-                    throw Illegal.Value<GraphicsBackend>();
+                    return Illegal.Value<GraphicsBackend, bool>();
             }
         }
 

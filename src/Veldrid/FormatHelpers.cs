@@ -47,7 +47,7 @@ namespace Veldrid
                 case VertexElementFormat.Half4:
                     return 4;
                 default:
-                    throw Illegal.Value<VertexElementFormat>();
+                    return Illegal.Value<VertexElementFormat, int>();
             }
         }
 
@@ -61,7 +61,7 @@ namespace Veldrid
                 TextureSampleCount.Count8 => 8,
                 TextureSampleCount.Count16 => 16,
                 TextureSampleCount.Count32 => 32,
-                _ => throw Illegal.Value<TextureSampleCount>(),
+                _ => Illegal.Value<TextureSampleCount, uint>(),
             };
         }
 
@@ -154,7 +154,7 @@ namespace Veldrid
                 case PixelFormat.ETC2_R8_G8_B8_A8_UNorm:
                     return 16;
                 default:
-                    throw Illegal.Value<PixelFormat>();
+                    return Illegal.Value<PixelFormat, uint>();
             }
         }
 
@@ -237,8 +237,13 @@ namespace Veldrid
                 8 => TextureSampleCount.Count8,
                 16 => TextureSampleCount.Count16,
                 32 => TextureSampleCount.Count32,
-                _ => throw new VeldridException("Unsupported multisample count: " + samples),
+                _ => Throw(),
             };
+
+            TextureSampleCount Throw()
+            {
+                throw new VeldridException("Unsupported multisample count: " + samples);
+            }
         }
 
         [SuppressMessage("Style", "IDE0066:Convert switch statement to expression", Justification = "<Pending>")]

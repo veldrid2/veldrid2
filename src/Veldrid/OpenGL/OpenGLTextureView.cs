@@ -116,7 +116,7 @@ namespace Veldrid.OpenGL
                 PixelFormat.R10_G10_B10_A2_UNorm => (SizedInternalFormat)PixelInternalFormat.Rgb10A2,
                 PixelFormat.R10_G10_B10_A2_UInt => (SizedInternalFormat)PixelInternalFormat.Rgb10A2ui,
                 PixelFormat.R11_G11_B10_Float => (SizedInternalFormat)PixelInternalFormat.R11fG11fB10f,
-                _ => throw Illegal.Value<PixelFormat>(),
+                _ => Illegal.Value<PixelFormat, SizedInternalFormat>(),
             };
         }
 

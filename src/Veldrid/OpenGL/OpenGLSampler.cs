@@ -77,7 +77,7 @@ namespace Veldrid.OpenGL
         {
             private uint _sampler;
 
-            public uint Sampler => _sampler;
+            public readonly uint Sampler => _sampler;
 
             public void CreateGLResources(SamplerDescription description, bool mipmapped, GraphicsBackend backend)
             {
@@ -147,14 +147,14 @@ namespace Veldrid.OpenGL
                 _sampler = sampler;
             }
 
-            private RgbaFloat ToRgbaFloat(SamplerBorderColor borderColor)
+            private static RgbaFloat ToRgbaFloat(SamplerBorderColor borderColor)
             {
                 return borderColor switch
                 {
                     SamplerBorderColor.TransparentBlack => new RgbaFloat(0, 0, 0, 0),
                     SamplerBorderColor.OpaqueBlack => new RgbaFloat(0, 0, 0, 1),
                     SamplerBorderColor.OpaqueWhite => new RgbaFloat(1, 1, 1, 1),
-                    _ => throw Illegal.Value<SamplerBorderColor>(),
+                    _ => Illegal.Value<SamplerBorderColor, RgbaFloat>(),
                 };
             }
         }

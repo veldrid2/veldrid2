@@ -251,7 +251,8 @@ namespace Veldrid.MTL
             }
             else
             {
-                throw Illegal.Value<TextureType>();
+                Unsafe.SkipInit(out properties);
+                return Illegal.Value<TextureType, bool>();
             }
 
             properties = new PixelFormatProperties(

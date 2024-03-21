@@ -773,11 +773,11 @@ namespace Veldrid.MTL
                 switch (bindingInfo.Kind)
                 {
                     case ResourceKind.UniformBuffer:
-                        {
-                            DeviceBufferRange range = Util.GetBufferRange(resource, bufferOffset);
-                            BindBuffer(range, slot, bindingInfo.Slot, bindingInfo.Stages);
-                            break;
-                        }
+                    {
+                        DeviceBufferRange range = Util.GetBufferRange(resource, bufferOffset);
+                        BindBuffer(range, slot, bindingInfo.Slot, bindingInfo.Stages);
+                        break;
+                    }
                     case ResourceKind.TextureReadOnly:
                         TextureView texView = Util.GetTextureView(_gd, resource);
                         MTLTextureView mtlTexView = Util.AssertSubtype<TextureView, MTLTextureView>(texView);
@@ -793,19 +793,20 @@ namespace Veldrid.MTL
                         BindSampler(mtlSampler, slot, bindingInfo.Slot, bindingInfo.Stages);
                         break;
                     case ResourceKind.StructuredBufferReadOnly:
-                        {
-                            DeviceBufferRange range = Util.GetBufferRange(resource, bufferOffset);
-                            BindBuffer(range, slot, bindingInfo.Slot, bindingInfo.Stages);
-                            break;
-                        }
+                    {
+                        DeviceBufferRange range = Util.GetBufferRange(resource, bufferOffset);
+                        BindBuffer(range, slot, bindingInfo.Slot, bindingInfo.Stages);
+                        break;
+                    }
                     case ResourceKind.StructuredBufferReadWrite:
-                        {
-                            DeviceBufferRange range = Util.GetBufferRange(resource, bufferOffset);
-                            BindBuffer(range, slot, bindingInfo.Slot, bindingInfo.Stages);
-                            break;
-                        }
+                    {
+                        DeviceBufferRange range = Util.GetBufferRange(resource, bufferOffset);
+                        BindBuffer(range, slot, bindingInfo.Slot, bindingInfo.Stages);
+                        break;
+                    }
                     default:
-                        throw Illegal.Value<ResourceKind>();
+                        Illegal.Value<ResourceKind>();
+                        break;
                 }
             }
         }
@@ -831,11 +832,11 @@ namespace Veldrid.MTL
                 switch (bindingInfo.Kind)
                 {
                     case ResourceKind.UniformBuffer:
-                        {
-                            DeviceBufferRange range = Util.GetBufferRange(resource, bufferOffset);
-                            BindBuffer(range, slot, bindingInfo.Slot, bindingInfo.Stages);
-                            break;
-                        }
+                    {
+                        DeviceBufferRange range = Util.GetBufferRange(resource, bufferOffset);
+                        BindBuffer(range, slot, bindingInfo.Slot, bindingInfo.Stages);
+                        break;
+                    }
                     case ResourceKind.TextureReadOnly:
                         TextureView texView = Util.GetTextureView(_gd, resource);
                         MTLTextureView mtlTexView = Util.AssertSubtype<TextureView, MTLTextureView>(texView);
@@ -851,19 +852,20 @@ namespace Veldrid.MTL
                         BindSampler(mtlSampler, slot, bindingInfo.Slot, bindingInfo.Stages);
                         break;
                     case ResourceKind.StructuredBufferReadOnly:
-                        {
-                            DeviceBufferRange range = Util.GetBufferRange(resource, bufferOffset);
-                            BindBuffer(range, slot, bindingInfo.Slot, bindingInfo.Stages);
-                            break;
-                        }
+                    {
+                        DeviceBufferRange range = Util.GetBufferRange(resource, bufferOffset);
+                        BindBuffer(range, slot, bindingInfo.Slot, bindingInfo.Stages);
+                        break;
+                    }
                     case ResourceKind.StructuredBufferReadWrite:
-                        {
-                            DeviceBufferRange range = Util.GetBufferRange(resource, bufferOffset);
-                            BindBuffer(range, slot, bindingInfo.Slot, bindingInfo.Stages);
-                            break;
-                        }
+                    {
+                        DeviceBufferRange range = Util.GetBufferRange(resource, bufferOffset);
+                        BindBuffer(range, slot, bindingInfo.Slot, bindingInfo.Stages);
+                        break;
+                    }
                     default:
-                        throw Illegal.Value<ResourceKind>();
+                        Illegal.Value<ResourceKind>();
+                        break;
                 }
             }
         }

@@ -436,7 +436,8 @@ namespace Veldrid.D3D11
                         BindSampler(sampler, samplerBase + rbi.Slot, rbi.Stages);
                         break;
                     default:
-                        throw Illegal.Value<ResourceKind>();
+                        Illegal.Value<ResourceKind>();
+                        break;
                 }
             }
         }

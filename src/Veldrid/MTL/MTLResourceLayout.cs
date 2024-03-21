@@ -48,8 +48,9 @@ namespace Veldrid.MTL
                     ResourceKind.TextureReadOnly => texIndex++,
                     ResourceKind.TextureReadWrite => texIndex++,
                     ResourceKind.Sampler => samplerIndex++,
-                    _ => throw Illegal.Value<ResourceKind>(),
+                    _ => Illegal.Value<ResourceKind, uint>(),
                 };
+
                 _bindingInfosByVdIndex[i] = new ResourceBindingInfo(
                     slot,
                     elements[i].Stages,

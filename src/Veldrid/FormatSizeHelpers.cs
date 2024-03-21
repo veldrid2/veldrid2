@@ -88,10 +88,10 @@ namespace Veldrid
                 case PixelFormat.ETC2_R8_G8_B8_A1_UNorm:
                 case PixelFormat.ETC2_R8_G8_B8_A8_UNorm:
                     Debug.Fail("GetSizeInBytes should not be used on a compressed format.");
-                    throw Illegal.Value<PixelFormat>();
+                    return Illegal.Value<PixelFormat, uint>();
 
                 default:
-                    throw Illegal.Value<PixelFormat>();
+                    return Illegal.Value<PixelFormat, uint>();
             }
         }
 
@@ -143,7 +143,7 @@ namespace Veldrid
                 case VertexElementFormat.Int4:
                     return 16;
                 default:
-                    throw Illegal.Value<VertexElementFormat>();
+                    return Illegal.Value<VertexElementFormat, uint>();
             }
         }
     }

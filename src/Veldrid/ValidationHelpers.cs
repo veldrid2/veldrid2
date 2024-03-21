@@ -44,8 +44,8 @@ namespace Veldrid
 
                     if ((range.Offset % alignment) != 0)
                     {
-                       throw new VeldridException($"The {nameof(DeviceBufferRange)} in slot {i} has an invalid offset: {range.Offset}. " +
-                           $"The offset for this buffer must be a multiple of {alignment}.");
+                        throw new VeldridException($"The {nameof(DeviceBufferRange)} in slot {i} has an invalid offset: {range.Offset}. " +
+                            $"The offset for this buffer must be a multiple of {alignment}.");
                     }
                 }
             }
@@ -133,7 +133,8 @@ namespace Veldrid
                 }
 
                 default:
-                    throw Illegal.Value<ResourceKind>();
+                    Illegal.Value<ResourceKind>();
+                    break;
             }
         }
     }

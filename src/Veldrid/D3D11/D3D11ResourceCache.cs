@@ -214,7 +214,7 @@ namespace Veldrid.D3D11
                 VertexElementSemantic.Normal => "NORMAL",
                 VertexElementSemantic.TextureCoordinate => "TEXCOORD",
                 VertexElementSemantic.Color => "COLOR",
-                _ => throw Illegal.Value<VertexElementSemantic>(),
+                _ => Illegal.Value<VertexElementSemantic, string>(),
             };
         }
 
@@ -253,7 +253,7 @@ namespace Veldrid.D3D11
                     VertexElementSemantic.TextureCoordinate => si._texCoord++,
                     VertexElementSemantic.Normal => si._normal++,
                     VertexElementSemantic.Color => si._color++,
-                    _ => throw Illegal.Value<VertexElementSemantic>(),
+                    _ => Illegal.Value<VertexElementSemantic, int>(),
                 };
             }
         }
