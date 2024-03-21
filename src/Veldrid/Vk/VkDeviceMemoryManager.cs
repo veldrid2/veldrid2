@@ -601,14 +601,17 @@ namespace Veldrid.Vulkan
 
         public void Dispose()
         {
-            foreach (KeyValuePair<uint, ChunkAllocatorSet> kvp in _allocatorsByMemoryType)
+            lock (_allocatorMutex)
             {
-                kvp.Value.Dispose();
-            }
+                foreach (KeyValuePair<uint, ChunkAllocatorSet> kvp in _allocatorsByMemoryType)
+                {
+                    kvp.Value.Dispose();
+                }
 
-            foreach (KeyValuePair<uint, ChunkAllocatorSet> kvp in _allocatorsByMemoryTypeUnmapped)
-            {
-                kvp.Value.Dispose();
+                foreach (KeyValuePair<uint, ChunkAllocatorSet> kvp in _allocatorsByMemoryTypeUnmapped)
+                {
+                    kvp.Value.Dispose();
+                }
             }
         }
     }

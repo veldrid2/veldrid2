@@ -49,6 +49,7 @@ namespace Veldrid.Vulkan
         public VkQueue PresentQueue => _presentQueue;
         public uint PresentQueueIndex => _presentQueueIndex;
         public ResourceRefCount RefCount { get; }
+        public object PresentLock { get; }
 
         public VkSwapchain(VkGraphicsDevice gd, in SwapchainDescription description) : this(gd, description, default)
         {
@@ -97,6 +98,7 @@ namespace Veldrid.Vulkan
             _imageAvailableFence = imageAvailableFence;
 
             RefCount = new ResourceRefCount(this);
+            PresentLock = new object();
         }
 
         public override void Resize(uint width, uint height)
@@ -263,13 +265,13 @@ namespace Veldrid.Vulkan
                 imageUsage = VkImageUsageFlags.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VkImageUsageFlags.VK_IMAGE_USAGE_TRANSFER_DST_BIT
             };
 
-            FixedArray2<uint> queueFamilyIndices = new(_gd.GraphicsQueueIndex, _gd.PresentQueueIndex);
+            uint* queueFamilyIndices = stackalloc uint[] { _gd.GraphicsQueueIndex, _gd.PresentQueueIndex };
 
             if (_gd.GraphicsQueueIndex != _gd.PresentQueueIndex)
             {
                 swapchainCI.imageSharingMode = VkSharingMode.VK_SHARING_MODE_CONCURRENT;
                 swapchainCI.queueFamilyIndexCount = 2;
-                swapchainCI.pQueueFamilyIndices = &queueFamilyIndices.First;
+                swapchainCI.pQueueFamilyIndices = queueFamilyIndices;
             }
             else
             {

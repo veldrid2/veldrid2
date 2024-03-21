@@ -1397,6 +1397,9 @@ namespace Veldrid.OpenGL
                             Action? action = Unsafe.As<Action>(workItem.Object0);
                             Debug.Assert(action != null);
 
+                            Debug.Assert(workItem.Object1 == null || workItem.Object1 is ManualResetEvent);
+                            eventAfterExecute = Unsafe.As<ManualResetEvent>(workItem.Object1);
+
                             action.Invoke();
                         }
                         break;
