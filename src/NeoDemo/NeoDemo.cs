@@ -39,10 +39,10 @@ namespace Veldrid.NeoDemo
         private ColorWriteMask? _newMask;
 
         private readonly Dictionary<string, ImageSharpTexture> _textures = new();
-        private Sdl2ControllerTracker _controllerTracker;
+        private Sdl2ControllerTracker? _controllerTracker;
         private bool _colorSrgb = true;
         private FullScreenQuad _fsq;
-        private static RenderDoc _renderDoc;
+        private static RenderDoc? _renderDoc;
         private bool _controllerDebugMenu;
         private bool _showImguiDemo;
 
@@ -142,8 +142,8 @@ namespace Veldrid.NeoDemo
                 Vector3 scale = new(0.1f);
                 ConstructedMesh mesh = atriumFile.GetMesh16(group);
                 MaterialDefinition materialDef = atriumMtls.Definitions[mesh.MaterialName];
-                ImageSharpTexture overrideTextureData = null;
-                ImageSharpTexture alphaTexture = null;
+                ImageSharpTexture? overrideTextureData = null;
+                ImageSharpTexture? alphaTexture = null;
                 MaterialPropsAndBuffer materialProps = CommonMaterials.Brick;
                 if (materialDef.DiffuseTexture != null)
                 {
@@ -182,7 +182,7 @@ namespace Veldrid.NeoDemo
 
         private ImageSharpTexture LoadTexture(string texturePath, bool mipmap) // Plz don't call this with the same texturePath and different mipmap values.
         {
-            if (!_textures.TryGetValue(texturePath, out ImageSharpTexture tex))
+            if (!_textures.TryGetValue(texturePath, out ImageSharpTexture? tex))
             {
                 tex = new ImageSharpTexture(texturePath, mipmap, true);
                 _textures.Add(texturePath, tex);
@@ -193,8 +193,8 @@ namespace Veldrid.NeoDemo
 
         private void AddTexturedMesh(
             ConstructedMesh meshData,
-            ImageSharpTexture texData,
-            ImageSharpTexture alphaTexData,
+            ImageSharpTexture? texData,
+            ImageSharpTexture? alphaTexData,
             MaterialPropsAndBuffer materialProps,
             Vector3 position,
             Quaternion rotation,

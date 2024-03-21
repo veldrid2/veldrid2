@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Veldrid.Sdl2;
@@ -12,7 +13,7 @@ namespace Veldrid.NeoDemo
         private readonly int _controllerIndex;
         private readonly SDL_GameController _controller;
 
-        public string ControllerName { get; }
+        public string? ControllerName { get; }
 
         private readonly Dictionary<SDL_GameControllerAxis, float> _axisValues = new();
         private readonly Dictionary<SDL_GameControllerButton, bool> _buttons = new();
@@ -38,7 +39,7 @@ namespace Veldrid.NeoDemo
             return ret;
         }
 
-        public static bool CreateDefault(out Sdl2ControllerTracker sct)
+        public static bool CreateDefault([MaybeNullWhen(false)] out Sdl2ControllerTracker sct)
         {
             int jsCount = SDL_NumJoysticks();
             for (int i = 0; i < jsCount; i++)
@@ -76,7 +77,7 @@ namespace Veldrid.NeoDemo
             }
         }
 
-        private float Normalize(short value)
+        private static float Normalize(short value)
         {
             return value < 0
                 ? -(value / (float)short.MinValue)

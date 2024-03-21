@@ -16,8 +16,8 @@ namespace Veldrid.NeoDemo.Objects
 
         private readonly string _name;
         private readonly ConstructedMesh _meshData;
-        private readonly ImageSharpTexture _textureData;
-        private readonly ImageSharpTexture _alphaTextureData;
+        private readonly ImageSharpTexture? _textureData;
+        private readonly ImageSharpTexture? _alphaTextureData;
         private readonly Transform _transform = new();
 
         private BoundingBox _centeredBounds;
@@ -46,11 +46,15 @@ namespace Veldrid.NeoDemo.Objects
         private readonly Vector3 _objectCenter;
         private bool _materialPropsOwned = false;
 
-        public MaterialProperties MaterialProperties { get => _materialProps.Properties; set { _materialProps.Properties = value; } }
+        public MaterialProperties MaterialProperties
+        {
+            get => _materialProps.Properties;
+            set => _materialProps.Properties = value;
+        }
 
         public Transform Transform => _transform;
 
-        public TexturedMesh(string name, ConstructedMesh meshData, ImageSharpTexture textureData, ImageSharpTexture alphaTexture, MaterialPropsAndBuffer materialProps)
+        public TexturedMesh(string name, ConstructedMesh meshData, ImageSharpTexture? textureData, ImageSharpTexture? alphaTexture, MaterialPropsAndBuffer materialProps)
         {
             _name = name;
             _meshData = meshData;
@@ -92,9 +96,7 @@ namespace Veldrid.NeoDemo.Objects
             }
             else
             {
-                _texture = disposeFactory.CreateTexture(TextureDescription.Texture2D(1, 1, 1, 1, PixelFormat.R8_G8_B8_A8_UNorm, TextureUsage.Sampled));
-                RgbaByte color = RgbaByte.Pink;
-                gd.UpdateTexture(_texture, (IntPtr)(&color), 4, 0, 0, 0, 1, 1, 1, 0, 0);
+                _texture = StaticResourceCache.GetPinkTexture(gd, gd.ResourceFactory);
             }
 
             if (_alphaTextureData != null)

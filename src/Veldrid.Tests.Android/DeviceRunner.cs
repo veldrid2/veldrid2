@@ -195,7 +195,14 @@ namespace Veldrid.Tests.Android
                 resultsSink = new DelegatingLongRunningTestDetectionSink(resultsSink, TimeSpan.FromSeconds(longRunningSeconds), diagSink);
             }
 
-            XunitProjectAssembly assm = new() { AssemblyFilename = runInfo.Assembly.Location };
+            string? asmName = runInfo.Assembly.GetName().Name;
+            string asmPath = runInfo.Assembly.Location;
+            if (asmPath == "")
+            {
+                asmPath = Path.Combine(AppContext.BaseDirectory, Path.GetFileName(asmName) ?? "");
+            }
+
+            XunitProjectAssembly assm = new() { AssemblyFilename = asmPath };
             deviceExecSink.OnMessage(new TestAssemblyExecutionStarting(assm, executionOptions));
 
             controller.RunTests(xunitTestCases.Select(tc => tc.Value.TestCase).ToList(), resultsSink, executionOptions);

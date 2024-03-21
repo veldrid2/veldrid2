@@ -29,12 +29,12 @@ namespace Veldrid.NeoDemo
         private float _windowWidth;
         private float _windowHeight;
         private Sdl2Window _window;
-        private Sdl2ControllerTracker _controller;
+        private Sdl2ControllerTracker? _controller;
 
         public event Action<Matrix4x4> ProjectionChanged;
         public event Action<Matrix4x4> ViewChanged;
 
-        public Camera(GraphicsDevice gd, Sdl2Window window, Sdl2ControllerTracker controller)
+        public Camera(GraphicsDevice gd, Sdl2Window window, Sdl2ControllerTracker? controller)
         {
             _gd = gd;
             _useReverseDepth = gd.IsDepthRangeZeroToOne;
@@ -72,7 +72,7 @@ namespace Veldrid.NeoDemo
         public float Yaw { get => _yaw; set { _yaw = value; UpdateViewMatrix(); } }
         public float Pitch { get => _pitch; set { _pitch = value; UpdateViewMatrix(); } }
 
-        public Sdl2ControllerTracker Controller { get => _controller; set => _controller = value; }
+        public Sdl2ControllerTracker? Controller { get => _controller; set => _controller = value; }
 
         public void Update(float deltaSeconds)
         {
