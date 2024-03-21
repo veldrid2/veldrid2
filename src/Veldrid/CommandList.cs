@@ -1511,6 +1511,7 @@ namespace Veldrid
         [Conditional("VALIDATE_USAGE")]
         private void ValidateIndexBuffer(uint indexCount)
         {
+#if VALIDATE_USAGE
             if (_indexBuffer == null)
             {
                 [DoesNotReturn]
@@ -1534,6 +1535,7 @@ namespace Veldrid
                 }
                 Throw();
             }
+#endif
         }
 
         [Conditional("VALIDATE_USAGE")]
@@ -1559,6 +1561,7 @@ namespace Veldrid
                 Throw();
             }
 
+#if VALIDATE_USAGE
             if (!_graphicsPipeline.GraphicsOutputDescription.Equals(_framebuffer.OutputDescription))
             {
                 static void Throw()
@@ -1569,6 +1572,7 @@ namespace Veldrid
                 }
                 Throw();
             }
+#endif
         }
 
         /// <summary>
