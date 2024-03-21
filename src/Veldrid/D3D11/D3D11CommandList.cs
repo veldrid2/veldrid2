@@ -457,12 +457,11 @@ namespace Veldrid.D3D11
             }
             else
             {
-                void Throw()
+                static D3D11BufferRange Throw(BindableResource resource)
                 {
                     throw new VeldridException($"Unexpected resource type used in a buffer type slot: {resource.GetType().Name}");
                 }
-                Throw();
-                return default;
+                return Throw(resource);
             }
         }
 
