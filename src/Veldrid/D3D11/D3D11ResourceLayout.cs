@@ -51,7 +51,11 @@
         {
             if (resourceLayoutIndex >= _bindingInfosByVdIndex.Length)
             {
-                throw new VeldridException($"Invalid resource index: {resourceLayoutIndex}. Maximum is: {_bindingInfosByVdIndex.Length - 1}.");
+                void Throw()
+                {
+                    throw new VeldridException($"Invalid resource index: {resourceLayoutIndex}. Maximum is: {_bindingInfosByVdIndex.Length - 1}.");
+                }
+                Throw();
             }
 
             return _bindingInfosByVdIndex[resourceLayoutIndex];

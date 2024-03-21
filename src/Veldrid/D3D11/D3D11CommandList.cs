@@ -187,7 +187,8 @@ namespace Veldrid.D3D11
         {
             if (_commandList != null)
             {
-                throw new VeldridException("Invalid use of End().");
+                static void Throw() => throw new VeldridException("Invalid use of End().");
+                Throw();
             }
 
             _context.FinishCommandList(false, out _commandList).CheckError();
@@ -455,7 +456,12 @@ namespace Veldrid.D3D11
             }
             else
             {
-                throw new VeldridException($"Unexpected resource type used in a buffer type slot: {resource.GetType().Name}");
+                void Throw()
+                {
+                    throw new VeldridException($"Unexpected resource type used in a buffer type slot: {resource.GetType().Name}");
+                }
+                Throw();
+                return default;
             }
         }
 
@@ -463,22 +469,26 @@ namespace Veldrid.D3D11
         {
             if (_boundSRVs.Remove(target, out List<BoundTextureInfo>? btis))
             {
-                foreach (BoundTextureInfo bti in btis)
+                void Unbind()
                 {
-                    BindTextureView(null, bti.Slot, bti.Stages, 0);
+                    foreach (BoundTextureInfo bti in btis)
+                    {
+                        BindTextureView(null, bti.Slot, bti.Stages, 0);
 
-                    if ((bti.Stages & ShaderStages.Compute) == ShaderStages.Compute)
-                    {
-                        _invalidatedComputeResourceSets[bti.ResourceSet] = true;
+                        if ((bti.Stages & ShaderStages.Compute) == ShaderStages.Compute)
+                        {
+                            _invalidatedComputeResourceSets[bti.ResourceSet] = true;
+                        }
+                        else
+                        {
+                            _invalidatedGraphicsResourceSets[bti.ResourceSet] = true;
+                        }
                     }
-                    else
-                    {
-                        _invalidatedGraphicsResourceSets[bti.ResourceSet] = true;
-                    }
+
+                    btis.Clear();
+                    PoolBoundTextureList(btis);
                 }
-
-                btis.Clear();
-                PoolBoundTextureList(btis);
+                Unbind();
             }
         }
 
@@ -491,21 +501,25 @@ namespace Veldrid.D3D11
         {
             if (_boundUAVs.Remove(target, out List<BoundTextureInfo>? btis))
             {
-                foreach (BoundTextureInfo bti in btis)
+                void Unbind()
                 {
-                    BindUnorderedAccessView(null, null, null, bti.Slot, bti.Stages, bti.ResourceSet);
-                    if ((bti.Stages & ShaderStages.Compute) == ShaderStages.Compute)
+                    foreach (BoundTextureInfo bti in btis)
                     {
-                        _invalidatedComputeResourceSets[bti.ResourceSet] = true;
+                        BindUnorderedAccessView(null, null, null, bti.Slot, bti.Stages, bti.ResourceSet);
+                        if ((bti.Stages & ShaderStages.Compute) == ShaderStages.Compute)
+                        {
+                            _invalidatedComputeResourceSets[bti.ResourceSet] = true;
+                        }
+                        else
+                        {
+                            _invalidatedGraphicsResourceSets[bti.ResourceSet] = true;
+                        }
                     }
-                    else
-                    {
-                        _invalidatedGraphicsResourceSets[bti.ResourceSet] = true;
-                    }
-                }
 
-                btis.Clear();
-                PoolBoundTextureList(btis);
+                    btis.Clear();
+                    PoolBoundTextureList(btis);
+                }
+                Unbind();
             }
         }
 
