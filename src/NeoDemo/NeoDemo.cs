@@ -125,6 +125,7 @@ namespace Veldrid.NeoDemo
 
         private void AddSponzaAtriumObjects()
         {
+            Console.WriteLine("Loading sponza objects");
             ObjFile atriumFile;
             using (FileStream objStream = File.OpenRead(AssetHelper.GetPath("Models/SponzaAtrium/sponza.obj")))
             {
@@ -137,8 +138,15 @@ namespace Veldrid.NeoDemo
                 atriumMtls = new MtlParser().Parse(mtlStream);
             }
 
+            Console.WriteLine($"Loading {atriumFile.MeshGroups.Length} mesh groups");
+            int groupOffset = 0;
+            int loadedDiffuses = 0;
+            int loadedAlphaMaps = 0;
             foreach (ObjFile.MeshGroup group in atriumFile.MeshGroups)
             {
+                double progress = Math.Floor((groupOffset + 1.0) / atriumFile.MeshGroups.Length * 100.0);
+                Console.WriteLine($"[{progress:0}%] Group {groupOffset++}: " + group.Name);
+
                 Vector3 scale = new(0.1f);
                 ConstructedMesh mesh = atriumFile.GetMesh16(group);
                 MaterialDefinition materialDef = atriumMtls.Definitions[mesh.MaterialName];
@@ -148,11 +156,21 @@ namespace Veldrid.NeoDemo
                 if (materialDef.DiffuseTexture != null)
                 {
                     string texturePath = AssetHelper.GetPath("Models/SponzaAtrium/" + materialDef.DiffuseTexture);
+                    if (!_textures.ContainsKey(texturePath))
+                    {
+                        Console.WriteLine("Loading diffuse: " + materialDef.DiffuseTexture);
+                        loadedDiffuses++;
+                    }
                     overrideTextureData = LoadTexture(texturePath, true);
                 }
                 if (materialDef.AlphaMap != null)
                 {
                     string texturePath = AssetHelper.GetPath("Models/SponzaAtrium/" + materialDef.AlphaMap);
+                    if (!_textures.ContainsKey(texturePath))
+                    {
+                        Console.WriteLine("Loading alpha map: " + materialDef.AlphaMap);
+                        loadedAlphaMaps++;
+                    }
                     alphaTexture = LoadTexture(texturePath, false);
                 }
                 if (materialDef.Name.Contains("vase"))
@@ -178,6 +196,9 @@ namespace Veldrid.NeoDemo
                     scale,
                     group.Name);
             }
+
+            Console.WriteLine($"Loaded {loadedDiffuses} diffuse textures");
+            Console.WriteLine($"Loaded {loadedAlphaMaps} alpha map textures");
         }
 
         private ImageSharpTexture LoadTexture(string texturePath, bool mipmap) // Plz don't call this with the same texturePath and different mipmap values.
@@ -216,12 +237,12 @@ namespace Veldrid.NeoDemo
             while (_window.Exists)
             {
                 long currentFrameTicks = sw.ElapsedTicks;
-                double deltaSeconds = (currentFrameTicks - previousFrameTicks) / (double)Stopwatch.Frequency;
+                double deltaSeconds = (currentFrameTicks - previousFrameTicks) / (double) Stopwatch.Frequency;
 
                 while (_limitFrameRate && deltaSeconds < _desiredFrameLengthSeconds)
                 {
                     currentFrameTicks = sw.ElapsedTicks;
-                    deltaSeconds = (currentFrameTicks - previousFrameTicks) / (double)Stopwatch.Frequency;
+                    deltaSeconds = (currentFrameTicks - previousFrameTicks) / (double) Stopwatch.Frequency;
                 }
 
                 previousFrameTicks = currentFrameTicks;
@@ -229,7 +250,7 @@ namespace Veldrid.NeoDemo
                 Sdl2Events.ProcessEvents();
                 InputSnapshot snapshot = _window.PumpEvents();
                 InputTracker.UpdateFrameInput(snapshot, _window);
-                Update((float)deltaSeconds);
+                Update((float) deltaSeconds);
                 if (!_window.Exists)
                 {
                     break;
@@ -433,11 +454,11 @@ namespace Veldrid.NeoDemo
                             {
                                 _renderDoc.APIValidation = validation;
                             }
-                            int delayForDebugger = (int)_renderDoc.DelayForDebugger;
+                            int delayForDebugger = (int) _renderDoc.DelayForDebugger;
                             if (ImGui.InputInt("Debugger Delay", ref delayForDebugger))
                             {
                                 delayForDebugger = Math.Clamp(delayForDebugger, 0, int.MaxValue);
-                                _renderDoc.DelayForDebugger = (uint)delayForDebugger;
+                                _renderDoc.DelayForDebugger = (uint) delayForDebugger;
                             }
                             bool verifyBufferAccess = _renderDoc.VerifyBufferAccess;
                             if (ImGui.Checkbox("Verify Buffer Access", ref verifyBufferAccess))
@@ -538,7 +559,7 @@ namespace Veldrid.NeoDemo
 
         private void ChangeMsaa(int msaaOption)
         {
-            TextureSampleCount sampleCount = (TextureSampleCount)msaaOption;
+            TextureSampleCount sampleCount = (TextureSampleCount) msaaOption;
             _newSampleCount = sampleCount;
         }
 
@@ -594,7 +615,7 @@ namespace Veldrid.NeoDemo
             {
                 _windowResized = false;
 
-                _gd.ResizeMainWindow((uint)width, (uint)height);
+                _gd.ResizeMainWindow((uint) width, (uint) height);
                 _scene.Camera.WindowResized(width, height);
                 _resizeHandled?.Invoke(width, height);
                 CommandList cl = _gd.ResourceFactory.CreateCommandList();
