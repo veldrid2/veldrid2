@@ -65,17 +65,39 @@ namespace Veldrid
             };
         }
 
+        internal static bool IsExactStencilFormat(PixelFormat format)
+        {
+            return format == PixelFormat.D16_UNorm_S8_UInt
+                || format == PixelFormat.D24_UNorm_S8_UInt
+                || format == PixelFormat.D32_Float_S8_UInt;
+        }
+
         internal static bool IsStencilFormat(PixelFormat format)
         {
-            return format == PixelFormat.D24_UNorm_S8_UInt || format == PixelFormat.D32_Float_S8_UInt;
+            return IsExactStencilFormat(format);
+        }
+
+        internal static bool IsExactDepthFormat(PixelFormat format)
+        {
+            return format == PixelFormat.D16_UNorm
+                || format == PixelFormat.D32_Float;
+        }
+
+        internal static bool IsDepthFormat(PixelFormat format)
+        {
+            return format == PixelFormat.R16_UNorm
+                || format == PixelFormat.R32_Float
+                || IsExactDepthFormat(format);
+        }
+
+        internal static bool IsExactDepthStencilFormat(PixelFormat format)
+        {
+            return IsExactDepthFormat(format) || IsExactStencilFormat(format);
         }
 
         internal static bool IsDepthStencilFormat(PixelFormat format)
         {
-            return format == PixelFormat.D32_Float_S8_UInt
-                || format == PixelFormat.D24_UNorm_S8_UInt
-                || format == PixelFormat.R16_UNorm
-                || format == PixelFormat.R32_Float;
+            return IsDepthFormat(format) || IsStencilFormat(format);
         }
 
         internal static bool IsCompressedFormat(PixelFormat format)

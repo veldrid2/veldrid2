@@ -338,13 +338,19 @@ namespace Veldrid.StartupUtilities
             {
                 switch (options.SwapchainDepthFormat)
                 {
+                    case PixelFormat.D16_UNorm:
                     case PixelFormat.R16_UNorm:
                         depthBits = 16;
+                        break;
+                    case PixelFormat.D16_UNorm_S8_UInt:
+                        depthBits = 16;
+                        stencilBits = 8;
                         break;
                     case PixelFormat.D24_UNorm_S8_UInt:
                         depthBits = 24;
                         stencilBits = 8;
                         break;
+                    case PixelFormat.D32_Float:
                     case PixelFormat.R32_Float:
                         depthBits = 32;
                         break;

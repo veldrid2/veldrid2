@@ -129,6 +129,15 @@ namespace Veldrid.D3D11
                 case PixelFormat.BC7_UNorm_SRgb:
                     return Format.BC7_UNorm_SRgb;
 
+                case PixelFormat.D16_UNorm:
+                    Debug.Assert(depthFormat);
+                    return Format.R16_Typeless;
+                case PixelFormat.D16_UNorm_S8_UInt:
+                    Debug.Assert(depthFormat);
+                    throw new VeldridException($"{nameof(PixelFormat.D16_UNorm_S8_UInt)} is not supported on Direct3D 11.");
+                case PixelFormat.D32_Float:
+                    Debug.Assert(depthFormat);
+                    return Format.R32_Typeless;
                 case PixelFormat.D24_UNorm_S8_UInt:
                     Debug.Assert(depthFormat);
                     return Format.R24G8_Typeless;
@@ -397,14 +406,14 @@ namespace Veldrid.D3D11
                 Format.R8_SNorm => PixelFormat.R8_SNorm,
                 Format.R8_UInt => PixelFormat.R8_UInt,
                 Format.R8_SInt => PixelFormat.R8_SInt,
-                Format.R16_UNorm or Format.D16_UNorm => PixelFormat.R16_UNorm,
+                Format.R16_UNorm => PixelFormat.R16_UNorm,
                 Format.R16_SNorm => PixelFormat.R16_SNorm,
                 Format.R16_UInt => PixelFormat.R16_UInt,
                 Format.R16_SInt => PixelFormat.R16_SInt,
                 Format.R16_Float => PixelFormat.R16_Float,
                 Format.R32_UInt => PixelFormat.R32_UInt,
                 Format.R32_SInt => PixelFormat.R32_SInt,
-                Format.R32_Float or Format.D32_Float => PixelFormat.R32_Float,
+                Format.R32_Float => PixelFormat.R32_Float,
                 Format.R8G8_UNorm => PixelFormat.R8_G8_UNorm,
                 Format.R8G8_SNorm => PixelFormat.R8_G8_SNorm,
                 Format.R8G8_UInt => PixelFormat.R8_G8_UInt,
@@ -440,6 +449,8 @@ namespace Veldrid.D3D11
                 Format.BC5_UNorm => PixelFormat.BC5_UNorm,
                 Format.BC5_SNorm => PixelFormat.BC5_SNorm,
                 Format.BC7_UNorm => PixelFormat.BC7_UNorm,
+                Format.D16_UNorm => PixelFormat.D16_UNorm,
+                Format.D32_Float => PixelFormat.D32_Float,
                 Format.D24_UNorm_S8_UInt => PixelFormat.D24_UNorm_S8_UInt,
                 Format.D32_Float_S8X24_UInt => PixelFormat.D32_Float_S8_UInt,
                 Format.R10G10B10A2_UInt => PixelFormat.R10_G10_B10_A2_UInt,
@@ -630,8 +641,8 @@ namespace Veldrid.D3D11
         {
             return format switch
             {
-                PixelFormat.R32_Float => Format.D32_Float,
-                PixelFormat.R16_UNorm => Format.D16_UNorm,
+                PixelFormat.R32_Float or PixelFormat.D32_Float => Format.D32_Float,
+                PixelFormat.R16_UNorm or PixelFormat.D16_UNorm => Format.D16_UNorm,
                 PixelFormat.D24_UNorm_S8_UInt => Format.D24_UNorm_S8_UInt,
                 PixelFormat.D32_Float_S8_UInt => Format.D32_Float_S8X24_UInt,
                 _ => Throw(),

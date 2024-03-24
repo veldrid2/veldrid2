@@ -41,24 +41,10 @@ namespace Veldrid.OpenGL
             _pbos = new uint[MipLevels * ArrayLayers];
             _pboSizes = new uint[MipLevels * ArrayLayers];
 
-            GLPixelFormat = OpenGLFormats.VdToGLPixelFormat(Format);
+            bool depthFormat = (Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil;
+            GLPixelFormat = OpenGLFormats.VdToGLPixelFormat(Format, depthFormat);
             GLPixelType = OpenGLFormats.VdToGLPixelType(Format);
-            GLInternalFormat = OpenGLFormats.VdToGLPixelInternalFormat(Format);
-
-            if ((Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil)
-            {
-                GLPixelFormat = FormatHelpers.IsStencilFormat(Format)
-                    ? GLPixelFormat.DepthStencil
-                    : GLPixelFormat.DepthComponent;
-                if (Format == PixelFormat.R16_UNorm)
-                {
-                    GLInternalFormat = PixelInternalFormat.DepthComponent16;
-                }
-                else if (Format == PixelFormat.R32_Float)
-                {
-                    GLInternalFormat = PixelInternalFormat.DepthComponent32f;
-                }
-            }
+            GLInternalFormat = OpenGLFormats.VdToGLPixelInternalFormat(Format, depthFormat);
 
             if ((Usage & TextureUsage.Cubemap) == TextureUsage.Cubemap)
             {
@@ -104,24 +90,10 @@ namespace Veldrid.OpenGL
             _pbos = new uint[MipLevels * ArrayLayers];
             _pboSizes = new uint[MipLevels * ArrayLayers];
 
-            GLPixelFormat = OpenGLFormats.VdToGLPixelFormat(Format);
+            bool depthFormat = (Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil;
+            GLPixelFormat = OpenGLFormats.VdToGLPixelFormat(Format, depthFormat);
             GLPixelType = OpenGLFormats.VdToGLPixelType(Format);
-            GLInternalFormat = OpenGLFormats.VdToGLPixelInternalFormat(Format);
-
-            if ((Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil)
-            {
-                GLPixelFormat = FormatHelpers.IsStencilFormat(Format)
-                    ? GLPixelFormat.DepthStencil
-                    : GLPixelFormat.DepthComponent;
-                if (Format == PixelFormat.R16_UNorm)
-                {
-                    GLInternalFormat = PixelInternalFormat.DepthComponent16;
-                }
-                else if (Format == PixelFormat.R32_Float)
-                {
-                    GLInternalFormat = PixelInternalFormat.DepthComponent32f;
-                }
-            }
+            GLInternalFormat = OpenGLFormats.VdToGLPixelInternalFormat(Format, depthFormat);
 
             if ((Usage & TextureUsage.Cubemap) == TextureUsage.Cubemap)
             {

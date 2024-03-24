@@ -123,10 +123,12 @@ namespace Veldrid
             {
                 throw new VeldridException("Width, Height, and Depth must be non-zero.");
             }
-            if ((description.Format == PixelFormat.D24_UNorm_S8_UInt || description.Format == PixelFormat.D32_Float_S8_UInt)
-                && (description.Usage & TextureUsage.DepthStencil) == 0)
+            if (FormatHelpers.IsExactDepthStencilFormat(description.Format)
+                && (description.Usage & TextureUsage.DepthStencil) == 0
+                && (description.Usage & TextureUsage.Staging) == 0)
             {
-                throw new VeldridException("The givel PixelFormat can only be used in a Texture with DepthStencil usage.");
+                throw new VeldridException(
+                    $"The given {nameof(PixelFormat)} can only be used in a Texture with {nameof(TextureUsage.DepthStencil)} or {nameof(TextureUsage.Staging)} usage.");
             }
             if ((description.Type == TextureType.Texture1D || description.Type == TextureType.Texture3D)
                 && description.SampleCount != TextureSampleCount.Count1)
