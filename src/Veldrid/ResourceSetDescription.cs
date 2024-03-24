@@ -11,6 +11,7 @@ namespace Veldrid
         /// The <see cref="ResourceLayout"/> describing the number and kind of resources used.
         /// </summary>
         public ResourceLayout Layout;
+
         /// <summary>
         /// An array of <see cref="BindableResource"/> objects.
         /// The number and type of resources must match those specified in the <see cref="ResourceLayout"/>.
@@ -36,7 +37,7 @@ namespace Veldrid
         /// <returns>True if all elements and all array elements are equal; false otherswise.</returns>
         public bool Equals(ResourceSetDescription other)
         {
-            return Layout.Equals(other.Layout) && Util.ArrayEquals(BoundResources, other.BoundResources);
+            return Layout.Equals(other.Layout) && Util.ArrayEqualsEquatable(BoundResources, other.BoundResources);
         }
 
         /// <summary>

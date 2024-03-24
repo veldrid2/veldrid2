@@ -432,7 +432,7 @@ namespace Veldrid.D3D11
                         BindUnorderedAccessView(d3d11RWTexView.Target, null, d3d11RWTexView.UnorderedAccessView, uaBase + rbi.Slot, rbi.Stages, slot);
                         break;
                     case ResourceKind.Sampler:
-                        D3D11Sampler sampler = Util.AssertSubtype<BindableResource, D3D11Sampler>(resource);
+                        D3D11Sampler sampler = Util.AssertSubtype<Sampler, D3D11Sampler>(resource.GetSampler());
                         BindSampler(sampler, samplerBase + rbi.Slot, rbi.Stages);
                         break;
                     default:
@@ -444,25 +444,9 @@ namespace Veldrid.D3D11
 
         private static D3D11BufferRange GetBufferRange(BindableResource resource, uint additionalOffset)
         {
-            if (resource is D3D11Buffer d3d11Buff)
-            {
-                return new D3D11BufferRange(d3d11Buff, additionalOffset, d3d11Buff.SizeInBytes);
-            }
-            else if (resource is DeviceBufferRange range)
-            {
-                return new D3D11BufferRange(
-                    Util.AssertSubtype<DeviceBuffer, D3D11Buffer>(range.Buffer),
-                    range.Offset + additionalOffset,
-                    range.SizeInBytes);
-            }
-            else
-            {
-                static D3D11BufferRange Throw(BindableResource resource)
-                {
-                    throw new VeldridException($"Unexpected resource type used in a buffer type slot: {resource.GetType().Name}");
-                }
-                return Throw(resource);
-            }
+            DeviceBufferRange range = Util.GetBufferRange(resource, additionalOffset);
+            D3D11Buffer buffer = Util.AssertSubtype<DeviceBuffer, D3D11Buffer>(range.Buffer);
+            return new D3D11BufferRange(buffer, range.Offset, range.SizeInBytes);
         }
 
         private void UnbindSRVTexture(Texture target)

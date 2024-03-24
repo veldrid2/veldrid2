@@ -789,7 +789,7 @@ namespace Veldrid.MTL
                         BindTexture(mtlTexViewRW, slot, bindingInfo.Slot, bindingInfo.Stages);
                         break;
                     case ResourceKind.Sampler:
-                        MTLSampler mtlSampler = Util.AssertSubtype<BindableResource, MTLSampler>(resource);
+                        MTLSampler mtlSampler = Util.AssertSubtype<Sampler, MTLSampler>(resource.GetSampler());
                         BindSampler(mtlSampler, slot, bindingInfo.Slot, bindingInfo.Stages);
                         break;
                     case ResourceKind.StructuredBufferReadOnly:
@@ -848,7 +848,7 @@ namespace Veldrid.MTL
                         BindTexture(mtlTexViewRW, slot, bindingInfo.Slot, bindingInfo.Stages);
                         break;
                     case ResourceKind.Sampler:
-                        MTLSampler mtlSampler = Util.AssertSubtype<BindableResource, MTLSampler>(resource);
+                        MTLSampler mtlSampler = Util.AssertSubtype<Sampler, MTLSampler>(resource.GetSampler());
                         BindSampler(mtlSampler, slot, bindingInfo.Slot, bindingInfo.Stages);
                         break;
                     case ResourceKind.StructuredBufferReadOnly:

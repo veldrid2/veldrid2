@@ -1105,7 +1105,7 @@ namespace Veldrid.OpenGL
                         break;
 
                     case ResourceKind.Sampler:
-                        OpenGLSampler glSampler = Util.AssertSubtype<BindableResource, OpenGLSampler>(resource);
+                        OpenGLSampler glSampler = Util.AssertSubtype<Sampler, OpenGLSampler>(resource.GetSampler());
                         glSampler.EnsureResourcesCreated();
 
                         if (pipeline.GetSamplerBindingInfo(slot, element, out OpenGLSamplerBindingSlotInfo samplerBindingInfo))

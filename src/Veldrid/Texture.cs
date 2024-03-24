@@ -7,7 +7,8 @@ namespace Veldrid
     /// A device resource used to store arbitrary image data in a specific format.
     /// See <see cref="TextureDescription"/>.
     /// </summary>
-    public abstract class Texture : DeviceResource, MappableResource, IDisposable, BindableResource
+    /// <seealso cref="BindableResource"/>
+    public abstract class Texture : DeviceResource, MappableResource, IDisposable
     {
         private readonly object _fullTextureViewLock = new();
         private TextureView? _fullTextureView;

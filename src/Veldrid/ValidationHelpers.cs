@@ -105,8 +105,8 @@ namespace Veldrid
 
                 case ResourceKind.TextureReadOnly:
                 {
-                    if (!(resource is TextureView tv && (tv.Target.Usage & TextureUsage.Sampled) != 0)
-                        && !(resource is Texture t && (t.Usage & TextureUsage.Sampled) != 0))
+                    if (!(resource.Kind == BindableResourceKind.TextureView && (resource.GetTextureView().Target.Usage & TextureUsage.Sampled) != 0)
+                        && !(resource.Kind == BindableResourceKind.Texture && (resource.GetTexture().Usage & TextureUsage.Sampled) != 0))
                     {
                         void Throw() => throw new VeldridException(
                             $"Resource in slot {slot} does not match {nameof(ResourceKind)}.{kind} specified in the " +
@@ -119,8 +119,8 @@ namespace Veldrid
 
                 case ResourceKind.TextureReadWrite:
                 {
-                    if (!(resource is TextureView tv && (tv.Target.Usage & TextureUsage.Storage) != 0)
-                        && !(resource is Texture t && (t.Usage & TextureUsage.Storage) != 0))
+                    if (!(resource.Kind == BindableResourceKind.TextureView && (resource.GetTextureView().Target.Usage & TextureUsage.Storage) != 0)
+                        && !(resource.Kind == BindableResourceKind.Texture && (resource.GetTexture().Usage & TextureUsage.Storage) != 0))
                     {
                         void Throw() => throw new VeldridException(
                             $"Resource in slot {slot} does not match {nameof(ResourceKind)}.{kind} specified in the " +
@@ -133,12 +133,12 @@ namespace Veldrid
 
                 case ResourceKind.Sampler:
                 {
-                    if (resource is not Sampler s)
+                    if (resource.Kind != BindableResourceKind.Sampler)
                     {
-                        void Throw() => throw new VeldridException(
+                        void Throw(BindableResourceKind resourceKind) => throw new VeldridException(
                             $"Resource in slot {slot} does not match {nameof(ResourceKind)}.{kind} specified in the {nameof(ResourceLayout)}. " +
-                            $"It must be a {nameof(Sampler)}.");
-                        Throw();
+                            $"It must be a {nameof(Sampler)} but was {resourceKind}.");
+                        Throw(resource.Kind);
                     }
                     break;
                 }

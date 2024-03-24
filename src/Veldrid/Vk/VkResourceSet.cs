@@ -98,7 +98,7 @@ namespace Veldrid.Vulkan
                 }
                 else if (type == VkDescriptorType.VK_DESCRIPTOR_TYPE_SAMPLER)
                 {
-                    VkSampler sampler = Util.AssertSubtype<BindableResource, VkSampler>(boundResources[i]);
+                    VkSampler sampler = Util.AssertSubtype<Sampler, VkSampler>(boundResources[i].GetSampler());
                     imageInfos[i] = new VkDescriptorImageInfo() { sampler = sampler.DeviceSampler };
                     descriptorWrites[i].pImageInfo = &imageInfos[i];
                     _refCounts.Add(sampler.RefCount);
