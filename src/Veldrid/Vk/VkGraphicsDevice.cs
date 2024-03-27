@@ -1005,7 +1005,6 @@ namespace Veldrid.Vulkan
             if (resource is VkBuffer buffer)
             {
                 memoryBlock = buffer.Memory;
-                sizeInBytes = buffer.SizeInBytes;
             }
             else
             {
@@ -1020,15 +1019,20 @@ namespace Veldrid.Vulkan
 
             if (memoryBlock.DeviceMemory != VkDeviceMemory.NULL)
             {
+                ulong atomSize = _physicalDeviceProperties.limits.nonCoherentAtomSize;
+                ulong mapOffset = memoryBlock.Offset + offsetInBytes;
+                ulong bindOffset = ((mapOffset / atomSize) * atomSize);
+                ulong bindSize = ((sizeInBytes + atomSize - 1) / atomSize) * atomSize;
+
                 if (memoryBlock.IsPersistentMapped)
                 {
-                    mappedPtr = (IntPtr)memoryBlock.BlockMappedPointer;
+                    mappedPtr = (IntPtr)((byte*)memoryBlock.BaseMappedPointer + mapOffset);
                 }
                 else
                 {
                     void* ret;
                     VkResult result = vkMapMemory(
-                        _device, memoryBlock.DeviceMemory, memoryBlock.Offset, memoryBlock.Size, 0, &ret);
+                        _device, memoryBlock.DeviceMemory, bindOffset, bindSize, 0, &ret);
                     if (result != VkResult.VK_ERROR_MEMORY_MAP_FAILED)
                     {
                         CheckResult(result);
@@ -1037,15 +1041,14 @@ namespace Veldrid.Vulkan
                     {
                         ThrowMapFailedException(resource, subresource);
                     }
-                    mappedPtr = (IntPtr)ret;
+                    mappedPtr = (IntPtr)((byte*)ret + (mapOffset - bindOffset));
                 }
             }
 
-            byte* dataPtr = (byte*)mappedPtr.ToPointer() + offsetInBytes;
             return new MappedResource(
                 resource,
                 mode,
-                (IntPtr)dataPtr,
+                mappedPtr,
                 offsetInBytes,
                 sizeInBytes,
                 subresource,
@@ -1280,7 +1283,7 @@ namespace Veldrid.Vulkan
                 {
                     Transient = true
                 };
-                sharedList = (VkCommandList) ResourceFactory.CreateCommandList(desc);
+                sharedList = (VkCommandList)ResourceFactory.CreateCommandList(desc);
             }
 
             sharedList.Begin();
