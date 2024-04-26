@@ -5,68 +5,38 @@ namespace Veldrid.Utilities
 {
     internal static class FastParse
     {
-        private static readonly long[] _powLookup = new[]
-        {
-            1, // 10^0
-            10, // 10^1
-            100, // 10^2
-            1000, // 10^3
-            10000, // 10^4
-            100000, // 10^5
-            1000000, // 10^6
-            10000000, // 10^7
-            100000000, // 10^8
-            1000000000, // 10^9,
-            10000000000, // 10^10,
-            100000000000, // 10^11,
-            1000000000000, // 10^12,
-            10000000000000, // 10^13,
-            100000000000000, // 10^14,
-            1000000000000000, // 10^15,
-            10000000000000000, // 10^16,
-            100000000000000000, // 10^17,
-        };
-
         private static readonly double[] _doubleExpLookup = GetDoubleExponents();
-
-        public static bool TryParseDouble(ReadOnlySpan<char> s, out double result, char decimalSeparator = '.')
-        {
-            return TryParseDouble(s, out result, out _, decimalSeparator);
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static bool TryParseInt(ReadOnlySpan<char> s, out int result)
         {
             int r = 0;
             int sign;
-            int start;
+            int i = 0;
 
-            char c = s[0];
+            char c = s[i];
             if (c == '-')
             {
                 sign = -1;
-                start = 1;
+                i = 1;
             }
             else if (c > '9' || c < '0')
             {
-                result = 0;
-                return false;
+                goto Fail;
             }
             else
             {
-                start = 1;
+                i = 1;
                 r = 10 * r + (c - '0');
                 sign = 1;
             }
 
-            int i = start;
             for (; i < s.Length; i++)
             {
                 c = s[i];
                 if (c > '9' || c < '0')
                 {
-                    result = 0;
-                    return false;
+                    goto Fail;
                 }
 
                 r = 10 * r + (c - '0');
@@ -74,36 +44,37 @@ namespace Veldrid.Utilities
 
             result = r * sign;
             return true;
+
+            Fail:
+            result = i;
+            return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static bool TryParseDouble(ReadOnlySpan<char> s, out double result, out bool hasFraction, char decimalSeparator = '.')
         {
             hasFraction = false;
 
             double r = 0;
             int sign;
-            int start;
+            int i = 0;
 
-            char c = s[0];
+            char c = s[i];
             if (c == '-')
             {
                 sign = -1;
-                start = 1;
+                i = 1;
             }
             else if (c > '9' || c < '0')
             {
-                result = 0;
-                return false;
+                goto Fail;
             }
             else
             {
-                start = 1;
+                i = 1;
                 r = 10 * r + (c - '0');
                 sign = 1;
             }
 
-            int i = start;
             for (; i < s.Length; i++)
             {
                 c = s[i];
@@ -120,8 +91,7 @@ namespace Veldrid.Utilities
                     }
                     else
                     {
-                        result = 0;
-                        return false;
+                        goto Fail;
                     }
                 }
 
@@ -132,7 +102,7 @@ namespace Veldrid.Utilities
             goto Finish;
 
             DecimalPoint:
-            long tmp = 0;
+            double tmp = 0;
             int length = i;
             double exponent = 0;
             hasFraction = true;
@@ -144,42 +114,42 @@ namespace Veldrid.Utilities
                 {
                     if (c == 'e' || c == 'E')
                     {
-                        length = i - length;
-                        goto ProcessExponent;
+                        exponent = ProcessExponent(s, i);
+                        break;
                     }
 
-                    result = 0;
-                    return false;
+                    goto Fail;
                 }
                 tmp = 10 * tmp + (c - '0');
             }
             length = i - length;
 
-            ProcessFraction:
-            double fraction = tmp;
-
-            if (length < _powLookup.Length)
-                fraction /= _powLookup[length];
-            else
-                fraction /= _powLookup[^1];
-
+            double fraction = tmp * GetInversedBaseTen(length);
             r += fraction;
             r *= sign;
 
             if (exponent > 0)
-                r *= exponent;
+                r /= exponent;
             else if (exponent < 0)
-                r /= -exponent;
+                r *= -exponent;
 
-            goto Finish;
+            Finish:
+            result = r;
+            return true;
 
-            ProcessExponent:
+            Fail:
+            result = i;
+            return false;
+        }
+
+        private static double ProcessExponent(ReadOnlySpan<char> s, int i)
+        {
             int expSign = 1;
             int exp = 0;
 
             for (i++; i < s.Length; i++)
             {
-                c = s[i];
+                char c = s[i];
                 if (c > '9' || c < '0')
                 {
                     if (c == '-')
@@ -192,12 +162,17 @@ namespace Veldrid.Utilities
                 exp = 10 * exp + (c - '0');
             }
 
-            exponent = _doubleExpLookup[exp] * expSign;
-            goto ProcessFraction;
+            double exponent = GetInversedBaseTen(exp) * expSign;
+            return exponent;
+        }
 
-            Finish:
-            result = r;
-            return true;
+        private static double GetInversedBaseTen(int index)
+        {
+            double[] array = _doubleExpLookup;
+            if ((uint)index < (uint)array.Length)
+                return array[index];
+            else
+                return Math.Pow(10, -index);
         }
 
         private static double[] GetDoubleExponents()
@@ -206,7 +181,7 @@ namespace Veldrid.Utilities
 
             for (int i = 0; i < exps.Length; i++)
             {
-                exps[i] = Math.Pow(10, i);
+                exps[i] = Math.Pow(10, -i);
             }
 
             return exps;
