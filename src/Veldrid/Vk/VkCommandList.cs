@@ -537,15 +537,12 @@ namespace Veldrid.Vulkan
 
         protected override void ResolveTextureCore(Texture source, Texture destination)
         {
-            if (_activeRenderPass != VkRenderPass.NULL)
-            {
-                EndCurrentRenderPass();
-            }
-
             VkTexture vkSource = Util.AssertSubtype<Texture, VkTexture>(source);
             _currentStagingInfo.AddResource(vkSource.RefCount);
             VkTexture vkDestination = Util.AssertSubtype<Texture, VkTexture>(destination);
             _currentStagingInfo.AddResource(vkDestination.RefCount);
+
+            EnsureNoRenderPass();
 
             VkImageAspectFlags aspectFlags = ((source.Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil)
                 ? VkImageAspectFlags.VK_IMAGE_ASPECT_DEPTH_BIT | VkImageAspectFlags.VK_IMAGE_ASPECT_STENCIL_BIT
@@ -583,13 +580,8 @@ namespace Veldrid.Vulkan
             _commandBufferBegun = false;
             _commandBufferEnded = true;
 
-            if (!_currentFramebufferEverActive && _currentFramebuffer != null)
+            if (EnsureNoRenderPass())
             {
-                BeginCurrentRenderPass();
-            }
-            if (_activeRenderPass != VkRenderPass.NULL)
-            {
-                EndCurrentRenderPass();
                 _currentFramebuffer!.TransitionToFinalLayout(_cb, false);
             }
 
@@ -599,16 +591,7 @@ namespace Veldrid.Vulkan
 
         protected override void SetFramebufferCore(Framebuffer fb)
         {
-            if (_activeRenderPass != VkRenderPass.NULL)
-            {
-                EndCurrentRenderPass();
-            }
-            else if (!_currentFramebufferEverActive && _currentFramebuffer != null)
-            {
-                // This forces any queued up texture clears to be emitted.
-                BeginCurrentRenderPass();
-                EndCurrentRenderPass();
-            }
+            EnsureNoRenderPass();
 
             if (_currentFramebuffer != null)
             {
@@ -646,12 +629,25 @@ namespace Veldrid.Vulkan
             }
         }
 
-        private void EnsureNoRenderPass()
+        private bool EnsureNoRenderPass()
         {
             if (_activeRenderPass != VkRenderPass.NULL)
             {
+                Debug.Assert(_currentFramebufferEverActive);
+
                 EndCurrentRenderPass();
+                return true;
             }
+
+            if (!_currentFramebufferEverActive && _currentFramebuffer != null)
+            {
+                // This forces any queued up texture clears to be emitted.
+                BeginCurrentRenderPass();
+                EndCurrentRenderPass();
+                return true;
+            }
+
+            return false;
         }
 
         private void BeginCurrentRenderPass()

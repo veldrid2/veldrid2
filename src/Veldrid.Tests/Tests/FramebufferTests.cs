@@ -17,14 +17,10 @@ namespace Veldrid.Tests
             cl.Begin();
             cl.SetFramebuffer(fb);
             cl.ClearColorTarget(0, RgbaFloat.Red);
-            cl.End();
-            GD.SubmitCommands(cl);
-            GD.WaitForIdle();
-
+            
             Texture staging = RF.CreateTexture(
                 TextureDescription.Texture2D(1024, 1024, 1, 1, PixelFormat.R32_G32_B32_A32_Float, TextureUsage.Staging));
 
-            cl.Begin();
             cl.CopyTexture(
                 colorTarget, 0, 0, 0, 0, 0,
                 staging, 0, 0, 0, 0, 0,
@@ -105,13 +101,10 @@ namespace Veldrid.Tests
                 cl.SetFramebuffer(framebuffers[level]);
                 cl.ClearColorTarget(0, new RgbaFloat(level, level, level, 1));
             }
-            cl.End();
-            GD.SubmitCommands(cl);
-            GD.WaitForIdle();
-
+            
             Texture readback = RF.CreateTexture(
                 TextureDescription.Texture2D(1024, 1024, 11, 1, PixelFormat.R32_G32_B32_A32_Float, TextureUsage.Staging));
-            cl.Begin();
+            
             cl.CopyTexture(testTex, readback);
             cl.End();
             GD.SubmitCommands(cl);
