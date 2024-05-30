@@ -420,21 +420,27 @@ namespace Veldrid.D3D11
                         break;
                     }
                     case ResourceKind.TextureReadOnly:
+                    {
                         TextureView texView = Util.GetTextureView(_gd, resource);
                         D3D11TextureView d3d11TexView = Util.AssertSubtype<TextureView, D3D11TextureView>(texView);
                         UnbindUAVTexture(d3d11TexView.Target);
                         BindTextureView(d3d11TexView, textureBase + rbi.Slot, rbi.Stages, slot);
                         break;
+                    }
                     case ResourceKind.TextureReadWrite:
+                    {
                         TextureView rwTexView = Util.GetTextureView(_gd, resource);
                         D3D11TextureView d3d11RWTexView = Util.AssertSubtype<TextureView, D3D11TextureView>(rwTexView);
                         UnbindSRVTexture(d3d11RWTexView.Target);
                         BindUnorderedAccessView(d3d11RWTexView.Target, null, d3d11RWTexView.UnorderedAccessView, uaBase + rbi.Slot, rbi.Stages, slot);
                         break;
+                    }
                     case ResourceKind.Sampler:
+                    {
                         D3D11Sampler sampler = Util.AssertSubtype<Sampler, D3D11Sampler>(resource.GetSampler());
                         BindSampler(sampler, samplerBase + rbi.Slot, rbi.Stages);
                         break;
+                    }
                     default:
                         Illegal.Value<ResourceKind>();
                         break;

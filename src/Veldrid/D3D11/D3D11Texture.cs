@@ -47,7 +47,7 @@ namespace Veldrid.D3D11
             }
             if ((description.Usage & TextureUsage.Storage) == TextureUsage.Storage)
             {
-                bindFlags |= BindFlags.UnorderedAccess;
+                bindFlags |= BindFlags.UnorderedAccess | BindFlags.ShaderResource;
             }
             if ((description.Usage & TextureUsage.Staging) == TextureUsage.Staging)
             {
