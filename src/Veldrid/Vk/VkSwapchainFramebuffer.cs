@@ -40,6 +40,8 @@ namespace Veldrid.Vulkan
             in SwapchainDescription description)
             : base()
         {
+            swapchain.RefCount.Increment();
+
             _gd = gd;
             _swapchain = swapchain;
             _surface = surface;
@@ -187,6 +189,8 @@ namespace Veldrid.Vulkan
         protected override void DisposeCore()
         {
             DestroySwapchainFramebuffers();
+
+            _swapchain.RefCount.Decrement();
         }
     }
 }

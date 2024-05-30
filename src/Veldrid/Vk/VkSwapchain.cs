@@ -79,6 +79,9 @@ namespace Veldrid.Vulkan
             vkGetDeviceQueue(_gd.Device, _presentQueueIndex, 0, &presentQueue);
             _presentQueue = presentQueue;
 
+            RefCount = new ResourceRefCount(this);
+            PresentLock = new object();
+
             _framebuffer = new VkSwapchainFramebuffer(gd, this, _surface, description);
 
             CreateSwapchain(description.Width, description.Height);
@@ -96,9 +99,6 @@ namespace Veldrid.Vulkan
             vkResetFences(_gd.Device, 1, &imageAvailableFence);
 
             _imageAvailableFence = imageAvailableFence;
-
-            RefCount = new ResourceRefCount(this);
-            PresentLock = new object();
         }
 
         public override void Resize(uint width, uint height)
@@ -334,13 +334,13 @@ namespace Veldrid.Vulkan
 
         public override void Dispose()
         {
+            _framebuffer.Dispose();
             RefCount.DecrementDispose();
         }
 
         void IResourceRefCountTarget.RefZeroed()
         {
             vkDestroyFence(_gd.Device, _imageAvailableFence, null);
-            _framebuffer.Dispose();
             vkDestroySwapchainKHR(_gd.Device, _deviceSwapchain, null);
             vkDestroySurfaceKHR(_gd.Instance, _surface, null);
         }

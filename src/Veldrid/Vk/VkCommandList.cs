@@ -614,11 +614,6 @@ namespace Veldrid.Vulkan
             Util.ClearArray(_validColorClearValues);
             Util.EnsureArrayMinimumSize(ref _validColorClearValues, clearValueCount);
             _currentStagingInfo.AddResource(vkFB.RefCount);
-
-            if (fb is VkSwapchainFramebuffer scFB)
-            {
-                _currentStagingInfo.AddResource(scFB.Swapchain.RefCount);
-            }
         }
 
         private void EnsureRenderPassActive()
