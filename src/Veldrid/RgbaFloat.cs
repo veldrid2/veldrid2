@@ -7,7 +7,7 @@ namespace Veldrid
     /// <summary>
     /// A color stored in four 32-bit floating-point values, in RGBA component order.
     /// </summary>
-    public struct RgbaFloat : IEquatable<RgbaFloat>
+    public readonly struct RgbaFloat : IEquatable<RgbaFloat>
     {
         private readonly Vector4 _channels;
 
