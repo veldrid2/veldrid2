@@ -66,7 +66,6 @@ namespace Veldrid.OpenGL
                     glTex.EnsureResourcesCreated();
 
                     _gd.TextureSamplerManager.SetTextureTransient(glTex.TextureTarget, glTex.Texture);
-                    CheckLastError();
 
                     TextureTarget textureTarget = GetTextureTarget(glTex, colorAttachment.ArrayLayer);
 
@@ -113,7 +112,6 @@ namespace Veldrid.OpenGL
                 depthTextureID = glDepthTex.Texture;
 
                 _gd.TextureSamplerManager.SetTextureTransient(depthTarget, glDepthTex.Texture);
-                CheckLastError();
 
                 depthTarget = GetTextureTarget(glDepthTex, depthTargetValue.ArrayLayer);
 

@@ -164,7 +164,6 @@ namespace Veldrid.OpenGL
                 _texture = texture;
 
                 _gd.TextureSamplerManager.SetTextureTransient(TextureTarget, _texture);
-                CheckLastError();
             }
 
             bool isDepthTex = (Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil;
