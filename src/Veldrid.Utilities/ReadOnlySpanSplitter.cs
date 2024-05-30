@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Veldrid.Utilities
 {
@@ -19,6 +21,11 @@ namespace Veldrid.Utilities
             ReadOnlySpan<T> separator,
             StringSplitOptions splitOptions)
         {
+            if ((splitOptions & StringSplitOptions.TrimEntries) != 0)
+            {
+                value = Trim(value);
+            }
+
             Value = value;
             Separator = separator;
             SplitOptions = splitOptions;
@@ -35,8 +42,13 @@ namespace Veldrid.Utilities
 
             if (next != -1)
             {
-                span = span.Slice(0, Math.Max(1, next));
+                span = span.Slice(0, next);
                 _offset += span.Length + Separator.Length;
+
+                if ((SplitOptions & StringSplitOptions.TrimEntries) != 0)
+                {
+                    span = Trim(span);
+                }
 
                 if (span.Length == 0 && (SplitOptions & StringSplitOptions.RemoveEmptyEntries) != 0)
                 {
@@ -66,6 +78,26 @@ namespace Veldrid.Utilities
         public readonly ReadOnlySpanSplitter<T> GetEnumerator()
         {
             return this;
+        }
+        
+        private static ReadOnlySpan<T> Trim(ReadOnlySpan<T> span)
+        {
+            if (typeof(T) != typeof(char))
+            {
+                return span;
+            }
+
+            ReadOnlySpan<char> charSpan = MemoryMarshal.CreateReadOnlySpan(
+                    ref Unsafe.As<T, char>(ref MemoryMarshal.GetReference(span)),
+                    span.Length);
+
+            charSpan = charSpan.Trim();
+
+            ReadOnlySpan<T> tSpan = MemoryMarshal.CreateReadOnlySpan(
+                ref Unsafe.As<char, T>(ref MemoryMarshal.GetReference(charSpan)),
+                charSpan.Length);
+
+            return tSpan;
         }
     }
 }

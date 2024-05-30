@@ -142,7 +142,9 @@ namespace Veldrid.Utilities
             {
                 _currentLine++;
 
-                ReadOnlySpanSplitter<char> splitter = new(line, _whitespaceChar, StringSplitOptions.RemoveEmptyEntries);
+                ReadOnlySpanSplitter<char> splitter = new(
+                    line, _whitespaceChar, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
                 if (!splitter.MoveNext())
                     return;
 
