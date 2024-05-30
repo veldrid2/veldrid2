@@ -324,17 +324,19 @@ namespace Veldrid.Vulkan
 
         protected override void DrawIndirectCore(DeviceBuffer indirectBuffer, uint offset, uint drawCount, uint stride)
         {
-            PreDrawCommand();
             VkBuffer vkBuffer = Util.AssertSubtype<DeviceBuffer, VkBuffer>(indirectBuffer);
             _currentStagingInfo.AddResource(vkBuffer.RefCount);
+
+            PreDrawCommand();
             vkCmdDrawIndirect(_cb, vkBuffer.DeviceBuffer, offset, drawCount, stride);
         }
 
         protected override void DrawIndexedIndirectCore(DeviceBuffer indirectBuffer, uint offset, uint drawCount, uint stride)
         {
-            PreDrawCommand();
             VkBuffer vkBuffer = Util.AssertSubtype<DeviceBuffer, VkBuffer>(indirectBuffer);
             _currentStagingInfo.AddResource(vkBuffer.RefCount);
+
+            PreDrawCommand();
             vkCmdDrawIndexedIndirect(_cb, vkBuffer.DeviceBuffer, offset, drawCount, stride);
         }
 
@@ -528,10 +530,10 @@ namespace Veldrid.Vulkan
 
         protected override void DispatchIndirectCore(DeviceBuffer indirectBuffer, uint offset)
         {
-            PreDispatchCommand();
-
             VkBuffer vkBuffer = Util.AssertSubtype<DeviceBuffer, VkBuffer>(indirectBuffer);
             _currentStagingInfo.AddResource(vkBuffer.RefCount);
+
+            PreDispatchCommand();
             vkCmdDispatchIndirect(_cb, vkBuffer.DeviceBuffer, offset);
         }
 
@@ -591,6 +593,9 @@ namespace Veldrid.Vulkan
 
         protected override void SetFramebufferCore(Framebuffer fb)
         {
+            VkFramebufferBase vkFB = Util.AssertSubtype<Framebuffer, VkFramebufferBase>(fb);
+            _currentStagingInfo.AddResource(vkFB.RefCount);
+
             EnsureNoRenderPass();
 
             if (_currentFramebuffer != null)
@@ -598,7 +603,6 @@ namespace Veldrid.Vulkan
                 _currentFramebuffer.TransitionToFinalLayout(_cb, false);
             }
 
-            VkFramebufferBase vkFB = Util.AssertSubtype<Framebuffer, VkFramebufferBase>(fb);
             _currentFramebuffer = vkFB;
             _currentFramebufferEverActive = false;
             _newFramebuffer = true;
@@ -613,7 +617,6 @@ namespace Veldrid.Vulkan
             Util.EnsureArrayMinimumSize(ref _clearValues, clearValueCount + 1); // Leave an extra space for the depth value (tracked separately).
             Util.ClearArray(_validColorClearValues);
             Util.EnsureArrayMinimumSize(ref _validColorClearValues, clearValueCount);
-            _currentStagingInfo.AddResource(vkFB.RefCount);
         }
 
         private void EnsureRenderPassActive()
@@ -757,6 +760,7 @@ namespace Veldrid.Vulkan
         private protected override void SetVertexBufferCore(uint index, DeviceBuffer buffer, uint offset)
         {
             VkBuffer vkBuffer = Util.AssertSubtype<DeviceBuffer, VkBuffer>(buffer);
+
             bool differentBuffer = _vertexBindings[index] != vkBuffer.DeviceBuffer;
             if (differentBuffer || _vertexOffsets[index] != offset)
             {
@@ -776,12 +780,15 @@ namespace Veldrid.Vulkan
         {
             VkBuffer vkBuffer = Util.AssertSubtype<DeviceBuffer, VkBuffer>(buffer);
             _currentStagingInfo.AddResource(vkBuffer.RefCount);
+
             vkCmdBindIndexBuffer(_cb, vkBuffer.DeviceBuffer, offset, VkFormats.VdToVkIndexFormat(format));
         }
 
         private protected override void SetPipelineCore(Pipeline pipeline)
         {
             VkPipeline vkPipeline = Util.AssertSubtype<Pipeline, VkPipeline>(pipeline);
+            _currentStagingInfo.AddResource(vkPipeline.RefCount);
+
             if (!pipeline.IsComputePipeline && _currentGraphicsPipeline != pipeline)
             {
                 Util.EnsureArrayMinimumSize(ref _currentGraphicsResourceSets, vkPipeline.ResourceSetCount);
@@ -802,8 +809,6 @@ namespace Veldrid.Vulkan
                 vkCmdBindPipeline(_cb, VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE, vkPipeline.DevicePipeline);
                 _currentComputePipeline = vkPipeline;
             }
-
-            _currentStagingInfo.AddResource(vkPipeline.RefCount);
         }
 
         private static void ClearSets(Span<BoundResourceSetInfo> boundSets)
@@ -895,12 +900,12 @@ namespace Veldrid.Vulkan
             DeviceBuffer destination,
             ReadOnlySpan<BufferCopyCommand> commands)
         {
-            EnsureNoRenderPass();
-
             VkBuffer srcVkBuffer = Util.AssertSubtype<DeviceBuffer, VkBuffer>(source);
             _currentStagingInfo.AddResource(srcVkBuffer.RefCount);
             VkBuffer dstVkBuffer = Util.AssertSubtype<DeviceBuffer, VkBuffer>(destination);
             _currentStagingInfo.AddResource(dstVkBuffer.RefCount);
+
+            EnsureNoRenderPass();
 
             fixed (BufferCopyCommand* commandPtr = commands)
             {
@@ -980,17 +985,18 @@ namespace Veldrid.Vulkan
             uint width, uint height, uint depth,
             uint layerCount)
         {
-            EnsureNoRenderPass();
-            CopyTextureCore_VkCommandBuffer(
-                _cb,
-                source, srcX, srcY, srcZ, srcMipLevel, srcBaseArrayLayer,
-                destination, dstX, dstY, dstZ, dstMipLevel, dstBaseArrayLayer,
-                width, height, depth, layerCount);
-
             VkTexture srcVkTexture = Util.AssertSubtype<Texture, VkTexture>(source);
             _currentStagingInfo.AddResource(srcVkTexture.RefCount);
             VkTexture dstVkTexture = Util.AssertSubtype<Texture, VkTexture>(destination);
             _currentStagingInfo.AddResource(dstVkTexture.RefCount);
+
+            EnsureNoRenderPass();
+
+            CopyTextureCore_VkCommandBuffer(
+                _cb,
+                srcVkTexture, srcX, srcY, srcZ, srcMipLevel, srcBaseArrayLayer,
+                dstVkTexture, dstX, dstY, dstZ, dstMipLevel, dstBaseArrayLayer,
+                width, height, depth, layerCount);
         }
 
         internal static VkImageLayout GetTransitionBackLayout(TextureUsage usage)
@@ -1032,19 +1038,19 @@ namespace Veldrid.Vulkan
 
         internal static void CopyTextureCore_VkCommandBuffer(
             VkCommandBuffer cb,
-            Texture source,
+            VkTexture source,
             uint srcX, uint srcY, uint srcZ,
             uint srcMipLevel,
             uint srcBaseArrayLayer,
-            Texture destination,
+            VkTexture destination,
             uint dstX, uint dstY, uint dstZ,
             uint dstMipLevel,
             uint dstBaseArrayLayer,
             uint width, uint height, uint depth,
             uint layerCount)
         {
-            VkTexture srcVkTexture = Util.AssertSubtype<Texture, VkTexture>(source);
-            VkTexture dstVkTexture = Util.AssertSubtype<Texture, VkTexture>(destination);
+            VkTexture srcVkTexture = source;
+            VkTexture dstVkTexture = destination;
 
             bool sourceIsStaging = (source.Usage & TextureUsage.Staging) == TextureUsage.Staging;
             bool destIsStaging = (destination.Usage & TextureUsage.Staging) == TextureUsage.Staging;
@@ -1291,9 +1297,10 @@ namespace Veldrid.Vulkan
 
         private protected override void GenerateMipmapsCore(Texture texture)
         {
-            EnsureNoRenderPass();
             VkTexture vkTex = Util.AssertSubtype<Texture, VkTexture>(texture);
             _currentStagingInfo.AddResource(vkTex.RefCount);
+
+            EnsureNoRenderPass();
 
             uint layerCount = vkTex.ActualArrayLayers;
 
