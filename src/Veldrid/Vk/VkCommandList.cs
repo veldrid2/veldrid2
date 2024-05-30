@@ -684,6 +684,8 @@ namespace Veldrid.Vulkan
 
             if (!haveAnyAttachments || !haveAllClearValues)
             {
+                _currentFramebuffer.TransitionToFinalLayout(_cb, !_newFramebuffer);
+
                 renderPassBI.renderPass = _newFramebuffer
                     ? _currentFramebuffer.RenderPassNoClear_Init
                     : _currentFramebuffer.RenderPassNoClear_Load;
