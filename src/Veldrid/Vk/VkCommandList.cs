@@ -229,11 +229,10 @@ namespace Veldrid.Vulkan
 
         private protected override void ClearColorTargetCore(uint index, RgbaFloat clearColor)
         {
-            VkClearValue clearValue = new();
-            clearValue.color.float32[0] = clearColor.R;
-            clearValue.color.float32[1] = clearColor.G;
-            clearValue.color.float32[2] = clearColor.B;
-            clearValue.color.float32[3] = clearColor.A;
+            VkClearValue clearValue = new()
+            {
+                color = Unsafe.BitCast<RgbaFloat, VkClearColorValue>(clearColor)
+            };
 
             if (_activeRenderPass != VkRenderPass.NULL)
             {
@@ -712,11 +711,7 @@ namespace Veldrid.Vulkan
                         {
                             _validColorClearValues[i] = false;
                             VkClearValue vkClearValue = _clearValues[i];
-                            RgbaFloat clearColor = new(
-                                vkClearValue.color.float32[0],
-                                vkClearValue.color.float32[1],
-                                vkClearValue.color.float32[2],
-                                vkClearValue.color.float32[3]);
+                            RgbaFloat clearColor = Unsafe.BitCast<VkClearValue, RgbaFloat>(vkClearValue);
                             ClearColorTargetCore(i, clearColor);
                         }
                     }

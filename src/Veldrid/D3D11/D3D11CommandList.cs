@@ -246,7 +246,7 @@ namespace Veldrid.D3D11
 
                     _context.OMSetBlendState(
                         blendState!,
-                        new Color4(blendFactor.R, blendFactor.G, blendFactor.B, blendFactor.A));
+                        Unsafe.BitCast<RgbaFloat, Color4>(blendFactor));
                 }
 
                 ID3D11DepthStencilState? depthStencilState = d3dPipeline.DepthStencilState;
@@ -1117,7 +1117,7 @@ namespace Veldrid.D3D11
 
         private protected override void ClearColorTargetCore(uint index, RgbaFloat clearColor)
         {
-            _context.ClearRenderTargetView(D3D11Framebuffer.RenderTargetViews[index], new Color4(clearColor.R, clearColor.G, clearColor.B, clearColor.A));
+            _context.ClearRenderTargetView(D3D11Framebuffer.RenderTargetViews[index], Unsafe.BitCast<RgbaFloat, Color4>(clearColor));
         }
 
         private protected override void ClearDepthStencilCore(float depth, byte stencil)
