@@ -69,7 +69,7 @@ namespace Veldrid.D3D11
                     D3D11Texture d3dColorTarget = Util.AssertSubtype<Texture, D3D11Texture>(colorTargets[i].Target);
                     RenderTargetViewDescription rtvDesc = new()
                     {
-                        Format = D3D11Formats.ToDxgiFormat(d3dColorTarget.Format, false),
+                        Format = D3D11Formats.ToDxgiFormat(d3dColorTarget.Format, default),
                     };
                     if (d3dColorTarget.ArrayLayers > 1 || (d3dColorTarget.Usage & TextureUsage.Cubemap) != 0)
                     {

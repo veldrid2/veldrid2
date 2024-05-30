@@ -24,7 +24,7 @@ namespace Veldrid.MTL
                 _hasTextureView = true;
                 uint effectiveArrayLayers = (Target.Usage & TextureUsage.Cubemap) != 0 ? ArrayLayers * 6 : ArrayLayers;
                 TargetDeviceTexture = targetMTLTexture.DeviceTexture.newTextureView(
-                    MTLFormats.VdToMTLPixelFormat(Format, (description.Target.Usage & TextureUsage.DepthStencil) != 0),
+                    MTLFormats.VdToMTLPixelFormat(Format, description.Target.Usage),
                     targetMTLTexture.MTLTextureType,
                     new NSRange(BaseMipLevel, MipLevels),
                     new NSRange(BaseArrayLayer, effectiveArrayLayers));

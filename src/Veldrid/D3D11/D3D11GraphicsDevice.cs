@@ -221,7 +221,8 @@ namespace Veldrid.D3D11
 
         public override TextureSampleCount GetSampleCountLimit(PixelFormat format, bool depthFormat)
         {
-            Format dxgiFormat = D3D11Formats.ToDxgiFormat(format, depthFormat);
+            Format dxgiFormat = D3D11Formats.ToDxgiFormat(format, depthFormat ? TextureUsage.DepthStencil : default);
+
             if (CheckFormatMultisample(dxgiFormat, 64))
             {
                 return TextureSampleCount.Count64;
@@ -246,7 +247,6 @@ namespace Veldrid.D3D11
             {
                 return TextureSampleCount.Count2;
             }
-
             return TextureSampleCount.Count1;
         }
 
@@ -267,7 +267,7 @@ namespace Veldrid.D3D11
                 return false;
             }
 
-            Format dxgiFormat = D3D11Formats.ToDxgiFormat(format, (usage & TextureUsage.DepthStencil) != 0);
+            Format dxgiFormat = D3D11Formats.ToDxgiFormat(format, usage);
             FormatSupport fs = _device.CheckFormatSupport(dxgiFormat);
 
             if ((usage & TextureUsage.RenderTarget) != 0 && (fs & FormatSupport.RenderTarget) == 0

@@ -311,7 +311,7 @@ namespace Veldrid.Vulkan
             for (int i = 0; i < outputColorAttachmentDescs.Length; i++)
             {
                 ref VkAttachmentDescription desc = ref colorAttachmentDescs[i];
-                desc.format = VkFormats.VdToVkPixelFormat(outputColorAttachmentDescs[i].Format);
+                desc.format = VkFormats.VdToVkPixelFormat(outputColorAttachmentDescs[i].Format, default);
                 desc.samples = vkSampleCount;
                 desc.loadOp = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
                 desc.storeOp = VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
@@ -331,7 +331,7 @@ namespace Veldrid.Vulkan
             {
                 PixelFormat depthFormat = outputDesc.DepthAttachment.GetValueOrDefault().Format;
                 bool hasStencil = FormatHelpers.IsStencilFormat(depthFormat);
-                depthAttachmentDesc.format = VkFormats.VdToVkPixelFormat(depthFormat, toDepthFormat: true);
+                depthAttachmentDesc.format = VkFormats.VdToVkPixelFormat(depthFormat, TextureUsage.DepthStencil);
                 depthAttachmentDesc.samples = vkSampleCount;
                 depthAttachmentDesc.loadOp = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
                 depthAttachmentDesc.storeOp = VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;

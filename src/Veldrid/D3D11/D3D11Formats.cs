@@ -11,8 +11,10 @@ namespace Veldrid.D3D11
 
     internal static class D3D11Formats
     {
-        internal static Format ToDxgiFormat(PixelFormat format, bool depthFormat)
+        internal static Format ToDxgiFormat(PixelFormat format, TextureUsage usage)
         {
+            bool depthFormat = FormatHelpers.IsDepthFormatPreferred(format, usage);
+
             switch (format)
             {
                 case PixelFormat.R8_UNorm:

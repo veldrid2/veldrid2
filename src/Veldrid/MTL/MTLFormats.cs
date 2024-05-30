@@ -8,8 +8,10 @@ namespace Veldrid.MTL
     internal static class MTLFormats
     {
         [SuppressMessage("Style", "IDE0066:Convert switch statement to expression", Justification = "<Pending>")]
-        internal static MTLPixelFormat VdToMTLPixelFormat(PixelFormat format, bool depthFormat)
+        internal static MTLPixelFormat VdToMTLPixelFormat(PixelFormat format, TextureUsage usage)
         {
+            bool depthFormat = FormatHelpers.IsDepthFormatPreferred(format, usage);
+
             switch (format)
             {
                 case PixelFormat.R8_UNorm:

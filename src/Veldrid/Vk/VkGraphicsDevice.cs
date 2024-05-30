@@ -1154,7 +1154,7 @@ namespace Veldrid.Vulkan
             VkImageFormatProperties formatProperties;
             vkGetPhysicalDeviceImageFormatProperties(
                 _physicalDevice,
-                VkFormats.VdToVkPixelFormat(format, depthFormat),
+                VkFormats.VdToVkPixelFormat(format, depthFormat ? TextureUsage.DepthStencil : default),
                 VkImageType.VK_IMAGE_TYPE_2D,
                 VkImageTiling.VK_IMAGE_TILING_OPTIMAL,
                 usageFlags,
@@ -1195,7 +1195,7 @@ namespace Veldrid.Vulkan
             TextureUsage usage,
             out PixelFormatProperties properties)
         {
-            VkFormat vkFormat = VkFormats.VdToVkPixelFormat(format, (usage & TextureUsage.DepthStencil) != 0);
+            VkFormat vkFormat = VkFormats.VdToVkPixelFormat(format, usage);
             VkImageType vkType = VkFormats.VdToVkTextureType(type);
             VkImageTiling tiling = usage == TextureUsage.Staging
                 ? VkImageTiling.VK_IMAGE_TILING_LINEAR

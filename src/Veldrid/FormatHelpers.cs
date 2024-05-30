@@ -101,6 +101,21 @@ namespace Veldrid
             return IsDepthFormat(format) || IsStencilFormat(format);
         }
 
+        internal static bool IsDepthFormatPreferred(PixelFormat format, TextureUsage usage)
+        {
+            if ((usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil)
+            {
+                return true;
+            }
+
+            if ((usage & TextureUsage.Staging) == TextureUsage.Staging && IsDepthStencilFormat(format))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         internal static bool IsCompressedFormat(PixelFormat format)
         {
             return format == PixelFormat.BC1_Rgb_UNorm

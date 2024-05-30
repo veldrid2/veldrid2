@@ -41,10 +41,9 @@ namespace Veldrid.OpenGL
             _pbos = new uint[MipLevels * ArrayLayers];
             _pboSizes = new uint[MipLevels * ArrayLayers];
 
-            bool depthFormat = (Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil;
-            GLPixelFormat = OpenGLFormats.VdToGLPixelFormat(Format, depthFormat);
+            GLPixelFormat = OpenGLFormats.VdToGLPixelFormat(Format, Usage);
             GLPixelType = OpenGLFormats.VdToGLPixelType(Format);
-            GLInternalFormat = OpenGLFormats.VdToGLPixelInternalFormat(Format, depthFormat);
+            GLInternalFormat = OpenGLFormats.VdToGLPixelInternalFormat(Format, Usage);
 
             if ((Usage & TextureUsage.Cubemap) == TextureUsage.Cubemap)
             {
@@ -90,10 +89,9 @@ namespace Veldrid.OpenGL
             _pbos = new uint[MipLevels * ArrayLayers];
             _pboSizes = new uint[MipLevels * ArrayLayers];
 
-            bool depthFormat = (Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil;
-            GLPixelFormat = OpenGLFormats.VdToGLPixelFormat(Format, depthFormat);
+            GLPixelFormat = OpenGLFormats.VdToGLPixelFormat(Format, Usage);
             GLPixelType = OpenGLFormats.VdToGLPixelType(Format);
-            GLInternalFormat = OpenGLFormats.VdToGLPixelInternalFormat(Format, depthFormat);
+            GLInternalFormat = OpenGLFormats.VdToGLPixelInternalFormat(Format, Usage);
 
             if ((Usage & TextureUsage.Cubemap) == TextureUsage.Cubemap)
             {

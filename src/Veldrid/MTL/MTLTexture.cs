@@ -34,9 +34,8 @@ namespace Veldrid.MTL
             Usage = description.Usage;
             Type = description.Type;
             SampleCount = description.SampleCount;
-            bool isDepth = (Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil;
 
-            MTLPixelFormat = MTLFormats.VdToMTLPixelFormat(Format, isDepth);
+            MTLPixelFormat = MTLFormats.VdToMTLPixelFormat(Format, Usage);
             MTLTextureType = MTLFormats.VdToMTLTextureType(
                     Type,
                     ArrayLayers,
@@ -93,9 +92,8 @@ namespace Veldrid.MTL
             Usage = description.Usage;
             Type = description.Type;
             SampleCount = description.SampleCount;
-            bool isDepth = (Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil;
-
-            MTLPixelFormat = MTLFormats.VdToMTLPixelFormat(Format, isDepth);
+            
+            MTLPixelFormat = MTLFormats.VdToMTLPixelFormat(Format, Usage);
             MTLTextureType = MTLFormats.VdToMTLTextureType(
                     Type,
                     ArrayLayers,

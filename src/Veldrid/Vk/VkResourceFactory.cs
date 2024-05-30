@@ -70,7 +70,7 @@ namespace Veldrid.Vulkan
                 _gd,
                 description.Width, description.Height,
                 description.MipLevels, description.ArrayLayers,
-                VkFormats.VdToVkPixelFormat(description.Format, (description.Usage & TextureUsage.DepthStencil) != 0),
+                VkFormats.VdToVkPixelFormat(description.Format, description.Usage),
                 description.Usage,
                 description.SampleCount,
                 new VkImage(nativeTexture),

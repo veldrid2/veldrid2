@@ -99,7 +99,7 @@ namespace Veldrid.MTL
                 : PixelFormat.B8_G8_R8_A8_UNorm;
 
             _metalLayer.device = _gd.Device;
-            _metalLayer.pixelFormat = MTLFormats.VdToMTLPixelFormat(format, false);
+            _metalLayer.pixelFormat = MTLFormats.VdToMTLPixelFormat(format, default);
             _metalLayer.framebufferOnly = true;
             _metalLayer.drawableSize = new CGSize(width, height);
 

@@ -31,8 +31,10 @@ namespace Veldrid.OpenGL
             };
         }
 
-        internal static PixelInternalFormat VdToGLPixelInternalFormat(PixelFormat format, bool depthFormat)
+        internal static PixelInternalFormat VdToGLPixelInternalFormat(PixelFormat format, TextureUsage usage)
         {
+            bool depthFormat = FormatHelpers.IsDepthFormatPreferred(format, usage);
+
             return format switch
             {
                 PixelFormat.R8_UNorm => PixelInternalFormat.R8,
@@ -114,8 +116,10 @@ namespace Veldrid.OpenGL
             };
         }
 
-        internal static GLPixelFormat VdToGLPixelFormat(PixelFormat format, bool depthFormat)
+        internal static GLPixelFormat VdToGLPixelFormat(PixelFormat format, TextureUsage usage)
         {
+            bool depthFormat = FormatHelpers.IsDepthFormatPreferred(format, usage);
+
             switch (format)
             {
                 case PixelFormat.R8_UNorm:

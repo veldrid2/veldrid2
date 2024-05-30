@@ -130,7 +130,7 @@ namespace Veldrid.MTL
             if (outputs.DepthAttachment != null)
             {
                 PixelFormat depthFormat = outputs.DepthAttachment.Value.Format;
-                MTLPixelFormat mtlDepthFormat = MTLFormats.VdToMTLPixelFormat(depthFormat, true);
+                MTLPixelFormat mtlDepthFormat = MTLFormats.VdToMTLPixelFormat(depthFormat, TextureUsage.DepthStencil);
                 mtlDesc.depthAttachmentPixelFormat = mtlDepthFormat;
                 if (FormatHelpers.IsStencilFormat(depthFormat))
                 {
@@ -144,7 +144,7 @@ namespace Veldrid.MTL
             {
                 BlendAttachmentDescription attachmentBlendDesc = blendStateDesc.AttachmentStates[i];
                 MTLRenderPipelineColorAttachmentDescriptor colorDesc = mtlDesc.colorAttachments[(uint)i];
-                colorDesc.pixelFormat = MTLFormats.VdToMTLPixelFormat(outputColorAttachments[i].Format, false);
+                colorDesc.pixelFormat = MTLFormats.VdToMTLPixelFormat(outputColorAttachments[i].Format, default);
                 colorDesc.blendingEnabled = attachmentBlendDesc.BlendEnabled;
                 colorDesc.writeMask = MTLFormats.VdToMTLColorWriteMask(attachmentBlendDesc.ColorWriteMask.GetOrDefault());
                 colorDesc.alphaBlendOperation = MTLFormats.VdToMTLBlendOp(attachmentBlendDesc.AlphaFunction);

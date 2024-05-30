@@ -50,7 +50,7 @@ namespace Veldrid.Vulkan
             Type = description.Type;
             SampleCount = description.SampleCount;
             VkSampleCount = VkFormats.VdToVkSampleCount(SampleCount);
-            VkFormat = VkFormats.VdToVkPixelFormat(Format, (description.Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil);
+            VkFormat = VkFormats.VdToVkPixelFormat(Format, description.Usage);
 
             bool isStaging = (Usage & TextureUsage.Staging) == TextureUsage.Staging;
 
