@@ -1843,11 +1843,13 @@ namespace Veldrid.OpenGL
             {
                 CheckExceptions();
 
-                MapParams mrp = new();
-                mrp.OffsetInBytes = offsetInBytes;
-                mrp.SizeInBytes = sizeInBytes;
-                mrp.Subresource = subresource;
-                mrp.MapMode = mode;
+                MapParams mrp = new()
+                {
+                    OffsetInBytes = offsetInBytes,
+                    SizeInBytes = sizeInBytes,
+                    Subresource = subresource,
+                    MapMode = mode
+                };
 
                 ManualResetEvent mre = RentResetEvent();
                 ExecutionThreadWorkItem workItem = new(resource, &mrp, mre);

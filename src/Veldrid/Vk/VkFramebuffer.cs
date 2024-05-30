@@ -78,19 +78,21 @@ namespace Veldrid.Vulkan
                 VkTexture vkDepthTex = Util.AssertSubtype<Texture, VkTexture>(DepthTarget.Value.Target);
                 bool hasStencil = FormatHelpers.IsStencilFormat(vkDepthTex.Format);
 
-                VkAttachmentDescription depthAttachmentDesc = new();
-                depthAttachmentDesc.format = vkDepthTex.VkFormat;
-                depthAttachmentDesc.samples = vkDepthTex.VkSampleCount;
-                depthAttachmentDesc.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
-                depthAttachmentDesc.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-                depthAttachmentDesc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-                depthAttachmentDesc.stencilStoreOp = hasStencil
-                    ? VK_ATTACHMENT_STORE_OP_STORE
-                    : VK_ATTACHMENT_STORE_OP_DONT_CARE;
-                depthAttachmentDesc.initialLayout = ((vkDepthTex.Usage & TextureUsage.Sampled) != 0)
-                    ? VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-                    : VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-                depthAttachmentDesc.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+                VkAttachmentDescription depthAttachmentDesc = new()
+                {
+                    format = vkDepthTex.VkFormat,
+                    samples = vkDepthTex.VkSampleCount,
+                    loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
+                    storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+                    stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+                    stencilStoreOp = hasStencil
+                        ? VK_ATTACHMENT_STORE_OP_STORE
+                        : VK_ATTACHMENT_STORE_OP_DONT_CARE,
+                    initialLayout = ((vkDepthTex.Usage & TextureUsage.Sampled) != 0)
+                        ? VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+                        : VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+                    finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+                };
 
                 depthAttachmentRef.attachment = (uint)colorTargetDescs.Length;
                 depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;

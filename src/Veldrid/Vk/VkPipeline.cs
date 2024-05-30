@@ -37,8 +37,10 @@ namespace Veldrid.Vulkan
             IsComputePipeline = false;
             RefCount = new ResourceRefCount(this);
 
-            VkGraphicsPipelineCreateInfo pipelineCI = new();
-            pipelineCI.sType = VkStructureType.VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+            VkGraphicsPipelineCreateInfo pipelineCI = new()
+            {
+                sType = VkStructureType.VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO
+            };
 
             // Blend State
             int attachmentsCount = description.BlendState.AttachmentStates.Length;
