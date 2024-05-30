@@ -391,7 +391,10 @@ namespace Veldrid.Vulkan
                     break;
 
                 case VkTexture tex:
-                    SetDebugMarkerName(VkDebugReportObjectTypeEXT.VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT, tex.OptimalDeviceImage.Value, name);
+                    if (tex.OptimalDeviceImage.Value != 0)
+                        SetDebugMarkerName(VkDebugReportObjectTypeEXT.VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT, tex.OptimalDeviceImage.Value, name);
+                    else
+                        SetDebugMarkerName(VkDebugReportObjectTypeEXT.VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT, tex.StagingBuffer.Value, name);
                     break;
 
                 case VkTextureView texView:

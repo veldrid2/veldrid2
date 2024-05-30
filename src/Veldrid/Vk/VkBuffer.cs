@@ -2,7 +2,6 @@
 using TerraFX.Interop.Vulkan;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static Veldrid.Vulkan.VulkanUtil;
-using VkBufferUsageFlags = TerraFX.Interop.Vulkan.VkBufferUsageFlags;
 using VulkanBuffer = TerraFX.Interop.Vulkan.VkBuffer;
 
 namespace Veldrid.Vulkan
