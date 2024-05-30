@@ -278,6 +278,7 @@ namespace Veldrid.VirtualReality.OpenVR
                 TextureSampleCount.Count8 => 8,
                 TextureSampleCount.Count16 => 16,
                 TextureSampleCount.Count32 => 32,
+                TextureSampleCount.Count64 => 64,
                 _ => throw new InvalidOperationException(),
             };
         }

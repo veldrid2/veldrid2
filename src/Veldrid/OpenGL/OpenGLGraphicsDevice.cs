@@ -233,7 +233,11 @@ namespace Veldrid.OpenGL
             }
             CheckLastError();
 
-            if (maxColorTextureSamples >= 32)
+            if (maxColorTextureSamples >= 64)
+            {
+                _maxColorTextureSamples = TextureSampleCount.Count64;
+            }
+            else if (maxColorTextureSamples >= 32)
             {
                 _maxColorTextureSamples = TextureSampleCount.Count32;
             }

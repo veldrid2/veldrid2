@@ -25,6 +25,7 @@ namespace Veldrid.VirtualReality
                 8 => TextureSampleCount.Count8,
                 16 => TextureSampleCount.Count16,
                 32 => TextureSampleCount.Count32,
+                64 => TextureSampleCount.Count64,
                 _ => throw new VeldridException($"Unsupported sample count: {sampleCount}"),
             };
         }
@@ -39,6 +40,7 @@ namespace Veldrid.VirtualReality
                 TextureSampleCount.Count8 => 8,
                 TextureSampleCount.Count16 => 16,
                 TextureSampleCount.Count32 => 32,
+                TextureSampleCount.Count64 => 64,
                 _ => throw new VeldridException($"Invalid TextureSampleCount: {sampleCount}."),
             };
         }

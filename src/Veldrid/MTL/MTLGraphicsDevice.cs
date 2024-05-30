@@ -116,7 +116,7 @@ namespace Veldrid.MTL
             {
                 TextureSampleCount count = allSampleCounts[i];
                 uint uintValue = FormatHelpers.GetSampleCountUInt32(count);
-                if (_device.supportsTextureSampleCount((UIntPtr)uintValue))
+                if (_device.supportsTextureSampleCount(uintValue))
                 {
                     _supportedSampleCounts[i] = true;
                 }

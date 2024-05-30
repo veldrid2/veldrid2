@@ -166,6 +166,7 @@ namespace Veldrid.Vulkan
                 TextureSampleCount.Count8 => VK_SAMPLE_COUNT_8_BIT,
                 TextureSampleCount.Count16 => VK_SAMPLE_COUNT_16_BIT,
                 TextureSampleCount.Count32 => VK_SAMPLE_COUNT_32_BIT,
+                TextureSampleCount.Count64 => VK_SAMPLE_COUNT_64_BIT,
                 _ => Illegal.Value<TextureSampleCount, VkSampleCountFlags>(),
             };
         }

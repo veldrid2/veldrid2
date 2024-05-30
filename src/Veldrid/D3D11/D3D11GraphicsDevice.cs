@@ -222,7 +222,11 @@ namespace Veldrid.D3D11
         public override TextureSampleCount GetSampleCountLimit(PixelFormat format, bool depthFormat)
         {
             Format dxgiFormat = D3D11Formats.ToDxgiFormat(format, depthFormat);
-            if (CheckFormatMultisample(dxgiFormat, 32))
+            if (CheckFormatMultisample(dxgiFormat, 64))
+            {
+                return TextureSampleCount.Count64;
+            }
+            else if (CheckFormatMultisample(dxgiFormat, 32))
             {
                 return TextureSampleCount.Count32;
             }

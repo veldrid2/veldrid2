@@ -76,6 +76,7 @@ namespace Veldrid.VirtualReality.Oculus
                 8 => TextureSampleCount.Count8,
                 16 => TextureSampleCount.Count16,
                 32 => TextureSampleCount.Count32,
+                64 => TextureSampleCount.Count64,
                 _ => throw new VeldridException($"Unsupported sample count: {sampleCount}"),
             };
         }

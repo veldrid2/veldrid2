@@ -29,5 +29,9 @@
         /// 32 Samples.
         /// </summary>
         Count32,
+        /// <summary>
+        /// 64 Samples.
+        /// </summary>
+        Count64,
     }
 }

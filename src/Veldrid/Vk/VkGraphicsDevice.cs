@@ -1154,7 +1154,7 @@ namespace Veldrid.Vulkan
             VkImageFormatProperties formatProperties;
             vkGetPhysicalDeviceImageFormatProperties(
                 _physicalDevice,
-                VkFormats.VdToVkPixelFormat(format),
+                VkFormats.VdToVkPixelFormat(format, depthFormat),
                 VkImageType.VK_IMAGE_TYPE_2D,
                 VkImageTiling.VK_IMAGE_TILING_OPTIMAL,
                 usageFlags,
@@ -1162,7 +1162,11 @@ namespace Veldrid.Vulkan
                 &formatProperties);
 
             VkSampleCountFlags vkSampleCounts = formatProperties.sampleCounts;
-            if ((vkSampleCounts & VkSampleCountFlags.VK_SAMPLE_COUNT_32_BIT) == VkSampleCountFlags.VK_SAMPLE_COUNT_32_BIT)
+            if ((vkSampleCounts & VkSampleCountFlags.VK_SAMPLE_COUNT_64_BIT) == VkSampleCountFlags.VK_SAMPLE_COUNT_64_BIT)
+            {
+                return TextureSampleCount.Count64;
+            }
+            else if ((vkSampleCounts & VkSampleCountFlags.VK_SAMPLE_COUNT_32_BIT) == VkSampleCountFlags.VK_SAMPLE_COUNT_32_BIT)
             {
                 return TextureSampleCount.Count32;
             }
@@ -1182,7 +1186,6 @@ namespace Veldrid.Vulkan
             {
                 return TextureSampleCount.Count2;
             }
-
             return TextureSampleCount.Count1;
         }
 
