@@ -230,18 +230,89 @@ void main()
 
             MappedResourceView<float> sourceReadView = GD.Map<float>(sourceReadback, MapMode.Read);
             MappedResourceView<float> destinationReadView = GD.Map<float>(destinationReadback, MapMode.Read);
+
             for (int y = 0; y < height; y++)
+            {
                 for (int x = 0; x < width; x++)
                 {
-                    int index = y * (int) width + x;
+                    int index = y * (int)width + x;
                     Assert.Equal(2 * sourceData[index], sourceReadView[index]);
-                    Assert.Equal(sourceData[index], destinationReadView[index]);
                 }
+            }
+
+            Assert.Equal(sourceData, destinationReadView.AsSpan());
 
             GD.Unmap(sourceReadback);
             GD.Unmap(destinationReadback);
         }
+        
+        [StructLayout(LayoutKind.Sequential)]
+        public struct ComputeTextureCopyParams
+        {
+            public uint Width;
+            public uint Height;
+            private uint _padding1;
+            private uint _padding2;
+        }
+        
+        [SkippableFact]
+        public void ComputeTextureCopy()
+        {
+            SkipIfNotComputeShader();
 
+            ResourceLayout layout = RF.CreateResourceLayout(new ResourceLayoutDescription(
+                new ResourceLayoutElementDescription("Params", ResourceKind.UniformBuffer, ShaderStages.Compute),
+                new ResourceLayoutElementDescription("Src", ResourceKind.TextureReadWrite, ShaderStages.Compute),
+                new ResourceLayoutElementDescription("Dst", ResourceKind.TextureReadWrite, ShaderStages.Compute)));
+
+            uint width = 1024;
+            uint height = 1024;
+            DeviceBuffer paramsBuffer = RF.CreateBuffer(new BufferDescription((uint) Unsafe.SizeOf<ComputeTextureCopyParams>(), BufferUsage.UniformBuffer));
+            Texture srcTexture = RF.CreateTexture(TextureDescription.Texture2D(width, height, 1, 1, PixelFormat.R32_Float, TextureUsage.Storage));
+            Texture dstTexture = RF.CreateTexture(TextureDescription.Texture2D(width, height, 1, 1, PixelFormat.R32_Float, TextureUsage.Storage));
+            
+            GD.UpdateBuffer(paramsBuffer, 0, new BasicComputeTestParams { Width = width, Height = height });
+
+            float[] srcData = new float[width * height];
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int index = y * (int)width + x;
+                    srcData[index] = index;
+                }
+            }
+            GD.UpdateTexture(srcTexture, srcData, 0, 0, 0, width, height, 1, 0, 0);
+
+            ResourceSet rs = RF.CreateResourceSet(new ResourceSetDescription(layout, paramsBuffer, srcTexture, dstTexture));
+
+            Pipeline pipeline = RF.CreateComputePipeline(new ComputePipelineDescription(
+                TestShaders.LoadCompute(RF, "ComputeTextureCopy"),
+                layout,
+                16, 16, 1));
+
+            CommandList cl = RF.CreateCommandList();
+            cl.Begin();
+            cl.SetPipeline(pipeline);
+            cl.SetComputeResourceSet(0, rs);
+            cl.Dispatch(width / 16, width / 16, 1);
+            cl.End();
+            GD.SubmitCommands(cl);
+            GD.WaitForIdle();
+
+            Texture srcReadback = GetReadback(srcTexture);
+            Texture dstReadback = GetReadback(dstTexture);
+
+            MappedResourceView<float> srcReadView = GD.Map<float>(srcReadback, MapMode.Read);
+            MappedResourceView<float> dstReadView = GD.Map<float>(dstReadback, MapMode.Read);
+            
+            Assert.Equal(srcData, srcReadView.AsSpan());
+            Assert.Equal(srcData, dstReadView.AsSpan());
+
+            GD.Unmap(srcReadback);
+            GD.Unmap(dstReadback);
+        }
+        
         [SkippableFact]
         public void ComputeCubemapGeneration()
         {
