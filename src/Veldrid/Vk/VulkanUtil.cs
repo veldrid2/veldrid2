@@ -5,7 +5,6 @@ using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Interop.Vulkan.VkImageLayout;
 using static TerraFX.Interop.Vulkan.VkAccessFlags;
 using static TerraFX.Interop.Vulkan.VkPipelineStageFlags;
-using System.Runtime.InteropServices;
 
 namespace Veldrid.Vulkan
 {
@@ -174,9 +173,15 @@ namespace Veldrid.Vulkan
                     }
                     else if (newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
                     {
-                        barrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-                        srcStageFlags = VK_PIPELINE_STAGE_TRANSFER_BIT;
-                        break;
+                        goto case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+                    }
+                    else if (newLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+                    {
+                        goto case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+                    }
+                    else if (newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
+                    {
+                        goto case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
                     }
                     goto default;
 
@@ -227,15 +232,19 @@ namespace Veldrid.Vulkan
                     }
                     else if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL)
                     {
-                        barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-                        dstStageFlags = VK_PIPELINE_STAGE_TRANSFER_BIT;
-                        break;
+                        goto case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
                     }
-                    if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
+                    else if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
                     {
-                        barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-                        dstStageFlags = VK_PIPELINE_STAGE_TRANSFER_BIT;
-                        break;
+                        goto case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+                    }
+                    else if (oldLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+                    {
+                        goto case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+                    }
+                    else if (oldLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
+                    {
+                        goto case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
                     }
                     goto default;
 
