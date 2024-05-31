@@ -136,19 +136,14 @@ namespace Veldrid.MTL
                     return MTLPixelFormat.EAC_RGBA8;
 
                 case PixelFormat.D16_UNorm:
-                    Debug.Assert(depthFormat);
                     return MTLPixelFormat.Depth16Unorm;
                 case PixelFormat.D16_UNorm_S8_UInt:
-                    Debug.Assert(depthFormat);
                     throw new VeldridException($"{nameof(PixelFormat.D16_UNorm_S8_UInt)} is not supported on Direct3D 11.");
                 case PixelFormat.D32_Float:
-                    Debug.Assert(depthFormat);
                     return MTLPixelFormat.Depth32Float;
                 case PixelFormat.D24_UNorm_S8_UInt:
-                    Debug.Assert(depthFormat);
                     return MTLPixelFormat.Depth24Unorm_Stencil8;
                 case PixelFormat.D32_Float_S8_UInt:
-                    Debug.Assert(depthFormat);
                     return MTLPixelFormat.Depth32Float_Stencil8;
 
                 case PixelFormat.R10_G10_B10_A2_UNorm:

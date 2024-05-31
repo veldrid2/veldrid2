@@ -220,8 +220,7 @@ namespace Veldrid.OpenGL
             }
 
             PixelInternalFormat internalFormat = (PixelInternalFormat)OpenGLFormats.VdToGLSizedInternalFormat(
-                Format,
-                (Target.Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil);
+                Format, Target.Usage);
             Debug.Assert(Target.Created);
             glTextureView(
                 _textureView,

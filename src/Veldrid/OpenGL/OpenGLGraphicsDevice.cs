@@ -478,7 +478,7 @@ namespace Veldrid.OpenGL
 
                 glRenderbufferStorage(
                     RenderbufferTarget.Renderbuffer,
-                    (uint)OpenGLFormats.VdToGLSizedInternalFormat(options.SwapchainDepthFormat.Value, true),
+                    (uint)OpenGLFormats.VdToGLSizedInternalFormat(options.SwapchainDepthFormat.Value, TextureUsage.DepthStencil),
                     (uint)fbWidth,
                     (uint)fbHeight);
                 CheckLastError();
@@ -570,7 +570,7 @@ namespace Veldrid.OpenGL
 
                         glRenderbufferStorage(
                             RenderbufferTarget.Renderbuffer,
-                            (uint)OpenGLFormats.VdToGLSizedInternalFormat(options.SwapchainDepthFormat.Value, true),
+                            (uint)OpenGLFormats.VdToGLSizedInternalFormat(options.SwapchainDepthFormat.Value, TextureUsage.DepthStencil),
                             (uint)newWidth,
                             (uint)newHeight);
                         CheckLastError();
@@ -704,7 +704,7 @@ namespace Veldrid.OpenGL
             contextAttribs[3] = EGL_NONE;
             contextAttribs[4] = EGL_NONE;
 
-        TryCreateContext:
+            TryCreateContext:
             if (debug)
             {
                 contextAttribs[2] = EGL_CONTEXT_OPENGL_DEBUG;
@@ -1683,7 +1683,6 @@ namespace Veldrid.OpenGL
                                     else
                                     {
                                         _gd.TextureSamplerManager.SetTextureTransient(texture.TextureTarget, texture.Texture);
-                                        CheckLastError();
 
                                         glGetCompressedTexImage(texture.TextureTarget, (int)mipLevel, fullBlock.Data);
                                     }
@@ -1706,7 +1705,6 @@ namespace Veldrid.OpenGL
                                     else
                                     {
                                         _gd.TextureSamplerManager.SetTextureTransient(texture.TextureTarget, texture.Texture);
-                                        CheckLastError();
 
                                         glGetCompressedTexImage(texture.TextureTarget, (int)mipLevel, block.Data);
                                     }

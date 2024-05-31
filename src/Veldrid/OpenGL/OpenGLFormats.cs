@@ -196,19 +196,14 @@ namespace Veldrid.OpenGL
                     return GLPixelFormat.Rgba;
 
                 case PixelFormat.D16_UNorm:
-                    Debug.Assert(depthFormat);
                     return GLPixelFormat.DepthComponent;
                 case PixelFormat.D16_UNorm_S8_UInt:
-                    Debug.Assert(depthFormat);
                     throw new VeldridException($"{nameof(PixelFormat.D16_UNorm_S8_UInt)} is not supported on OpenGL.");
                 case PixelFormat.D32_Float:
-                    Debug.Assert(depthFormat);
                     return GLPixelFormat.DepthComponent;
                 case PixelFormat.D24_UNorm_S8_UInt:
-                    Debug.Assert(depthFormat);
                     return GLPixelFormat.DepthStencil;
                 case PixelFormat.D32_Float_S8_UInt:
-                    Debug.Assert(depthFormat);
                     return GLPixelFormat.DepthStencil;
 
                 case PixelFormat.R10_G10_B10_A2_UNorm:
@@ -314,8 +309,10 @@ namespace Veldrid.OpenGL
             }
         }
 
-        internal static SizedInternalFormat VdToGLSizedInternalFormat(PixelFormat format, bool depthFormat)
+        internal static SizedInternalFormat VdToGLSizedInternalFormat(PixelFormat format, TextureUsage usage)
         {
+            bool depthFormat = FormatHelpers.IsDepthFormatPreferred(format, usage);
+
             switch (format)
             {
                 case PixelFormat.R8_UNorm:
@@ -442,14 +439,12 @@ namespace Veldrid.OpenGL
                     return (SizedInternalFormat)PixelInternalFormat.CompressedRgba8Etc2Eac;
 
                 case PixelFormat.D16_UNorm:
-                    Debug.Assert(depthFormat);
-                    return (SizedInternalFormat)PixelInternalFormat.DepthComponent16;
+                    return (SizedInternalFormat)(depthFormat ? PixelInternalFormat.DepthComponent16 : PixelInternalFormat.R16);
                 case PixelFormat.D16_UNorm_S8_UInt:
                     Debug.Assert(depthFormat);
                     throw new VeldridException($"{nameof(PixelFormat.D16_UNorm_S8_UInt)} is not supported on OpenGL.");
                 case PixelFormat.D32_Float:
-                    Debug.Assert(depthFormat);
-                    return (SizedInternalFormat)PixelInternalFormat.DepthComponent32f;
+                    return (SizedInternalFormat)(depthFormat ? PixelInternalFormat.DepthComponent32f : PixelInternalFormat.R32f);
                 case PixelFormat.D32_Float_S8_UInt:
                     Debug.Assert(depthFormat);
                     return (SizedInternalFormat)PixelInternalFormat.Depth32fStencil8;

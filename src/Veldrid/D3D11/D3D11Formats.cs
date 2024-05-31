@@ -132,19 +132,14 @@ namespace Veldrid.D3D11
                     return Format.BC7_UNorm_SRgb;
 
                 case PixelFormat.D16_UNorm:
-                    Debug.Assert(depthFormat);
                     return Format.R16_Typeless;
                 case PixelFormat.D16_UNorm_S8_UInt:
-                    Debug.Assert(depthFormat);
                     throw new VeldridException($"{nameof(PixelFormat.D16_UNorm_S8_UInt)} is not supported on Direct3D 11.");
                 case PixelFormat.D32_Float:
-                    Debug.Assert(depthFormat);
                     return Format.R32_Typeless;
                 case PixelFormat.D24_UNorm_S8_UInt:
-                    Debug.Assert(depthFormat);
                     return Format.R24G8_Typeless;
                 case PixelFormat.D32_Float_S8_UInt:
-                    Debug.Assert(depthFormat);
                     return Format.R32G8X24_Typeless;
 
                 case PixelFormat.R10_G10_B10_A2_UNorm:

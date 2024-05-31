@@ -108,10 +108,12 @@ namespace Veldrid
                 return true;
             }
 
-            if ((usage & TextureUsage.Staging) == TextureUsage.Staging && IsDepthStencilFormat(format))
-            {
-                return true;
-            }
+            // TODO: could this still be useful?
+            //       maybe instead of forcing a depth format, it could be used for asserts?
+            // if ((usage & TextureUsage.Staging) == TextureUsage.Staging && IsDepthStencilFormat(format))
+            // {
+            //     return true;
+            // }
 
             return false;
         }
