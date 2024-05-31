@@ -365,9 +365,7 @@ namespace Veldrid.Vulkan
             FlushNewResourceSets(
                 _currentGraphicsResourceSets,
                 _graphicsResourceSetsChanged,
-                (int)_currentGraphicsPipeline!.ResourceSetCount,
-                VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS,
-                _currentGraphicsPipeline.PipelineLayout);
+                _currentGraphicsPipeline!);
         }
 
         private void FlushVertexBindings()
@@ -414,13 +412,13 @@ namespace Veldrid.Vulkan
         private void FlushNewResourceSets(
             BoundResourceSetInfo[] resourceSets,
             bool[] resourceSetsChanged,
-            int resourceSetCount,
-            VkPipelineBindPoint bindPoint,
-            VkPipelineLayout pipelineLayout)
+            VkPipeline pipeline)
         {
-            VkPipeline pipeline = bindPoint == VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS
-                ? _currentGraphicsPipeline!
-                : _currentComputePipeline!;
+            int resourceSetCount = (int)pipeline.ResourceSetCount;
+
+            VkPipelineBindPoint bindPoint = pipeline.IsComputePipeline
+                ? VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE
+                : VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS;
 
             VkDescriptorSet* descriptorSets = stackalloc VkDescriptorSet[resourceSetCount];
             uint* dynamicOffsets = stackalloc uint[pipeline.DynamicOffsetsCount];
@@ -466,7 +464,7 @@ namespace Veldrid.Vulkan
                         vkCmdBindDescriptorSets(
                             _cb,
                             bindPoint,
-                            pipelineLayout,
+                            pipeline.PipelineLayout,
                             currentBatchFirstSet,
                             currentBatchCount,
                             descriptorSets,
@@ -518,9 +516,7 @@ namespace Veldrid.Vulkan
             FlushNewResourceSets(
                 _currentComputeResourceSets,
                 _computeResourceSetsChanged,
-                (int)_currentComputePipeline.ResourceSetCount,
-                VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE,
-                _currentComputePipeline.PipelineLayout);
+                _currentComputePipeline);
         }
 
         protected override void DispatchIndirectCore(DeviceBuffer indirectBuffer, uint offset)
