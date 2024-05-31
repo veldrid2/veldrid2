@@ -31,7 +31,7 @@ namespace Veldrid.Vulkan
         private VkClearValue[] _clearValues = Array.Empty<VkClearValue>();
         private bool[] _validColorClearValues = Array.Empty<bool>();
         private VkClearValue? _depthClearValue;
-        private readonly List<VkTexture> _preDrawSampledImages = new();
+        private readonly List<VkTexture> _dispatchStorageImages = new();
 
         // Graphics State
         private VkFramebufferBase? _currentFramebuffer;
@@ -360,9 +360,6 @@ namespace Veldrid.Vulkan
                 FlushVertexBindings();
             }
 
-            TransitionImages(_preDrawSampledImages, VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-            _preDrawSampledImages.Clear();
-
             EnsureRenderPassActive();
 
             FlushNewResourceSets(
@@ -510,13 +507,11 @@ namespace Veldrid.Vulkan
 
                 TransitionImages(vkSet.SampledTextures, VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
                 TransitionImages(vkSet.StorageTextures, VkImageLayout.VK_IMAGE_LAYOUT_GENERAL);
+
                 for (int texIdx = 0; texIdx < vkSet.StorageTextures.Count; texIdx++)
                 {
                     VkTexture storageTex = vkSet.StorageTextures[texIdx];
-                    if ((storageTex.Usage & TextureUsage.Sampled) != 0)
-                    {
-                        _preDrawSampledImages.Add(storageTex);
-                    }
+                    _dispatchStorageImages.Add(storageTex);
                 }
             }
 
@@ -584,7 +579,7 @@ namespace Veldrid.Vulkan
 
             if (EnsureNoRenderPass())
             {
-                _currentFramebuffer!.TransitionToFinalLayout(_cb, false);
+                _currentFramebuffer.TransitionToFinalLayout(_cb, false);
             }
 
             VkResult result = vkEndCommandBuffer(_cb);
@@ -621,12 +616,21 @@ namespace Veldrid.Vulkan
 
         private void EnsureRenderPassActive()
         {
+            for (int i = 0; i < _dispatchStorageImages.Count; i++)
+            {
+                VkTexture tex = _dispatchStorageImages[i];
+                VkImageLayout layout = GetTransitionBackLayout(tex.Usage);
+                tex.TransitionImageLayout(_cb, 0, tex.MipLevels, 0, tex.ActualArrayLayers, layout);
+            }
+            _dispatchStorageImages.Clear();
+
             if (_activeRenderPass == VkRenderPass.NULL)
             {
                 BeginCurrentRenderPass();
             }
         }
 
+        [MemberNotNullWhen(true, nameof(_currentFramebuffer))]
         private bool EnsureNoRenderPass()
         {
             if (_activeRenderPass != VkRenderPass.NULL)
@@ -640,7 +644,7 @@ namespace Veldrid.Vulkan
             if (!_currentFramebufferEverActive && _currentFramebuffer != null)
             {
                 // This forces any queued up texture clears to be emitted.
-                BeginCurrentRenderPass();
+                EnsureRenderPassActive();
                 EndCurrentRenderPass();
                 return true;
             }
@@ -737,6 +741,7 @@ namespace Veldrid.Vulkan
             _newFramebuffer = false;
         }
 
+        [MemberNotNull(nameof(_currentFramebuffer))]
         private void EndCurrentRenderPass()
         {
             Debug.Assert(_activeRenderPass != VkRenderPass.NULL);
