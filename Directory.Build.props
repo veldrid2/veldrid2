@@ -14,8 +14,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <NativeLibraryLoaderVersion>1.0.13</NativeLibraryLoaderVersion>
-    <VorticeWindowsVersion>2.4.2</VorticeWindowsVersion>
+    <VorticeWindowsVersion>3.5.0</VorticeWindowsVersion>
   </PropertyGroup>
 
   <PropertyGroup>

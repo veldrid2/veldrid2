@@ -48,7 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImGui.NET" Version="1.89.2" />
+    <PackageReference Include="ImGui.NET" Version="1.90.8.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(UseStableVersions)' == 'true'">

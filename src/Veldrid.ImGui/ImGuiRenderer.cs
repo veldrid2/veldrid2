@@ -224,7 +224,7 @@ namespace Veldrid
         /// </summary>
         public IntPtr GetOrCreateImGuiBinding(ResourceFactory factory, Texture texture)
         {
-            if (!_autoViewsByTexture.TryGetValue(texture, out TextureView textureView))
+            if (!_autoViewsByTexture.TryGetValue(texture, out TextureView? textureView))
             {
                 textureView = factory.CreateTextureView(texture);
                 textureView.Name = $"ImGui.NET {texture.Name} View";
@@ -237,7 +237,7 @@ namespace Veldrid
 
         public void RemoveImGuiBinding(Texture texture)
         {
-            if (_autoViewsByTexture.Remove(texture, out TextureView textureView))
+            if (_autoViewsByTexture.Remove(texture, out TextureView? textureView))
             {
                 _ownedResources.Remove(textureView);
                 textureView.Dispose();
@@ -318,7 +318,7 @@ namespace Veldrid
 
         private byte[] GetEmbeddedResourceBytes(string resourceName)
         {
-            using Stream s = _assembly.GetManifestResourceStream(resourceName);
+            using Stream? s = _assembly.GetManifestResourceStream(resourceName);
             byte[] ret = new byte[s.Length];
             int offset = 0;
             do
@@ -656,7 +656,7 @@ namespace Veldrid
             uint totalVBSize = (uint)(draw_data.TotalVtxCount * sizeof(ImDrawVert));
             if (totalVBSize > _vertexBuffer.SizeInBytes)
             {
-                string name = _vertexBuffer.Name;
+                string? name = _vertexBuffer.Name;
                 _vertexBuffer.Dispose();
                 _vertexBuffer = gd.ResourceFactory.CreateBuffer(new BufferDescription((uint)(totalVBSize * 1.5f), BufferUsage.VertexBuffer | BufferUsage.DynamicWrite));
                 _vertexBuffer.Name = name;
@@ -665,7 +665,7 @@ namespace Veldrid
             uint totalIBSize = (uint)(draw_data.TotalIdxCount * sizeof(ushort));
             if (totalIBSize > _indexBuffer.SizeInBytes)
             {
-                string name = _indexBuffer.Name;
+                string? name = _indexBuffer.Name;
                 _indexBuffer.Dispose();
                 _indexBuffer = gd.ResourceFactory.CreateBuffer(new BufferDescription((uint)(totalIBSize * 1.5f), BufferUsage.IndexBuffer | BufferUsage.DynamicWrite));
                 _indexBuffer.Name = name;
@@ -673,7 +673,7 @@ namespace Veldrid
 
             for (int i = 0; i < draw_data.CmdListsCount; i++)
             {
-                ImDrawListPtr cmd_list = draw_data.CmdListsRange[i];
+                ImDrawListPtr cmd_list = draw_data.CmdLists[i];
 
                 cl.UpdateBuffer(
                     _vertexBuffer,
@@ -718,7 +718,7 @@ namespace Veldrid
             int idx_offset = 0;
             for (int n = 0; n < draw_data.CmdListsCount; n++)
             {
-                ImDrawListPtr cmd_list = draw_data.CmdListsRange[n];
+                ImDrawListPtr cmd_list = draw_data.CmdLists[n];
                 for (int cmd_i = 0; cmd_i < cmd_list.CmdBuffer.Size; cmd_i++)
                 {
                     ImDrawCmdPtr pcmd = cmd_list.CmdBuffer[cmd_i];
