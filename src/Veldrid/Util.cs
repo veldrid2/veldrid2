@@ -46,6 +46,21 @@ namespace Veldrid
             return GetString((byte*)stringStart);
         }
 
+        internal static unsafe string GetString(ReadOnlySpan<byte> span)
+        {
+            int length = span.IndexOf((byte)'\0');
+            if (length == -1)
+            {
+                length = span.Length;
+            }
+            return Encoding.UTF8.GetString(span.Slice(0, length));
+        }
+        
+        internal static unsafe string GetString(ReadOnlySpan<sbyte> span)
+        {
+            return GetString(MemoryMarshal.AsBytes(span));
+        }
+
         internal static bool NullableEquals<T>(T? left, T? right) where T : struct, IEquatable<T>
         {
             if (left.HasValue && right.HasValue)

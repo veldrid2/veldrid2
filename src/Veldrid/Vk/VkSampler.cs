@@ -31,11 +31,11 @@ namespace Veldrid.Vulkan
                 minFilter = minFilter,
                 magFilter = magFilter,
                 mipmapMode = mipmapMode,
-                compareEnable = description.ComparisonKind != null,
+                compareEnable = (VkBool32)(description.ComparisonKind != null),
                 compareOp = description.ComparisonKind != null
                     ? VkFormats.VdToVkCompareOp(description.ComparisonKind.Value)
                     : VkCompareOp.VK_COMPARE_OP_NEVER,
-                anisotropyEnable = description.Filter == SamplerFilter.Anisotropic,
+                anisotropyEnable = (VkBool32)(description.Filter == SamplerFilter.Anisotropic),
                 maxAnisotropy = description.MaximumAnisotropy,
                 minLod = description.MinimumLod,
                 maxLod = description.MaximumLod,

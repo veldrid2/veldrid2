@@ -72,8 +72,8 @@ namespace Veldrid.Vulkan
 
                 for (int i = 0; i < propCount; i++)
                 {
-                    sbyte* layerNamePtr = propPtr[i].layerName;
-                    ret[i] = Util.GetString(layerNamePtr);
+                    ReadOnlySpan<sbyte> layerName = propPtr[i].layerName;
+                    ret[i] = Util.GetString(layerName);
                 }
             }
 
@@ -103,8 +103,8 @@ namespace Veldrid.Vulkan
 
                 for (int i = 0; i < propCount; i++)
                 {
-                    sbyte* extensionNamePtr = propPtr[i].extensionName;
-                    ret[i] = Util.GetString(extensionNamePtr);
+                    ReadOnlySpan<sbyte> extensionName = propPtr[i].extensionName;
+                    ret[i] = Util.GetString(extensionName);
                 }
             }
 

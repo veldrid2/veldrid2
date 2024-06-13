@@ -95,7 +95,7 @@ namespace Veldrid.Vulkan
             vkCreateFence(_gd.Device, &fenceCI, null, &imageAvailableFence);
 
             AcquireNextImage(_gd.Device, default, imageAvailableFence);
-            vkWaitForFences(_gd.Device, 1, &imageAvailableFence, true, ulong.MaxValue);
+            vkWaitForFences(_gd.Device, 1, &imageAvailableFence, (VkBool32)true, ulong.MaxValue);
             vkResetFences(_gd.Device, 1, &imageAvailableFence);
 
             _imageAvailableFence = imageAvailableFence;
@@ -147,7 +147,7 @@ namespace Veldrid.Vulkan
                 VulkanFence imageAvailableFence = _imageAvailableFence;
                 if (AcquireNextImage(_gd.Device, default, imageAvailableFence))
                 {
-                    vkWaitForFences(_gd.Device, 1, &imageAvailableFence, true, ulong.MaxValue);
+                    vkWaitForFences(_gd.Device, 1, &imageAvailableFence, (VkBool32)true, ulong.MaxValue);
                     vkResetFences(_gd.Device, 1, &imageAvailableFence);
                 }
             }
@@ -281,7 +281,7 @@ namespace Veldrid.Vulkan
 
             swapchainCI.preTransform = VkSurfaceTransformFlagsKHR.VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
             swapchainCI.compositeAlpha = VkCompositeAlphaFlagsKHR.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-            swapchainCI.clipped = true;
+            swapchainCI.clipped = (VkBool32)true;
 
             VkSwapchainKHR oldSwapchain = _deviceSwapchain;
             swapchainCI.oldSwapchain = oldSwapchain;
@@ -322,14 +322,14 @@ namespace Veldrid.Vulkan
 
         private bool QueueSupportsPresent(uint queueFamilyIndex, VkSurfaceKHR surface)
         {
-            VkBool32 supported;
+            uint supported;
             VkResult result = vkGetPhysicalDeviceSurfaceSupportKHR(
                 _gd.PhysicalDevice,
                 queueFamilyIndex,
                 surface,
                 &supported);
             CheckResult(result);
-            return supported;
+            return (VkBool32)supported;
         }
 
         public override void Dispose()

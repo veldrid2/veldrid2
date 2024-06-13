@@ -103,8 +103,8 @@ namespace Veldrid.Vulkan
             VkWin32SurfaceCreateInfoKHR surfaceCI = new()
             {
                 sType = VkStructureType.VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
-                hwnd = win32Source.Hwnd,
-                hinstance = win32Source.Hinstance
+                hwnd = (void*)win32Source.Hwnd,
+                hinstance = (void*)win32Source.Hinstance
             };
             VkSurfaceKHR surface;
             VkResult result = ((delegate* unmanaged<VkInstance, VkWin32SurfaceCreateInfoKHR*, VkAllocationCallbacks*, VkSurfaceKHR*, VkResult>)khr)(
@@ -119,8 +119,8 @@ namespace Veldrid.Vulkan
             VkXlibSurfaceCreateInfoKHR xsci = new()
             {
                 sType = VkStructureType.VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
-                dpy = xlibSource.Display,
-                window = (nuint)xlibSource.Window.ToPointer()
+                dpy = (void*)xlibSource.Display,
+                window = (nuint)xlibSource.Window
             };
             VkSurfaceKHR surface;
             VkResult result = ((delegate* unmanaged<VkInstance, VkXlibSurfaceCreateInfoKHR*, VkAllocationCallbacks*, VkSurfaceKHR*, VkResult>)khr)(
@@ -135,8 +135,8 @@ namespace Veldrid.Vulkan
             VkWaylandSurfaceCreateInfoKHR wsci = new()
             {
                 sType = VkStructureType.VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
-                display = waylandSource.Display,
-                surface = waylandSource.Surface
+                display = (void*)waylandSource.Display,
+                surface = (void*)waylandSource.Surface
             };
             VkSurfaceKHR surface;
             VkResult result = ((delegate* unmanaged<VkInstance, VkWaylandSurfaceCreateInfoKHR*, VkAllocationCallbacks*, VkSurfaceKHR*, VkResult>)khr)(
@@ -150,7 +150,7 @@ namespace Veldrid.Vulkan
             VkAndroidSurfaceCreateInfoKHR androidSurfaceCI = new()
             {
                 sType = VkStructureType.VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR,
-                window = aNativeWindow
+                window = (void*)aNativeWindow
             };
             VkSurfaceKHR surface;
             VkResult result = ((delegate* unmanaged<VkInstance, VkAndroidSurfaceCreateInfoKHR*, VkAllocationCallbacks*, VkSurfaceKHR*, VkResult>)khr)(

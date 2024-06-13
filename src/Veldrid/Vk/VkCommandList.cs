@@ -1329,9 +1329,9 @@ namespace Veldrid.Vulkan
                     layerCount = layerCount,
                     mipLevel = level - 1
                 };
-                region.srcOffsets.e0 = new VkOffset3D();
-                region.srcOffsets.e1 = new VkOffset3D() { x = (int)width, y = (int)height, z = (int)depth };
-                region.dstOffsets.e0 = new VkOffset3D();
+                region.srcOffsets[0] = new VkOffset3D();
+                region.srcOffsets[1] = new VkOffset3D() { x = (int)width, y = (int)height, z = (int)depth };
+                region.dstOffsets[0] = new VkOffset3D();
 
                 region.dstSubresource = new VkImageSubresourceLayers()
                 {
@@ -1341,7 +1341,7 @@ namespace Veldrid.Vulkan
                     mipLevel = level
                 };
 
-                region.dstOffsets.e1 = new VkOffset3D() { x = (int)mipWidth, y = (int)mipHeight, z = (int)mipDepth };
+                region.dstOffsets[1] = new VkOffset3D() { x = (int)mipWidth, y = (int)mipHeight, z = (int)mipDepth };
                 vkCmdBlitImage(
                     _cb,
                     deviceImage, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,

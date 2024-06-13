@@ -118,24 +118,24 @@ namespace Veldrid.Vulkan
 
             Features = new GraphicsDeviceFeatures(
                 computeShader: true,
-                geometryShader: _physicalDeviceFeatures.geometryShader,
-                tessellationShaders: _physicalDeviceFeatures.tessellationShader,
-                multipleViewports: _physicalDeviceFeatures.multiViewport,
+                geometryShader: (VkBool32)_physicalDeviceFeatures.geometryShader,
+                tessellationShaders: (VkBool32)_physicalDeviceFeatures.tessellationShader,
+                multipleViewports: (VkBool32)_physicalDeviceFeatures.multiViewport,
                 samplerLodBias: true,
                 drawBaseVertex: true,
                 drawBaseInstance: true,
                 drawIndirect: true,
-                drawIndirectBaseInstance: _physicalDeviceFeatures.drawIndirectFirstInstance,
-                fillModeWireframe: _physicalDeviceFeatures.fillModeNonSolid,
-                samplerAnisotropy: _physicalDeviceFeatures.samplerAnisotropy,
-                depthClipDisable: _physicalDeviceFeatures.depthClamp,
+                drawIndirectBaseInstance: (VkBool32)_physicalDeviceFeatures.drawIndirectFirstInstance,
+                fillModeWireframe: (VkBool32)_physicalDeviceFeatures.fillModeNonSolid,
+                samplerAnisotropy: (VkBool32)_physicalDeviceFeatures.samplerAnisotropy,
+                depthClipDisable: (VkBool32)_physicalDeviceFeatures.depthClamp,
                 texture1D: true,
-                independentBlend: _physicalDeviceFeatures.independentBlend,
+                independentBlend: (VkBool32)_physicalDeviceFeatures.independentBlend,
                 structuredBuffer: true,
                 subsetTextureView: true,
                 commandListDebugMarkers: _debugMarkerEnabled,
                 bufferRangeBinding: true,
-                shaderFloat64: _physicalDeviceFeatures.shaderFloat64);
+                shaderFloat64: (VkBool32)_physicalDeviceFeatures.shaderFloat64);
 
             ResourceFactory = new VkResourceFactory(this);
 
@@ -340,7 +340,7 @@ namespace Veldrid.Vulkan
                 VulkanFence fence = vkSC.ImageAvailableFence;
                 if (vkSC.AcquireNextImage(_device, VkSemaphore.NULL, fence))
                 {
-                    VkResult waitResult = vkWaitForFences(_device, 1, &fence, true, ulong.MaxValue);
+                    VkResult waitResult = vkWaitForFences(_device, 1, &fence, (VkBool32)true, ulong.MaxValue);
                     CheckResult(waitResult);
 
                     VkResult resetResult = vkResetFences(_device, 1, &fence);
@@ -662,7 +662,7 @@ namespace Veldrid.Vulkan
         }
 
         [UnmanagedCallersOnly]
-        private static VkBool32 DebugCallback(
+        private static uint DebugCallback(
             VkDebugReportFlagsEXT flags,
             VkDebugReportObjectTypeEXT objectType,
             ulong @object,
@@ -720,8 +720,8 @@ namespace Veldrid.Vulkan
             UniformBufferMinOffsetAlignment = (uint)_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment;
             StructuredBufferMinOffsetAlignment = (uint)_physicalDeviceProperties.limits.minStorageBufferOffsetAlignment;
 
-            byte* utf8NamePtr = (byte*)physicalDeviceProperties.deviceName;
-            DeviceName = Util.UTF8.GetString(utf8NamePtr, (int)VK_MAX_PHYSICAL_DEVICE_NAME_SIZE).TrimEnd('\0');
+            ReadOnlySpan<sbyte> deviceName = physicalDeviceProperties.deviceName;
+            DeviceName = Util.GetString(deviceName);
 
             VendorName = "id:" + _physicalDeviceProperties.vendorID.ToString("x8");
             ApiVersion = GraphicsApiVersion.Unknown;
@@ -837,7 +837,7 @@ namespace Veldrid.Vulkan
                     {
                         continue;
                     }
-                    activeExtensions[activeExtensionCount++] = (IntPtr)properties[property].extensionName;
+                    activeExtensions[activeExtensionCount++] = (IntPtr)(&properties[property].extensionName);
                 }
             }
 
@@ -918,11 +918,8 @@ namespace Veldrid.Vulkan
                 };
                 _getPhysicalDeviceProperties2(_physicalDevice, &deviceProps);
 
-                string driverName = Util.UTF8.GetString(
-                    (byte*)driverProps.driverName, (int)VK_MAX_DRIVER_NAME_SIZE).TrimEnd('\0');
-
-                string driverInfo = Util.UTF8.GetString(
-                    (byte*)driverProps.driverInfo, (int)VK_MAX_DRIVER_INFO_SIZE).TrimEnd('\0');
+                string driverName = Util.GetString(driverProps.driverName);
+                string driverInfo = Util.GetString(driverProps.driverInfo);
 
                 VkConformanceVersion conforming = driverProps.conformanceVersion;
                 ApiVersion = new GraphicsApiVersion(conforming.major, conforming.minor, conforming.subminor, conforming.patch);
@@ -991,9 +988,9 @@ namespace Veldrid.Vulkan
 
                 if (!foundPresent)
                 {
-                    VkBool32 presentSupported;
+                    uint presentSupported;
                     vkGetPhysicalDeviceSurfaceSupportKHR(_physicalDevice, i, surface, &presentSupported);
-                    if (presentSupported)
+                    if ((VkBool32)presentSupported)
                     {
                         _presentQueueIndex = i;
                         foundPresent = true;
@@ -1446,7 +1443,7 @@ namespace Veldrid.Vulkan
         public override bool WaitForFence(Fence fence, ulong nanosecondTimeout)
         {
             VulkanFence vkFence = Util.AssertSubtype<Fence, VkFence>(fence).DeviceFence;
-            VkResult result = vkWaitForFences(_device, 1, &vkFence, true, nanosecondTimeout);
+            VkResult result = vkWaitForFences(_device, 1, &vkFence, (VkBool32)true, nanosecondTimeout);
             return result == VkResult.VK_SUCCESS;
         }
 
@@ -1459,7 +1456,7 @@ namespace Veldrid.Vulkan
                 fencesPtr[i] = Util.AssertSubtype<Fence, VkFence>(fences[i]).DeviceFence;
             }
 
-            VkResult result = vkWaitForFences(_device, (uint)fenceCount, fencesPtr, waitAll, nanosecondTimeout);
+            VkResult result = vkWaitForFences(_device, (uint)fenceCount, fencesPtr, (VkBool32)waitAll, nanosecondTimeout);
             return result == VkResult.VK_SUCCESS;
         }
 

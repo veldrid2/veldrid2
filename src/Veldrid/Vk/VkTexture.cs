@@ -88,7 +88,7 @@ namespace Veldrid.Vulkan
                 _optimalImage = optimalImage;
 
                 VkMemoryRequirements memoryRequirements;
-                bool prefersDedicatedAllocation;
+                VkBool32 prefersDedicatedAllocation;
                 if (_gd.GetImageMemoryRequirements2 != null)
                 {
                     VkImageMemoryRequirementsInfo2 memReqsInfo2 = new()
@@ -107,7 +107,7 @@ namespace Veldrid.Vulkan
                     };
                     _gd.GetImageMemoryRequirements2(_gd.Device, &memReqsInfo2, &memReqs2);
                     memoryRequirements = memReqs2.memoryRequirements;
-                    prefersDedicatedAllocation = dedicatedReqs.prefersDedicatedAllocation || dedicatedReqs.requiresDedicatedAllocation;
+                    prefersDedicatedAllocation = dedicatedReqs.prefersDedicatedAllocation | dedicatedReqs.requiresDedicatedAllocation;
                 }
                 else
                 {
@@ -164,7 +164,7 @@ namespace Veldrid.Vulkan
                 _stagingBuffer = stagingBuffer;
 
                 VkMemoryRequirements bufferMemReqs;
-                bool prefersDedicatedAllocation;
+                VkBool32 prefersDedicatedAllocation;
                 if (_gd.GetBufferMemoryRequirements2 != null)
                 {
                     VkBufferMemoryRequirementsInfo2 memReqInfo2 = new()
@@ -183,7 +183,7 @@ namespace Veldrid.Vulkan
                     };
                     _gd.GetBufferMemoryRequirements2(_gd.Device, &memReqInfo2, &memReqs2);
                     bufferMemReqs = memReqs2.memoryRequirements;
-                    prefersDedicatedAllocation = dedicatedReqs.prefersDedicatedAllocation || dedicatedReqs.requiresDedicatedAllocation;
+                    prefersDedicatedAllocation = dedicatedReqs.prefersDedicatedAllocation | dedicatedReqs.requiresDedicatedAllocation;
                 }
                 else
                 {

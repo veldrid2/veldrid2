@@ -59,7 +59,7 @@ namespace Veldrid.Vulkan
             CheckResult(result);
             _deviceBuffer = deviceBuffer;
 
-            bool prefersDedicatedAllocation;
+            VkBool32 prefersDedicatedAllocation;
             if (_gd.GetBufferMemoryRequirements2 != null)
             {
                 VkBufferMemoryRequirementsInfo2 memReqInfo2 = new()
@@ -78,7 +78,7 @@ namespace Veldrid.Vulkan
                 };
                 _gd.GetBufferMemoryRequirements2(_gd.Device, &memReqInfo2, &memReqs2);
                 _bufferMemoryRequirements = memReqs2.memoryRequirements;
-                prefersDedicatedAllocation = dedicatedReqs.prefersDedicatedAllocation || dedicatedReqs.requiresDedicatedAllocation;
+                prefersDedicatedAllocation = dedicatedReqs.prefersDedicatedAllocation | dedicatedReqs.requiresDedicatedAllocation;
             }
             else
             {

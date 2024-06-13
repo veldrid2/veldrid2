@@ -56,7 +56,7 @@ namespace Veldrid.Vulkan
                     srcAlphaBlendFactor = VkFormats.VdToVkBlendFactor(vdDesc.SourceAlphaFactor),
                     dstAlphaBlendFactor = VkFormats.VdToVkBlendFactor(vdDesc.DestinationAlphaFactor),
                     alphaBlendOp = VkFormats.VdToVkBlendOp(vdDesc.AlphaFunction),
-                    blendEnable = vdDesc.BlendEnabled,
+                    blendEnable = (VkBool32)vdDesc.BlendEnabled,
                     colorWriteMask = VkFormats.VdToVkColorWriteMask(vdDesc.ColorWriteMask.GetOrDefault()),
                 };
                 attachmentsPtr[i] = attachmentState;
@@ -84,7 +84,7 @@ namespace Veldrid.Vulkan
                 sType = VkStructureType.VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
                 cullMode = VkFormats.VdToVkCullMode(rsDesc.CullMode),
                 polygonMode = VkFormats.VdToVkPolygonMode(rsDesc.FillMode),
-                depthClampEnable = !rsDesc.DepthClipEnabled,
+                depthClampEnable = (VkBool32)!rsDesc.DepthClipEnabled,
                 frontFace = rsDesc.FrontFace == FrontFace.Clockwise
                     ? VkFrontFace.VK_FRONT_FACE_CLOCKWISE
                     : VkFrontFace.VK_FRONT_FACE_COUNTER_CLOCKWISE,
@@ -113,10 +113,10 @@ namespace Veldrid.Vulkan
             VkPipelineDepthStencilStateCreateInfo dssCI = new()
             {
                 sType = VkStructureType.VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
-                depthWriteEnable = vdDssDesc.DepthWriteEnabled,
-                depthTestEnable = vdDssDesc.DepthTestEnabled,
+                depthWriteEnable = (VkBool32)vdDssDesc.DepthWriteEnabled,
+                depthTestEnable = (VkBool32)vdDssDesc.DepthTestEnabled,
                 depthCompareOp = VkFormats.VdToVkCompareOp(vdDssDesc.DepthComparison),
-                stencilTestEnable = vdDssDesc.StencilTestEnabled,
+                stencilTestEnable = (VkBool32)vdDssDesc.StencilTestEnabled,
                 front = new VkStencilOpState()
                 {
                     failOp = VkFormats.VdToVkStencilOp(vdDssDesc.StencilFront.Fail),
@@ -147,7 +147,7 @@ namespace Veldrid.Vulkan
             {
                 sType = VkStructureType.VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
                 rasterizationSamples = vkSampleCount,
-                alphaToCoverageEnable = description.BlendState.AlphaToCoverageEnabled
+                alphaToCoverageEnable = (VkBool32)description.BlendState.AlphaToCoverageEnabled
             };
 
             pipelineCI.pMultisampleState = &multisampleCI;
