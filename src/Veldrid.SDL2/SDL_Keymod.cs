@@ -8,7 +8,7 @@ namespace Veldrid.Sdl2
     /// Enumeration of valid key mods (possibly OR'd together).
     /// </summary>
     [Flags]
-    public enum SDL_Keymod
+    public enum SDL_Keymod : ushort
     {
         None = 0x0000,
         LeftShift = 0x0001,
