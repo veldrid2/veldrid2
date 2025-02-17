@@ -359,7 +359,7 @@ namespace Veldrid.D3D11
                             mode,
                             msr.DataPointer + (nint)offsetInBytes,
                             offsetInBytes,
-                            sizeInBytes,
+                            texture.Height * (uint)msr.RowPitch, // Note: sizeInBytes not used as the pitch may not match the width.
                             subresource,
                             (uint)msr.RowPitch,
                             (uint)msr.DepthPitch);
