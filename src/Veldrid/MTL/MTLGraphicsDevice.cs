@@ -543,7 +543,7 @@ namespace Veldrid.MTL
                     MTLPipelineBufferDescriptor buffer0 = descriptor.buffers[0];
                     buffer0.mutability = MTLMutability.Mutable;
                     MTLPipelineBufferDescriptor buffer1 = descriptor.buffers[1];
-                    buffer0.mutability = MTLMutability.Mutable;
+                    buffer1.mutability = MTLMutability.Mutable;
 
                     Debug.Assert(_unalignedBufferCopyShader == null);
                     string name = MetalFeatures.IsMacOS ? UnalignedBufferCopyPipelineMacOSName : UnalignedBufferCopyPipelineiOSName;
