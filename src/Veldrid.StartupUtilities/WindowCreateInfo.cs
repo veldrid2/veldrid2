@@ -1,4 +1,5 @@
-﻿namespace Veldrid.StartupUtilities
+﻿
+namespace Veldrid.StartupUtilities
 {
     public struct WindowCreateInfo
     {
@@ -8,6 +9,7 @@
         public int WindowHeight;
         public WindowState WindowInitialState;
         public string WindowTitle;
+        public bool OpenGL;
 
         public WindowCreateInfo(
             int x,

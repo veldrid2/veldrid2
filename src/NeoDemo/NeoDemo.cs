@@ -667,7 +667,8 @@ namespace Veldrid.NeoDemo
                     WindowWidth = _window.Width,
                     WindowHeight = _window.Height,
                     WindowInitialState = _window.WindowState,
-                    WindowTitle = "Veldrid NeoDemo"
+                    WindowTitle = "Veldrid NeoDemo",
+                    OpenGL = backend == GraphicsBackend.OpenGL || backend == GraphicsBackend.OpenGLES
                 };
 
                 _window.Close();

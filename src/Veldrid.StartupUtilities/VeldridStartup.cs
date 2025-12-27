@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
 using Veldrid.Sdl2;
 using Veldrid.Vulkan;
 
@@ -40,6 +39,7 @@ namespace Veldrid.StartupUtilities
             if (preferredBackend == GraphicsBackend.OpenGL || preferredBackend == GraphicsBackend.OpenGLES)
             {
                 SetSDLGLContextAttributes(deviceOptions, preferredBackend);
+                windowCI.OpenGL = true;
             }
 
             window = CreateWindow(ref windowCI);
@@ -52,9 +52,13 @@ namespace Veldrid.StartupUtilities
         public static Sdl2Window CreateWindow(ref WindowCreateInfo windowCI)
         {
             SDL_WindowFlags flags =
-                SDL_WindowFlags.OpenGL |
                 SDL_WindowFlags.Resizable |
                 GetWindowFlags(windowCI.WindowInitialState);
+
+            if (windowCI.OpenGL)
+            {
+                flags |= SDL_WindowFlags.OpenGL;
+            }
 
             if (windowCI.WindowInitialState != WindowState.Hidden)
             {
