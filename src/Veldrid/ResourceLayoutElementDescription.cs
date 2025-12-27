@@ -98,5 +98,7 @@ namespace Veldrid
         /// <see cref="GraphicsDevice.StructuredBufferMinOffsetAlignment"/>.
         /// </summary>
         DynamicBinding = 1 << 0,
+
+        Unused = 1 << 1,
     }
 }
