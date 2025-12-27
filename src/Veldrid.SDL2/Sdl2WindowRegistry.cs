@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Veldrid.Sdl2
 {
@@ -11,6 +13,14 @@ namespace Veldrid.Sdl2
 
         public static void RegisterWindow(Sdl2Window window)
         {
+            if (window.WindowID == 0)
+            {
+                unsafe
+                {
+                    throw new Exception(Marshal.PtrToStringUTF8((IntPtr)Sdl2Native.SDL_GetError()));
+                }
+            }
+
             lock (Lock)
             {
                 _eventsByWindowID.Add(window.WindowID, window);
@@ -65,9 +75,15 @@ namespace Veldrid.Sdl2
             }
 
 
-            if (handled && _eventsByWindowID.TryGetValue(windowID, out Sdl2Window? window))
+            if (handled)
             {
-                window.AddEvent(ev);
+                lock (_eventsByWindowID)
+                {
+                    if (_eventsByWindowID.TryGetValue(windowID, out Sdl2Window? window))
+                    {
+                        window.AddEvent(ev);
+                    }
+                }
             }
         }
     }
