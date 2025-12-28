@@ -25,6 +25,7 @@ namespace Veldrid.NeoDemo.Objects
         {
             UniformBuffer = gd.ResourceFactory.CreateBuffer(
                 new BufferDescription((uint)Unsafe.SizeOf<MaterialProperties>(), BufferUsage.UniformBuffer));
+            UniformBuffer.Name = $"MaterialBuffer#{GetHashCode():x}";
             cl.UpdateBuffer(UniformBuffer, 0, ref _properties);
         }
 

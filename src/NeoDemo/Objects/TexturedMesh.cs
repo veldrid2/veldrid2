@@ -75,16 +75,17 @@ namespace Veldrid.NeoDemo.Objects
             }
             ResourceFactory disposeFactory = new DisposeCollectorResourceFactory(gd.ResourceFactory, _disposeCollector);
             _vb = _meshData.CreateVertexBuffer(disposeFactory, cl);
-            _vb.Name = _name + "_VB";
+            _vb.Name = $"{_name}_VB#{GetHashCode():x}";
             _ib = _meshData.CreateIndexBuffer(disposeFactory, cl);
             _indexCount = _meshData.IndexCount;
-            _ib.Name = _name + "_IB";
+            _ib.Name = $"{_name}_IB#{GetHashCode():x}";
 
             uint bufferSize = 128;
             if (s_useUniformOffset)
             { bufferSize += _uniformOffset * 2; }
 
             _worldAndInverseBuffer = disposeFactory.CreateBuffer(new BufferDescription(bufferSize, BufferUsage.UniformBuffer | BufferUsage.DynamicWrite));
+            _worldAndInverseBuffer.Name = $"WorldAndInverseBuffer#{GetHashCode():x}";
             if (_materialPropsOwned)
             {
                 _materialProps.CreateDeviceObjects(gd, cl, sc);
