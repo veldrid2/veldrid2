@@ -21,6 +21,7 @@ namespace Veldrid.NeoDemo
         private readonly SceneContext _sc = new();
         private bool _windowResized;
         private bool _recreateWindow = true;
+        private GraphicsBackend? _queuedBackendChange;
 
         private static double _desiredFrameLengthSeconds = 1.0 / 60.0;
         private static bool _limitFrameRate = false;
@@ -266,6 +267,12 @@ namespace Veldrid.NeoDemo
         private void Update(float deltaSeconds)
         {
             _fta.AddTime(deltaSeconds);
+            if (_queuedBackendChange.HasValue)
+            {
+                ChangeBackend(_queuedBackendChange.Value);
+                _queuedBackendChange = null;
+            }
+
             _scene.Update(deltaSeconds);
 
             if (ImGui.BeginMainMenuBar())
@@ -277,23 +284,23 @@ namespace Veldrid.NeoDemo
 
                         if (ImGui.MenuItem("Vulkan", string.Empty, _gd.BackendType == GraphicsBackend.Vulkan, GraphicsDevice.IsBackendSupported(GraphicsBackend.Vulkan)))
                         {
-                            ChangeBackend(GraphicsBackend.Vulkan);
+                            _queuedBackendChange = GraphicsBackend.Vulkan;
                         }
                         if (ImGui.MenuItem("OpenGL", string.Empty, _gd.BackendType == GraphicsBackend.OpenGL, GraphicsDevice.IsBackendSupported(GraphicsBackend.OpenGL)))
                         {
-                            ChangeBackend(GraphicsBackend.OpenGL);
+                            _queuedBackendChange = GraphicsBackend.OpenGL;
                         }
                         if (ImGui.MenuItem("OpenGL ES", string.Empty, _gd.BackendType == GraphicsBackend.OpenGLES, GraphicsDevice.IsBackendSupported(GraphicsBackend.OpenGLES)))
                         {
-                            ChangeBackend(GraphicsBackend.OpenGLES);
+                            _queuedBackendChange = GraphicsBackend.OpenGLES;
                         }
                         if (ImGui.MenuItem("Direct3D 11", string.Empty, _gd.BackendType == GraphicsBackend.Direct3D11, GraphicsDevice.IsBackendSupported(GraphicsBackend.Direct3D11)))
                         {
-                            ChangeBackend(GraphicsBackend.Direct3D11);
+                            _queuedBackendChange = GraphicsBackend.Direct3D11;
                         }
                         if (ImGui.MenuItem("Metal", string.Empty, _gd.BackendType == GraphicsBackend.Metal, GraphicsDevice.IsBackendSupported(GraphicsBackend.Metal)))
                         {
-                            ChangeBackend(GraphicsBackend.Metal);
+                            _queuedBackendChange = GraphicsBackend.Metal;
                         }
                         ImGui.EndMenu();
                     }
