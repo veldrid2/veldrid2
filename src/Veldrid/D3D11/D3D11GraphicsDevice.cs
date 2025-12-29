@@ -88,7 +88,7 @@ namespace Veldrid.D3D11
                         out device).CheckError();
                 }
             }
-            
+
             ID3D11Device? device;
             try
             {
@@ -169,7 +169,7 @@ namespace Veldrid.D3D11
                 depthClipDisable: true,
                 texture1D: true,
                 independentBlend: true,
-                structuredBuffer: true,
+                structuredBuffer: _device.FeatureLevel >= Vortice.Direct3D.FeatureLevel.Level_11_0,
                 subsetTextureView: true,
                 commandListDebugMarkers: _device.FeatureLevel >= Vortice.Direct3D.FeatureLevel.Level_11_1,
                 bufferRangeBinding: _device.FeatureLevel >= Vortice.Direct3D.FeatureLevel.Level_11_1,
