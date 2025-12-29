@@ -7,7 +7,7 @@ namespace Veldrid.MetalBindings
     public readonly struct NSView
     {
         public readonly IntPtr NativePtr;
-        
+
         public NSView(IntPtr ptr) => NativePtr = ptr;
 
         public Bool8 wantsLayer
@@ -22,14 +22,9 @@ namespace Veldrid.MetalBindings
             set => objc_msgSend(NativePtr, "setLayer:"u8, value);
         }
 
-        public CGRect frame
-        {
-            get
-            {
-                return RuntimeInformation.ProcessArchitecture == Architecture.Arm64
-                    ? CGRect_objc_msgSend(NativePtr, "frame"u8)
-                    : objc_msgSend_stret<CGRect>(NativePtr, "frame"u8);
-            }
-        }
+        public CGRect frame =>
+            RuntimeInformation.ProcessArchitecture == Architecture.Arm64
+                ? CGRect_objc_msgSend(NativePtr, "frame")
+                : objc_msgSend_stret<CGRect>(NativePtr, "frame");
     }
 }
