@@ -49,7 +49,7 @@ namespace Veldrid
 
         /// <summary>
         /// Gets a value identifying whether texture coordinates begin in the top left corner of a Texture.
-        /// If true, (0, 0) refers to the top-left texel of a Texture. If false, (0, 0) refers to the bottom-left 
+        /// If true, (0, 0) refers to the top-left texel of a Texture. If false, (0, 0) refers to the bottom-left
         /// texel of a Texture. This property is useful for determining how the output of a Framebuffer should be sampled.
         /// </summary>
         public bool IsUvOriginTopLeft { get; protected set; }
@@ -115,6 +115,12 @@ namespace Veldrid
                 MainSwapchain.SyncToVerticalBlank = value;
             }
         }
+
+        /// <summary>
+        /// Gets or sets whether the graphics device should allow frames to be displayed as fast as possible even if tearing occurs.
+        /// This will only have an effect if <see cref="SyncToVerticalBlank"/> is false.
+        /// </summary>
+        public virtual bool AllowTearing { get; set; }
 
         /// <summary>
         /// The required alignment, in bytes, for uniform buffer offsets. <see cref="DeviceBufferRange.Offset"/> must be a

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Vortice.Direct3D11;
@@ -215,7 +216,16 @@ namespace Veldrid.D3D11
             lock (_immediateContextLock)
             {
                 D3D11Swapchain d3d11SC = Util.AssertSubtype<Swapchain, D3D11Swapchain>(swapchain);
-                d3d11SC.DxgiSwapChain.Present(d3d11SC.SyncInterval, PresentFlags.None);
+
+                PresentFlags flags = PresentFlags.None;
+
+                if (MainSwapchain != null && ((D3D11Swapchain) MainSwapchain).TearingAllowed && AllowTearing && !SyncToVerticalBlank)
+                {
+                    Debug.Assert(d3d11SC.SyncInterval == 0);
+                    flags |= PresentFlags.AllowTearing;
+                }
+
+                d3d11SC.DxgiSwapChain.Present(d3d11SC.SyncInterval, flags);
             }
         }
 
