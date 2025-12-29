@@ -486,7 +486,8 @@ namespace Veldrid.MTL
                         dstTexture,
                         dstBaseArrayLayer + layer,
                         dstMipLevel,
-                        new MTLOrigin(dstX, dstY, dstZ));
+                        new MTLOrigin(dstX, dstY, dstZ),
+                        _gd.MetalFeatures.IsMacOS);
                 }
             }
             else if (srcIsStaging && dstIsStaging)
